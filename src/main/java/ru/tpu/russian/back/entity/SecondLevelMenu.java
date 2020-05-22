@@ -10,4 +10,6 @@ public class SecondLevelMenu {
 	private int position;
 
 	private String nameItem;
+
+	private String url;
 }

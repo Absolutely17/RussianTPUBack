@@ -23,8 +23,8 @@ public class MenuRest {
 		this.menuService = menuService;
 	}
 
-	@RequestMapping(method = GET, path = "/l1")
-	public List<FirstLevelMenu> getFirstLevels() {
-		return menuService.getAll();
+	@RequestMapping(method = GET, path = "")
+	public List<MenuView> getMenu(@RequestParam String language) {
+		return menuService.getAll(language);
 	}
 }

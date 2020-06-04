@@ -6,8 +6,8 @@ import ru.tpu.russian.back.entity.*;
 
 import java.util.*;
 
-public interface MenuRepository extends JpaRepository<FirstLevelMenu, String>, JpaSpecificationExecutor {
+public interface MenuRepository extends JpaRepository<MenuView, String>, JpaSpecificationExecutor {
 
-	@Procedure("GET_ALL_ITEMS_MENU")
-	List<FirstLevelMenu> getAll();
+	@Procedure("GetMenuByLanguage")
+	List<MenuView> getAll(String language);
 }

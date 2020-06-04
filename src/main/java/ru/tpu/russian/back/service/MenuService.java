@@ -1,6 +1,7 @@
 package ru.tpu.russian.back.service;
 
 import org.springframework.stereotype.*;
+import ru.tpu.russian.back.dto.MenuResponseDto;
 import ru.tpu.russian.back.entity.*;
 import ru.tpu.russian.back.repository.*;
 
@@ -15,7 +16,8 @@ public class MenuService {
 		this.menuRepository = menuRepository;
 	}
 
-	public List<FirstLevelMenu> getAll() {
-		return menuRepository.getAll();
+	public List<MenuView> getAll(String language) {
+	    List<MenuView> menu = menuRepository.getAll(language);
+        return menu;
 	}
 }

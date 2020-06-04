@@ -10,26 +10,27 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name = "Menu")
 public class MenuView {
 
-    @Column("Подчинённый")
+    @Column(name = "Подчинённый")
+    @Id
 	private String name;
 
-    @Column("Уровень меню")
+    @Column(name = "Уровень меню")
     private int level;
 
-    @Column("Язык подчинённого")
+    @Column(name = "Язык подчинённого")
     private String language;
 
-    @Column("Родитель")
+    @Column(name = "Родитель")
     private String parentName;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "Родитель", updatable = false, insertable = false)
     private MenuView parent;
 
-    @Column("Позиция")
+    @Column(name = "Позиция")
     private int position;
 
-    @Column("Язык родителя")
+    @Column(name = "Язык родителя")
     private String parentLanguage;
 
     @OneToMany(mappedBy = "parent", fetch = LAZY)

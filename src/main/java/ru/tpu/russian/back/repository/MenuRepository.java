@@ -1,13 +1,10 @@
 package ru.tpu.russian.back.repository;
 
-import org.springframework.data.jpa.repository.*;
-import org.springframework.data.jpa.repository.query.*;
-import ru.tpu.russian.back.entity.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import ru.tpu.russian.back.entity.Menu;
 
-import java.util.*;
+@Repository
+public interface MenuRepository extends JpaRepository<Menu, String>, IMenuRepository {
 
-public interface MenuRepository extends JpaRepository<MenuView, String>, JpaSpecificationExecutor {
-
-	@Procedure("GetMenuByLanguage")
-	List<MenuView> getAll(String language);
 }

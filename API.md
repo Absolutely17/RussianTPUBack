@@ -1,36 +1,37 @@
 #API
 
-* GET /menu
+* GET /menu?language={language}
 
 Response:
 ````javascript
-{
-  "sections": [
-    {
-      "id":"540vockjzxo-4580ugfdg",
-      "nameSection": "Новости",
-      "position": "1",
-      "subSections": [
-        {
-          "id":"548u8fsgdz-3xjdnvsd",
-          "nameSection":"ТПУ",
-          "position":"1",
-          "url":"https://news.tpu.ru/"
-        }
-      ]
-    },
-    {
-      "id":"z1dkbmjkwj4390c-vjjk1mvz-zxc",
-      "nameSection": "Формулы",
-      "position": "2",
-      "subSections": [
-        {
-          "id":"5489u-fdg-459dfg0p45-",
-          "nameSection": "Математика",
-          "position": "1"
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "name": "Учеба",
+    "level": "1",
+    "language": "русский",
+    "sublevels": [
+      {
+        "name": "Расписание",
+        "level": 2,
+        "language": "русский",
+        "position": 1,
+        "parentLanguage": "русский"
+      }
+    ]
+  },
+  {
+    "name": "Новости",
+    "level": 1,
+    "language": "русский",
+    "sublevels": [
+      {
+        "name": "ТПУ",
+        "level": 2,
+        "language": "русский",
+        "position": 1,
+        "parentLanguage": "русский"
+      }
+    ]
+  }
+]
 ````

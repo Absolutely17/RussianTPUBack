@@ -24,6 +24,9 @@ public class Menu {
     @Column(name = "Уровень меню")
     private int level;
 
+    @Column(name = "Порядок отображения")
+    private int orderNumber;
+
     @Column(name = "Язык подчинённого")
     private String language;
 
@@ -35,10 +38,6 @@ public class Menu {
     @JoinColumn(name = "Родитель", updatable = false, insertable = false)
     private Menu parent;
 
-    @Column(name = "Позиция")
-    @Nullable
-    private Integer position;
-
     @Column(name = "Язык родителя")
     private String parentLanguage;
 
@@ -46,6 +45,14 @@ public class Menu {
     private List<Menu> childrens = new ArrayList<>();
 
     public Menu() {
+    }
+
+    public int getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(int orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public String getName() {
@@ -78,14 +85,6 @@ public class Menu {
 
     public void setParentName(String parentName) {
         this.parentName = parentName;
-    }
-
-    public Integer getPosition() {
-        return position;
-    }
-
-    public void setPosition(Integer position) {
-        this.position = position;
     }
 
     public String getParentLanguage() {
@@ -121,7 +120,7 @@ public class Menu {
                 ", level=" + level + '\n' +
                 ", language='" + language + '\n' +
                 ", parentName='" + parentName + '\n' +
-                ", position=" + position + '\n' +
+                ", orderNumber=" + orderNumber + '\n' +
                 ", parentLanguage='" + parentLanguage + '\n';
     }
 }

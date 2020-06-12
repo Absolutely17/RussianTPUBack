@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.repository;
+package ru.tpu.russian.back.repository.menu;
 
 import ru.tpu.russian.back.entity.Menu;
 

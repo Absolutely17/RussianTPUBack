@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.repository;
+package ru.tpu.russian.back.repository.menu;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.entity.Menu;

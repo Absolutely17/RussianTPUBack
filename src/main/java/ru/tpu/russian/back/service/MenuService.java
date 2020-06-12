@@ -2,7 +2,7 @@ package ru.tpu.russian.back.service;
 
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.entity.Menu;
-import ru.tpu.russian.back.repository.MenuRepository;
+import ru.tpu.russian.back.repository.menu.MenuRepository;
 
 import java.util.*;
 

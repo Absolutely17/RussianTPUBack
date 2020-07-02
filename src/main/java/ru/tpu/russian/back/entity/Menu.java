@@ -1,6 +1,7 @@
 package ru.tpu.russian.back.entity;
 
 import org.springframework.lang.*;
+import ru.tpu.russian.back.dto.enums.MenuType;
 
 import javax.persistence.*;
 import java.util.*;
@@ -18,6 +19,9 @@ import static javax.persistence.FetchType.EAGER;
 public class Menu {
 
     @Id
+    @Column(name = "ID")
+    private String id;
+
     @Column(name = "Подчинённый")
     private String name;
 
@@ -25,7 +29,11 @@ public class Menu {
     private int level;
 
     @Column(name = "Порядок отображения")
-    private int orderNumber;
+    private int position;
+
+    @Column(name = "Тип")
+    @Enumerated(EnumType.STRING)
+    private MenuType type;
 
     @Column(name = "Язык подчинённого")
     private String language;
@@ -33,13 +41,14 @@ public class Menu {
     @Column(name = "Родитель")
     private String parentName;
 
+    @Column(name = "URL")
+    @Nullable
+    private String url;
+
     @Nullable
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "Родитель", updatable = false, insertable = false)
     private Menu parent;
-
-    @Column(name = "Язык родителя")
-    private String parentLanguage;
 
     @Transient
     private List<Menu> childrens = new ArrayList<>();
@@ -47,52 +56,28 @@ public class Menu {
     public Menu() {
     }
 
-    public int getOrderNumber() {
-        return orderNumber;
+    public String getId() {
+        return id;
     }
 
-    public void setOrderNumber(int orderNumber) {
-        this.orderNumber = orderNumber;
+    public int getPosition() {
+        return position;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getLevel() {
         return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
     }
 
     public String getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
     public String getParentName() {
         return parentName;
-    }
-
-    public void setParentName(String parentName) {
-        this.parentName = parentName;
-    }
-
-    public String getParentLanguage() {
-        return parentLanguage;
-    }
-
-    public void setParentLanguage(String parentLanguage) {
-        this.parentLanguage = parentLanguage;
     }
 
     @Nullable
@@ -100,28 +85,17 @@ public class Menu {
         return parent;
     }
 
-    public void setParent(@Nullable Menu parent) {
-        this.parent = parent;
+    public MenuType getType() {
+        return type;
     }
 
-    @NonNull
+    @Nullable
+    public String getUrl() {
+        return url;
+    }
+
     public List<Menu> getChildrens() {
         return childrens;
-    }
-
-    public void setChildrens(@NonNull List<Menu> childrens) {
-        this.childrens = childrens;
-    }
-
-    @Override
-    public String toString() {
-        return "Пункт меню:\n" +
-                "name='" + name + '\n' +
-                ", level=" + level + '\n' +
-                ", language='" + language + '\n' +
-                ", parentName='" + parentName + '\n' +
-                ", orderNumber=" + orderNumber + '\n' +
-                ", parentLanguage='" + parentLanguage + '\n';
     }
 }
 

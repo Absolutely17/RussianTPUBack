@@ -15,6 +15,6 @@ public class TestRest {
 
 	@RequestMapping(method = GET)
 	public String getCurrentTime() {
-		return "Test request. Current time = " + new Date().toString();
+		return "Web-service worked. Current time = " + new Date().toString();
 	}
 }

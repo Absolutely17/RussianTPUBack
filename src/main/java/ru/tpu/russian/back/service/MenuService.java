@@ -28,12 +28,12 @@ public class MenuService {
     }
     private List<MenuResponseDto> testResponse() {
         List<MenuResponseDto> menu = new ArrayList<>();
-        MenuResponseDto firstItem = new MenuResponseDto(UUID.randomUUID().toString(), "Учеба", 1, 1, MenuType.LinksList);
+        MenuResponseDto firstItem = new MenuResponseDto(UUID.randomUUID().toString(), "Учеба", 1, 1, MenuType.LINKS_LIST);
         List<MenuResponseDto> childsMenu = new ArrayList<>();
-        childsMenu.add(new MenuResponseDto(UUID.randomUUID().toString(), "Расписание", 2, 1, MenuType.Link, "google.com"));
-        childsMenu.add(new MenuResponseDto(UUID.randomUUID().toString(), "Экзамены", 2, 2, MenuType.Article));
+        childsMenu.add(new MenuResponseDto(UUID.randomUUID().toString(), "Расписание", 2, 1, MenuType.LINK, "google.com"));
+        childsMenu.add(new MenuResponseDto(UUID.randomUUID().toString(), "Экзамены", 2, 2, MenuType.ARTICLE));
         firstItem.setChildrens(childsMenu);
-        MenuResponseDto secondItem = new MenuResponseDto(UUID.randomUUID().toString(), "Общежитие", 1, 2, MenuType.FeedList);
+        MenuResponseDto secondItem = new MenuResponseDto(UUID.randomUUID().toString(), "Общежитие", 1, 2, MenuType.FEED_LIST);
         menu.add(firstItem);
         menu.add(secondItem);
         return menu;
@@ -48,9 +48,9 @@ public class MenuService {
 
     private void putChildrens(List<Menu> menu) {
         for (Menu m : menu) {
-            String name = m.getName();
+            String idParent = m.getId();
             for (Menu value : menu) {
-                if (value.getParentName() != null && value.getParentName().equals(name)) {
+                if (value.getParentId() != null && value.getParentId().equals(idParent)) {
                     m.getChildrens().add(value);
                 }
             }

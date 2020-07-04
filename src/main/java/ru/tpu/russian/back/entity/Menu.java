@@ -28,26 +28,26 @@ public class Menu {
     @Column(name = "Уровень меню")
     private int level;
 
-    @Column(name = "Порядок отображения")
-    private int position;
-
     @Column(name = "Тип")
     @Enumerated(EnumType.STRING)
     private MenuType type;
 
-    @Column(name = "Язык подчинённого")
-    private String language;
-
-    @Column(name = "Родитель")
-    private String parentName;
-
-    @Column(name = "URL")
+    @Column(name = "Ссылка")
     @Nullable
     private String url;
 
+    @Column(name = "Порядок отображения")
+    private int position;
+
+    @Column(name = "Язык подчинённого")
+    private String language;
+
+    @Column(name = "ID родителя")
+    private String parentId;
+
     @Nullable
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "Родитель", updatable = false, insertable = false)
+    @JoinColumn(name = "ID родителя", updatable = false, insertable = false)
     private Menu parent;
 
     @Transient
@@ -76,8 +76,8 @@ public class Menu {
         return language;
     }
 
-    public String getParentName() {
-        return parentName;
+    public String getParentId() {
+        return parentId;
     }
 
     @Nullable

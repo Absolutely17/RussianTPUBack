@@ -50,10 +50,12 @@ public class MenuResponseDto {
         position = menu.getPosition();
         type = menu.getType();
         url = menu.getUrl();
-        childrens = menu.getChildrens()
-                .stream()
-                .map(MenuResponseDto::new)
-                .collect(Collectors.toList());
+        if (!menu.getChildrens().isEmpty()) {
+            childrens = menu.getChildrens()
+                    .stream()
+                    .map(MenuResponseDto::new)
+                    .collect(Collectors.toList());
+        }
     }
 
     public String getId() {

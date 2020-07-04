@@ -22,12 +22,8 @@ public class MenuRest {
     }
 
     @RequestMapping(method = GET, path = "")
-    public String getMenu(@RequestParam String language) {
-        StringBuilder sb = new StringBuilder();
-        for (MenuResponseDto s : menuService.getAll(language)) {
-            sb.append(s.toString()).append("\n");
-        }
-        return sb.toString();
+    public List<MenuResponseDto> getMenu(@RequestParam String language) {
+        return menuService.getAll(language);
     }
 
     @RequestMapping(method = GET, path = "/static")

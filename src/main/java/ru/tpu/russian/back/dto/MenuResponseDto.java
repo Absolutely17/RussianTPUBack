@@ -24,7 +24,7 @@ public class MenuResponseDto {
     @Nullable
     private String url;
 
-    private List<MenuResponseDto> childrens;
+    private List<MenuResponseDto> children;
 
     public MenuResponseDto(String id, String name, int level, int position, MenuType type) {
         this.id = id;
@@ -50,8 +50,8 @@ public class MenuResponseDto {
         position = menu.getPosition();
         type = menu.getType();
         url = menu.getUrl();
-        if (!menu.getChildrens().isEmpty()) {
-            childrens = menu.getChildrens()
+        if (!menu.getChildren().isEmpty()) {
+            children = menu.getChildren()
                     .stream()
                     .map(MenuResponseDto::new)
                     .collect(Collectors.toList());
@@ -74,12 +74,12 @@ public class MenuResponseDto {
         return type;
     }
 
-    public List<MenuResponseDto> getChildrens() {
-        return childrens;
+    public List<MenuResponseDto> getChildren() {
+        return children;
     }
 
-    public void setChildrens(List<MenuResponseDto> childrens) {
-        this.childrens = childrens;
+    public void setChildren(List<MenuResponseDto> children) {
+        this.children = children;
     }
 
     public int getLevel() {

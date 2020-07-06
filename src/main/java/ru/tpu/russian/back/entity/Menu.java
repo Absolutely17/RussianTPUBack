@@ -51,7 +51,7 @@ public class Menu {
     private Menu parent;
 
     @Transient
-    private List<Menu> childrens = new ArrayList<>();
+    private List<Menu> children = new ArrayList<>();
 
     public Menu() {
     }
@@ -94,8 +94,8 @@ public class Menu {
         return url;
     }
 
-    public List<Menu> getChildrens() {
-        return childrens;
+    public List<Menu> getChildren() {
+        return children;
     }
 }
 

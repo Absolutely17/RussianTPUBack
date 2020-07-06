@@ -32,7 +32,7 @@ public class MenuService {
         List<MenuResponseDto> childsMenu = new ArrayList<>();
         childsMenu.add(new MenuResponseDto(UUID.randomUUID().toString(), "Расписание", 2, 1, MenuType.LINK, "google.com"));
         childsMenu.add(new MenuResponseDto(UUID.randomUUID().toString(), "Экзамены", 2, 2, MenuType.ARTICLE));
-        firstItem.setChildrens(childsMenu);
+        firstItem.setChildren(childsMenu);
         MenuResponseDto secondItem = new MenuResponseDto(UUID.randomUUID().toString(), "Общежитие", 1, 2, MenuType.FEED_LIST);
         menu.add(firstItem);
         menu.add(secondItem);
@@ -51,10 +51,10 @@ public class MenuService {
             String idParent = m.getId();
             for (Menu value : menu) {
                 if (value.getParentId() != null && value.getParentId().equals(idParent)) {
-                    m.getChildrens().add(value);
+                    m.getChildren().add(value);
                 }
             }
         }
-        menu.removeIf(m -> m.getChildrens().isEmpty());
+        menu.removeIf(m -> m.getChildren().isEmpty() && m.getParent() != null);
     }
 }

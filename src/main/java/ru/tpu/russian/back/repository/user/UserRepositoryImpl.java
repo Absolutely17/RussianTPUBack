@@ -16,7 +16,7 @@ public class UserRepositoryImpl implements IUserRepository {
     private EntityManager em;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<User> getAllByLanguage(Map<String, Object> params) {
         StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_USER_BY_LANGUAGE);
         for (String key : params.keySet()) {
@@ -27,7 +27,7 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<User> getAllByReg(Map<String, Object> params) {
         StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_USER_BY_REG);
         for (String key : params.keySet()) {

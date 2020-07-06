@@ -39,9 +39,6 @@ public class Menu {
     @Column(name = "Порядок отображения")
     private int position;
 
-    @Column(name = "Язык подчинённого")
-    private String language;
-
     @Column(name = "ID родителя")
     private String parentId;
 
@@ -70,10 +67,6 @@ public class Menu {
 
     public int getLevel() {
         return level;
-    }
-
-    public String getLanguage() {
-        return language;
     }
 
     public String getParentId() {

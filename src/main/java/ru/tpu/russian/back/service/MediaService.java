@@ -25,4 +25,13 @@ public class MediaService {
         return Base64.getEncoder().encodeToString(data.getData());
     }
 
+    public byte[] getTestImage() throws IOException {
+        File img = new File("C:/test.jpg");
+        BufferedImage bufferedImage = ImageIO.read(img);
+        WritableRaster raster = bufferedImage.getRaster();
+        DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
+
+        return data.getData();
+    }
+
 }

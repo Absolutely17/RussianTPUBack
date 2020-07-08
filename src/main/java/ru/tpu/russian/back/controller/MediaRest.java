@@ -26,4 +26,9 @@ public class MediaRest {
         return mediaService.getImage(id);
     }
 
+    @RequestMapping(method = GET, path = "/test/img")
+    public byte[] getTestImage() throws IOException {
+        return mediaService.getTestImage();
+    }
+
 }

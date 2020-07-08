@@ -1,7 +1,6 @@
 package ru.tpu.russian.back.service;
 
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.ImageResponseDto;
 
 import javax.imageio.ImageIO;
 import java.awt.image.*;

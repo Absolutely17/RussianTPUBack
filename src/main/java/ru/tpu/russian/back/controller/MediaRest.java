@@ -1,7 +1,6 @@
 package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.dto.ImageResponseDto;
 import ru.tpu.russian.back.service.MediaService;
 
 import java.io.IOException;

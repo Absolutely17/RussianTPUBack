@@ -1,12 +1,8 @@
 package ru.tpu.russian.back.controller;
 
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.entity.ArticleBrief;
+import ru.tpu.russian.back.dto.*;
 import ru.tpu.russian.back.service.ArticleService;
-
-import javax.websocket.server.PathParam;
-import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -22,13 +18,25 @@ public class ArticleRest {
         this.articleService = articleService;
     }
 
-    @RequestMapping(method = GET, path = "/preview/{language}/{offset}/{count}")
-    public List<ArticleBrief> getArticlesBrief(
-            @PathVariable int offset,
-            @PathVariable int count,
-            @PathVariable String language
+    /**
+     * Получение списка статей
+     */
+    @RequestMapping(method = GET, path = "/list/{id}")
+    public PageDto<ArticleBriefResponse> getArticlesBriefFromMenuItem(
+            @PathVariable String id,
+            @RequestParam(value = "fromMenu", defaultValue = "false") boolean fromMenu
             ) {
-        return articleService.getArticlesBrief(offset, count, language);
+        return articleService.getArticlesBrief(id, fromMenu);
+    }
+
+    /**
+     * Получение полной версии статьи
+     */
+    @RequestMapping(method = GET, path = "/{id}")
+    public ArticleResponse getArticle(
+            @PathVariable String id
+    ) {
+        return articleService.getArticle(id);
     }
 
 }

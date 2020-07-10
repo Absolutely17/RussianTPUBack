@@ -1,6 +1,8 @@
 package ru.tpu.russian.back.controller;
 
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
+import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.service.MediaService;
 
 import java.io.IOException;
@@ -11,6 +13,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/media", produces = APPLICATION_JSON_UTF8_VALUE)
+@Api(tags = {SpringFoxConfig.MEDIA_REST})
 public class MediaRest {
 
     private MediaService mediaService;
@@ -19,28 +22,18 @@ public class MediaRest {
         this.mediaService = mediaService;
     }
 
+    @ApiOperation(value = "Получене изображения из БД")
     @RequestMapping(method = GET, path = "/img/{id}")
     public byte[] getImage(
-            @PathVariable String id
-    ) throws IOException {
-        return mediaService.getImage(id);
-    }
-
-    @RequestMapping(method = GET, path = "/imgBase64/{id}")
-    public byte[] getImageInBase64(
+            @ApiParam(value = "ID изображения", required = true)
             @PathVariable String id
     ) {
-        return mediaService.getImageInBase64(id);
+        return mediaService.getImage(id);
     }
-
+    @ApiOperation(value = "Получение тестового изображения из файловой системы сервера")
     @RequestMapping(method = GET, path = "/test/img/byte")
     public byte[] getTestImageInByteArray() throws IOException {
         return mediaService.getTestImageInByteArray();
-    }
-
-    @RequestMapping(method = GET, path = "/test/img/base64")
-    public byte[] getTestImageInBase64() throws IOException {
-        return mediaService.getTestImageInBase64();
     }
 
 }

@@ -20,16 +20,8 @@ public class MediaService {
         return mediaRepository.getById(id).getData();
     }
 
-    public byte[] getImageInBase64(String id) {
-        return Base64.getEncoder().encode(mediaRepository.getById(id).getData());
-    }
-
     public byte[] getTestImageInByteArray() throws IOException {
         File img = new File("C:/test.jpg");
         return Files.readAllBytes(img.toPath());
-    }
-    public byte[] getTestImageInBase64() throws IOException {
-        File img = new File("C:/test.jpg");
-        return Base64.getEncoder().encode(Files.readAllBytes(img.toPath()));
     }
 }

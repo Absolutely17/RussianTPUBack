@@ -1,6 +1,8 @@
 package ru.tpu.russian.back.controller;
 
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
+import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.service.UserService;
 
@@ -10,6 +12,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/user", produces = APPLICATION_JSON_UTF8_VALUE)
+@Api(tags = {SpringFoxConfig.USER_REST})
 public class UserRest {
 
     private final UserService userService;

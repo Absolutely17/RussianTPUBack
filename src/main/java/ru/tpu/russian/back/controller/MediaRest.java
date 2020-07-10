@@ -20,15 +20,27 @@ public class MediaRest {
     }
 
     @RequestMapping(method = GET, path = "/img/{id}")
-    public String getImage(
+    public byte[] getImage(
             @PathVariable String id
     ) throws IOException {
         return mediaService.getImage(id);
     }
 
-    @RequestMapping(method = GET, path = "/test/img")
-    public byte[] getTestImage() throws IOException {
-        return mediaService.getTestImage();
+    @RequestMapping(method = GET, path = "/imgBase64/{id}")
+    public byte[] getImageInBase64(
+            @PathVariable String id
+    ) {
+        return mediaService.getImageInBase64(id);
+    }
+
+    @RequestMapping(method = GET, path = "/test/img/byte")
+    public byte[] getTestImageInByteArray() throws IOException {
+        return mediaService.getTestImageInByteArray();
+    }
+
+    @RequestMapping(method = GET, path = "/test/img/base64")
+    public byte[] getTestImageInBase64() throws IOException {
+        return mediaService.getTestImageInBase64();
     }
 
 }

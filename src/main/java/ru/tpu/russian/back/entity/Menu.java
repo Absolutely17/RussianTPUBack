@@ -47,6 +47,10 @@ public class Menu {
     @JoinColumn(name = "ID родителя", updatable = false, insertable = false)
     private Menu parent;
 
+    @Column(name = "ID статьи")
+    @Nullable
+    private String idArticle;
+
     @Transient
     private List<Menu> children = new ArrayList<>();
 
@@ -89,6 +93,11 @@ public class Menu {
 
     public List<Menu> getChildren() {
         return children;
+    }
+
+    @Nullable
+    public String getIdArticle() {
+        return idArticle;
     }
 }
 

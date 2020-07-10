@@ -24,6 +24,9 @@ public class MenuResponseDto {
     @Nullable
     private String url;
 
+    @Nullable
+    private String idArticle;
+
     private List<MenuResponseDto> children;
 
     public MenuResponseDto(String id, String name, int level, int position, MenuType type) {
@@ -50,6 +53,7 @@ public class MenuResponseDto {
         position = menu.getPosition();
         type = menu.getType();
         url = menu.getUrl();
+        idArticle = menu.getIdArticle();
         if (!menu.getChildren().isEmpty()) {
             children = menu.getChildren()
                     .stream()
@@ -89,5 +93,10 @@ public class MenuResponseDto {
     @Nullable
     public String getUrl() {
         return url;
+    }
+
+    @Nullable
+    public String getIdArticle() {
+        return idArticle;
     }
 }

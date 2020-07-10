@@ -23,6 +23,26 @@ public class MenuService {
         params.put("Language", language);
         return convertToDto(menuRepository.getAll(params));
     }
+
+    private List<MenuResponseDto> convertToDto(List<Menu> menuItems) {
+        putChildren(menuItems);
+        return menuItems.stream()
+                .map(MenuResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    private void putChildren(List<Menu> menu) {
+        for (Menu m : menu) {
+            String idParent = m.getId();
+            for (Menu value : menu) {
+                if (value.getParentId() != null && value.getParentId().equals(idParent)) {
+                    m.getChildren().add(value);
+                }
+            }
+        }
+        menu.removeIf(m -> m.getChildren().isEmpty() && m.getParent() != null);
+    }
+
     public List<MenuResponseDto> getMenuItemsStatic() {
         return testResponse();
     }
@@ -37,24 +57,5 @@ public class MenuService {
         menu.add(firstItem);
         menu.add(secondItem);
         return menu;
-    }
-
-    private List<MenuResponseDto> convertToDto(List<Menu> menuItems) {
-        putChildrens(menuItems);
-        return menuItems.stream()
-                .map(MenuResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-    private void putChildrens(List<Menu> menu) {
-        for (Menu m : menu) {
-            String idParent = m.getId();
-            for (Menu value : menu) {
-                if (value.getParentId() != null && value.getParentId().equals(idParent)) {
-                    m.getChildren().add(value);
-                }
-            }
-        }
-        menu.removeIf(m -> m.getChildren().isEmpty() && m.getParent() != null);
     }
 }

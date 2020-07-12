@@ -4,9 +4,8 @@ import org.springframework.lang.*;
 import ru.tpu.russian.back.dto.enums.MenuType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
-
-import static javax.persistence.FetchType.EAGER;
 
 @NamedStoredProcedureQuery(
         name = "GetMenuByLanguage",
@@ -16,7 +15,7 @@ import static javax.persistence.FetchType.EAGER;
                 @StoredProcedureParameter(mode = ParameterMode.IN, name = "Language", type = String.class)
         })
 @Entity
-public class Menu {
+public class Menu implements Serializable {
 
     @Id
     @Column(name = "ID")
@@ -43,7 +42,7 @@ public class Menu {
     private String parentId;
 
     @Nullable
-    @ManyToOne(fetch = EAGER)
+    @ManyToOne
     @JoinColumn(name = "ID родителя", updatable = false, insertable = false)
     private Menu parent;
 
@@ -51,8 +50,9 @@ public class Menu {
     @Nullable
     private String idArticle;
 
-    @Transient
-    private List<Menu> children = new ArrayList<>();
+    @OneToMany(mappedBy="parent")
+    @OrderBy("position ASC")
+    private List<Menu> children;
 
     public Menu() {
     }

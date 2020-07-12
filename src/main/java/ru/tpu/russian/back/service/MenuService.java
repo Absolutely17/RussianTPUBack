@@ -25,22 +25,10 @@ public class MenuService {
     }
 
     private List<MenuResponseDto> convertToDto(List<Menu> menuItems) {
-        putChildren(menuItems);
+        menuItems.removeIf(menuItem -> menuItem.getLevel() != 1);
         return menuItems.stream()
                 .map(MenuResponseDto::new)
                 .collect(Collectors.toList());
-    }
-
-    private void putChildren(List<Menu> menu) {
-        for (Menu m : menu) {
-            String idParent = m.getId();
-            for (Menu value : menu) {
-                if (value.getParentId() != null && value.getParentId().equals(idParent)) {
-                    m.getChildren().add(value);
-                }
-            }
-        }
-        menu.removeIf(m -> m.getChildren().isEmpty() && m.getParent() != null);
     }
 
     public List<MenuResponseDto> getMenuItemsStatic() {

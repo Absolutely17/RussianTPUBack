@@ -17,6 +17,15 @@ public class Media {
     @Column(name = "Время создания")
     private Date createDate;
 
+    public Media() {
+    }
+
+    public Media(String id, byte[] data, Date createDate) {
+        this.id = id;
+        this.data = data;
+        this.createDate = createDate;
+    }
+
     public String getId() {
         return id;
     }

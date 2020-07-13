@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -30,10 +31,18 @@ public class MediaRest {
     ) {
         return mediaService.getImage(id);
     }
-    @ApiOperation(value = "Получение тестового изображения из файловой системы сервера")
+    @ApiOperation(value = "Получение тестового изображения из файловой системы сервера (ДЛЯ ТЕСТОВ)")
     @RequestMapping(method = GET, path = "/test/img/byte")
     public byte[] getTestImageInByteArray() throws IOException {
         return mediaService.getTestImageInByteArray();
     }
 
+    @ApiOperation(value = "Загрузка тестового изображения в БД (ДЛЯ ТЕСТОВ)")
+    @RequestMapping(method = GET, path = "/test/uploadImg/{nameImg}")
+    public void uploadImage(
+            @ApiParam(value = "Название файла с расширением из C:/", required = true)
+            @PathVariable String nameImg
+    ) throws IOException {
+        mediaService.uploadImage(nameImg);
+    }
 }

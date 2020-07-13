@@ -17,19 +17,17 @@ public class ArticleService {
         this.articleRepository = articleRepository;
     }
 
-    public PageDto<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) {
+    public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) {
         List<Article> articles;
         if (fromMenu) {
             articles = articleRepository.getBriefArticlesFromMenu(id);
         } else {
             articles = articleRepository.getBriefArticles(id);
         }
-        return new PageDto<>(
-                (long) articles.size(),
-                articles
+        return articles
                         .stream()
                         .map(ArticleBriefResponse::new)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList());
     }
 
     public ArticleResponse getArticle(String id) {

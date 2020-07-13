@@ -6,6 +6,8 @@ import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.*;
 import ru.tpu.russian.back.service.ArticleService;
 
+import java.util.List;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -26,7 +28,7 @@ public class ArticleRest {
      */
     @ApiOperation(value = "Получить список статей")
     @RequestMapping(method = GET, path = "/list/{id}")
-    public PageDto<ArticleBriefResponse> getArticlesBriefFromMenuItem(
+    public List<ArticleBriefResponse> getArticlesBriefFromMenuItem(
             @ApiParam(value = "ID пункта меню (если fromMenu=true) или ID страницы (если fromMenu=false)", required = true)
             @PathVariable String id,
             @ApiParam(value = "Осуществлен ли переход из меню")

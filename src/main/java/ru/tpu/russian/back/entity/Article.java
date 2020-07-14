@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.entity;
 
+import lombok.*;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -25,6 +26,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "Статья")
+@Getter
+@Setter
 public class Article {
 
     private static SimpleDateFormat formatter = new SimpleDateFormat("HH:mm dd.MM.yyyy");
@@ -36,7 +39,6 @@ public class Article {
     @Column(name = "Название")
     private String topic;
 
-    @Nullable
     @Column(name = "Текст")
     private String text;
 
@@ -50,27 +52,9 @@ public class Article {
     @Column(name = "Время создания")
     private Date createDate;
 
-    public String getId() {
-        return id;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
+    @Column(name = "Картинка статьи")
     @Nullable
-    public String getText() {
-        return text;
-    }
-
-    @Nullable
-    public String getBriefText() {
-        return briefText;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
+    private String articleImage;
 
     public String getCreateDate() {
         return formatter.format(createDate);

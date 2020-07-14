@@ -1,10 +1,16 @@
 package ru.tpu.russian.back.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "Медиа")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Media {
 
     @Id
@@ -16,25 +22,4 @@ public class Media {
 
     @Column(name = "Время создания")
     private Date createDate;
-
-    public Media() {
-    }
-
-    public Media(String id, byte[] data, Date createDate) {
-        this.id = id;
-        this.data = data;
-        this.createDate = createDate;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
 }

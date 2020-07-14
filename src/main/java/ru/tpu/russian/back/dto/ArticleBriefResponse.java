@@ -1,9 +1,10 @@
 package ru.tpu.russian.back.dto;
 
-import io.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 import ru.tpu.russian.back.entity.Article;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArticleBriefResponse {
 
     @ApiModelProperty(notes = "ID статьи, генерируется БД")
@@ -20,6 +21,9 @@ public class ArticleBriefResponse {
 
     @ApiModelProperty(notes = "Дата создания статьи, генерируется БД")
     private String createDate;
+
+    @ApiModelProperty(notes = "Картинка статьи")
+    private byte[] articleImage;
 
     public ArticleBriefResponse(Article article) {
         id = article.getId();
@@ -47,5 +51,13 @@ public class ArticleBriefResponse {
 
     public String getCreateDate() {
         return createDate;
+    }
+
+    public byte[] getArticleImage() {
+        return articleImage;
+    }
+
+    public void setArticleImage(byte[] articleImage) {
+        this.articleImage = articleImage;
     }
 }

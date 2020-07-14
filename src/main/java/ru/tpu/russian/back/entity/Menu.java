@@ -1,11 +1,12 @@
 package ru.tpu.russian.back.entity;
 
-import org.springframework.lang.*;
+import lombok.*;
+import org.springframework.lang.Nullable;
 import ru.tpu.russian.back.dto.enums.MenuType;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
 
 @NamedStoredProcedureQuery(
         name = "GetMenuByLanguage",
@@ -15,6 +16,9 @@ import java.util.*;
                 @StoredProcedureParameter(mode = ParameterMode.IN, name = "Language", type = String.class)
         })
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Menu implements Serializable {
 
     @Id
@@ -53,51 +57,5 @@ public class Menu implements Serializable {
     @OneToMany(mappedBy="parent")
     @OrderBy("position ASC")
     private List<Menu> children;
-
-    public Menu() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    @Nullable
-    public Menu getParent() {
-        return parent;
-    }
-
-    public MenuType getType() {
-        return type;
-    }
-
-    @Nullable
-    public String getUrl() {
-        return url;
-    }
-
-    public List<Menu> getChildren() {
-        return children;
-    }
-
-    @Nullable
-    public String getIdArticle() {
-        return idArticle;
-    }
 }
 

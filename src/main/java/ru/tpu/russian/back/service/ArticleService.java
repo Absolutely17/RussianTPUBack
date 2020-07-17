@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.*;
 import ru.tpu.russian.back.entity.Article;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ArticleService {
 
     private ArticleRepository articleRepository;
@@ -27,10 +29,13 @@ public class ArticleService {
     public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) {
         List<Article> articles;
         if (fromMenu) {
+            log.info("Get brief articles from menu. ID menu item = {}", id);
             articles = articleRepository.getBriefArticlesFromMenu(id);
         } else {
+            log.info("Get brief articles from page. ID page = {}", id);
             articles = articleRepository.getBriefArticles(id);
         }
+        log.info("Count brief articles {}", articles.size());
         return articles
                 .stream()
                 .map(this::convertToBriefResponse)
@@ -46,6 +51,7 @@ public class ArticleService {
     }
 
     public ArticleResponse getArticle(String id) {
+        log.info("Get article. ID article = {}", id);
         return new ArticleResponse(articleRepository.getById(id));
     }
 }

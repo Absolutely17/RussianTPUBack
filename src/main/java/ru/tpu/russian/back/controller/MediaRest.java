@@ -7,13 +7,11 @@ import ru.tpu.russian.back.service.MediaService;
 
 import java.io.IOException;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping(value = "/media", produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/media")
 @Api(tags = {SpringFoxConfig.MEDIA_REST})
 public class MediaRest {
 

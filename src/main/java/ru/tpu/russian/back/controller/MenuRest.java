@@ -4,17 +4,15 @@ import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.MenuResponseDto;
-import ru.tpu.russian.back.entity.Menu;
 import ru.tpu.russian.back.service.MenuService;
 
 import java.util.List;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping(value = "/menu", produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/menu")
 @Api(tags = {SpringFoxConfig.MENU_REST})
 public class MenuRest {
 

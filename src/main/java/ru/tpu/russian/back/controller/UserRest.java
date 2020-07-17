@@ -6,12 +6,11 @@ import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.service.UserService;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping(value = "/user", produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/user")
 @Api(tags = {SpringFoxConfig.USER_REST})
 public class UserRest {
 

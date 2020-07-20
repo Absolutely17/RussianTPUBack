@@ -1,6 +1,8 @@
 package ru.tpu.russian.back.entity;
 
 import lombok.*;
+import ru.tpu.russian.back.dto.RegistrationRequestDto;
+import ru.tpu.russian.back.dto.enums.ProviderType;
 
 import javax.persistence.*;
 
@@ -18,21 +20,61 @@ import javax.persistence.*;
                 resultClasses = {User.class},
                 parameters = {
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Language", type = String.class)
-                })
+                }),
+        @NamedStoredProcedureQuery(
+                name = "EditUserRefreshSalt",
+                procedureName = "EditUserRefreshSalt",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Salt", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class)
+                }
+        ),
+        @NamedStoredProcedureQuery(
+                name = "GetUserByEmail",
+                procedureName = "GetUserByEmail",
+                resultClasses = {User.class},
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class)
+                }
+        ),
+        @NamedStoredProcedureQuery(
+                name = "AddUser",
+                procedureName = "AddUser",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Password", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Email", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "FirstName", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "SecondName", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Sex", type = boolean.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Language", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Role", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Patronymic", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "PhoneNumber", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Provider", type = String.class)
+                }
+        )
 })
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "UserInfo")
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id Пользователя")
+    private String id;
+
+    @Column(name = "Пароль")
+    private String password;
+
     @Column(name = "Имя")
-    private String surname;
+    private String firstName;
 
     @Column(name = "Фамилия")
-    private String firstName;
+    private String surname;
 
     @Column(name = "Отчество")
     private String patronymic;
@@ -43,15 +85,29 @@ public class User {
     @Column(name = "Пол")
     private boolean sex;
 
-    @Column(name = "Регистрация")
-    private boolean registration;
-
     @Column(name = "Язык")
     private String language;
 
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "Номер телефона")
     private String phoneNumber;
+
+    @Column(name = "Электронная почта")
+    private String email;
+
+    @Column(name = "refresh salt")
+    private String refreshSalt;
+
+    @Column(name = "Provider")
+    @Enumerated(EnumType.STRING)
+    private ProviderType provider;
+
+    public User(RegistrationRequestDto registrationRequest) {
+        surname = registrationRequest.getSurname();
+        firstName = registrationRequest.getFirstname();
+        patronymic = registrationRequest.getPatronymic();
+        sex = registrationRequest.isSex();
+        language = registrationRequest.getLanguage();
+        phoneNumber = registrationRequest.getPhoneNumber();
+        email = registrationRequest.getEmail();
+    }
 }

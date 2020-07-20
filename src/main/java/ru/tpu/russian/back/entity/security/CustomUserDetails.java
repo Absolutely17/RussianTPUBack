@@ -3,20 +3,17 @@ package ru.tpu.russian.back.entity.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import ru.tpu.russian.back.entity.User;
 
 import java.util.*;
 
-public class CustomUserDetails implements OAuth2User, UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private String email;
 
     private String password;
 
     private Collection<? extends GrantedAuthority> grantedAuthorities;
-
-    private Map<String, Object> attributes;
 
     public CustomUserDetails(String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.email = email;
@@ -33,21 +30,6 @@ public class CustomUserDetails implements OAuth2User, UserDetails {
                 user.getPassword(),
                 authorities
         );
-    }
-
-    public static CustomUserDetails create(User user, Map<String, Object> attributes) {
-        CustomUserDetails userDetails = create(user);
-        userDetails.attributes = attributes;
-        return userDetails;
-    }
-
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
     }
 
     @Override
@@ -83,11 +65,6 @@ public class CustomUserDetails implements OAuth2User, UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @Override
-    public String getName() {
-        return email;
     }
 
     public String getEmail() {

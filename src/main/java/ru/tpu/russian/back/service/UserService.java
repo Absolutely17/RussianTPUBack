@@ -1,24 +1,31 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.Jwt.*;
 import ru.tpu.russian.back.dto.*;
 import ru.tpu.russian.back.dto.enums.ProviderType;
 import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.exception.RegistrationException;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.regex.*;
+
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Service
 @Slf4j
 public class UserService {
 
     private static final Pattern VALID_EMAIL_ADDRESS = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+
+    private static final int HTTP_STATUS_REG_NEED_FILL = 210;
 
     private final UserRepository userRepository;
 
@@ -61,7 +68,7 @@ public class UserService {
         }
     }
 
-    public void register(User user) {
+    private void register(User user) {
         log.info("Register new user.");
         Map<String, Object> params = putUserFieldToMap(user);
         userRepository.saveUser(params);
@@ -72,8 +79,8 @@ public class UserService {
         params.put("Password", user.getPassword());
         params.put("Email", user.getEmail());
         params.put("FirstName", user.getFirstName());
-        params.put("SecondName", user.getSurname());
-        params.put("Sex", user.isSex());
+        params.put("SecondName", user.getLastName());
+        params.put("Sex", user.getGender());
         params.put("Language", user.getLanguage());
         params.put("Role", user.getRole());
         params.put("Patronymic", user.getPatronymic());
@@ -82,22 +89,64 @@ public class UserService {
         return params;
     }
 
-    public AuthResponseDto login(AuthRequestDto authRequest) {
+    public AuthResponseDto login(AuthRequestDto authRequest) throws LoginException {
         log.info("Login in system with email {}", authRequest.getEmail());
         User user = findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
-        if (user != null) {
-            String token = jwtProvider.generateToken(user.getEmail());
-            if (authRequest.isRememberMe()) {
-                log.info("Option rememberMe selected.");
-                String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
-                return new AuthResponseDto(token, refreshToken, true);
-            }
-            return new AuthResponseDto(token, true);
+        String token = jwtProvider.generateToken(user.getEmail());
+        if (authRequest.isRememberMe()) {
+            log.info("Option rememberMe selected.");
+            String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+            return new AuthResponseDto(token, refreshToken, true, new UserResponseDto(user));
         }
-        return new AuthResponseDto(false);
+        return new AuthResponseDto(token, true);
     }
 
-    public AuthResponseDto refreshToken(HttpServletRequest servletRequest) {
+    public ResponseEntity<?> loginWithService(AuthRequestWithServiceDto authRequest) {
+        log.info("Login in system with service {}", authRequest.getProvider());
+        try {
+            OAuthUserInfo userInfo = OAuthServiceUserInfoFactory.getOAuthUserInfo(
+                    authRequest.getProvider(),
+                    authRequest.getToken(),
+                    authRequest.getUserId(),
+                    authRequest.getEmail()
+            );
+            User user = findByEmail(userInfo.getEmail());
+            if (user != null) {
+                if (!user.getProvider().equals(ProviderType.valueOf(authRequest.getProvider()))) {
+                    throw new LoginException("It looks like you are trying to log in from the wrong provider." +
+                            " Are you trying to log in through " + authRequest.getProvider() + ", but you need to enter through " + user.getProvider());
+                }
+                String token = jwtProvider.generateToken(user.getEmail());
+                String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+                AuthResponseDto response = new AuthResponseDto(token, refreshToken, true, new UserResponseDto(user));
+                return new ResponseEntity<>(
+                        response, HttpStatus.OK
+                );
+            } else {
+                log.info("This user is not in the database. We register.");
+                return ResponseEntity.status(HTTP_STATUS_REG_NEED_FILL)
+                        .headers(new HttpHeaders())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(userInfo);
+            }
+        } catch (LoginException ex) {
+            return new ResponseEntity<>(
+                    ex.getMessage(), UNAUTHORIZED
+            );
+        }
+    }
+
+    public void registerWithService(RegistrationRequestServiceDto registrationRequest) {
+        log.info("Register new user through provider {}, email user {}", registrationRequest.getProvider(), registrationRequest.getEmail());
+        log.info("Convert to entity User.");
+        User user = new User(registrationRequest);
+        user.setRole("ROLE_USER");
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        log.info("Saing new user in DB.");
+        register(user);
+    }
+
+    public AuthResponseDto refreshToken(HttpServletRequest servletRequest) throws LoginException {
         log.info("Refresh access token");
         String token = JwtFilter.getTokenFromRequest(servletRequest);
         if (token != null && jwtProvider.validateToken(token)) {
@@ -111,12 +160,17 @@ public class UserService {
                         jwtProvider.generateRefreshToken(email),
                         true
                 );
+            } else {
+                log.error("The secret of the refresh token did not match.");
+                throw new LoginException("The secret of the refresh token did not match.");
             }
+        } else {
+            log.error("The token was not found in the request headers.");
+            throw new LoginException("The token was not found in the request headers.");
         }
-        return new AuthResponseDto(false);
     }
 
-    private User findByEmailAndPassword(String email, String password) {
+    private User findByEmailAndPassword(String email, String password) throws LoginException {
         log.info("Try to find user with email {} in DB", email);
         User user = findByEmail(email);
         if (user != null) {
@@ -126,9 +180,12 @@ public class UserService {
                 return user;
             } else {
                 log.error("Password mismatch");
+                throw new LoginException("Password mismatch.");
             }
+        } else {
+            log.error("User is not found.");
+            throw new LoginException("User is not found.");
         }
-        return user;
     }
 
     private User findByEmail(String email) {

@@ -1,7 +1,7 @@
 package ru.tpu.russian.back.entity;
 
 import lombok.*;
-import ru.tpu.russian.back.dto.RegistrationRequestDto;
+import ru.tpu.russian.back.dto.*;
 import ru.tpu.russian.back.dto.enums.ProviderType;
 
 import javax.persistence.*;
@@ -45,7 +45,7 @@ import javax.persistence.*;
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Email", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "FirstName", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "SecondName", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Sex", type = boolean.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Sex", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Language", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Role", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Patronymic", type = String.class),
@@ -74,7 +74,7 @@ public class User {
     private String firstName;
 
     @Column(name = "Фамилия")
-    private String surname;
+    private String lastName;
 
     @Column(name = "Отчество")
     private String patronymic;
@@ -83,7 +83,7 @@ public class User {
     private String role;
 
     @Column(name = "Пол")
-    private boolean sex;
+    private String gender;
 
     @Column(name = "Язык")
     private String language;
@@ -102,12 +102,23 @@ public class User {
     private ProviderType provider;
 
     public User(RegistrationRequestDto registrationRequest) {
-        surname = registrationRequest.getSurname();
-        firstName = registrationRequest.getFirstname();
+        lastName = registrationRequest.getLastName();
+        firstName = registrationRequest.getFirstName();
         patronymic = registrationRequest.getPatronymic();
-        sex = registrationRequest.isSex();
+        gender = registrationRequest.getGender();
         language = registrationRequest.getLanguage();
         phoneNumber = registrationRequest.getPhoneNumber();
         email = registrationRequest.getEmail();
+    }
+
+    public User(RegistrationRequestServiceDto request) {
+        email = request.getEmail();
+        firstName = request.getFirstName();
+        lastName = request.getLastName();
+        patronymic = request.getPatronymic();
+        gender = request.getGender();
+        language = request.getLanguage();
+        phoneNumber = request.getPhoneNumber();
+        provider = request.getProvider();
     }
 }

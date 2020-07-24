@@ -1,44 +1,51 @@
 package ru.tpu.russian.back.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class RegistrationRequestDto {
 
-    @NonNull
+    @ApiModelProperty(required = true, example = "qwerty123", value = "Пароль пользователя")
     private String password;
 
-    @NonNull
+    @ApiModelProperty(required = true, example = "test@test.com", value = "Email пользователя")
     private String email;
 
-    @NonNull
-    private String firstname;
+    @ApiModelProperty(required = true, example = "Ivan", value = "Имя пользователя")
+    private String firstName;
 
-    private String surname;
+    @ApiModelProperty(example = "Ivanov", value = "Фамилия пользователя")
+    @Nullable
+    private String lastName;
 
+    @ApiModelProperty(example = "Ivanovich", value = "Отчество пользователя")
+    @Nullable
     private String patronymic;
 
-    @NonNull
-    private boolean sex;
+    @ApiModelProperty(example = "Male", value = "Пол пользователя")
+    @Nullable
+    private String gender;
 
-    @NonNull
+    @ApiModelProperty(required = true, example = "Russian", value = "Язык пользователя")
     private String language;
 
+    @ApiModelProperty(example = "88005553535", value = "Номер телефона")
+    @Nullable
     private String phoneNumber;
 
     @Override
     public String toString() {
         return "RegistrationRequestDto{" +
                 "email='" + email + '\'' +
-                ", firstname='" + firstname + '\'' +
-                ", surname='" + surname + '\'' +
+                ", firstname='" + firstName + '\'' +
+                ", surname='" + lastName + '\'' +
                 ", patronymic='" + patronymic + '\'' +
-                ", sex=" + sex +
+                ", sex=" + gender +
                 ", language='" + language + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';

@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web
                 .ignoring()
-                .antMatchers("/api/**", "/test", "/oauth2/callback/*", "/");
+                .antMatchers("/api/auth/*", "/", "/test/*");
     }
 
     //    @Override
@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/test/permissions").hasRole("USER")
+                .antMatchers("/api/**").hasRole("USER")
                 .and().apply(jwtConfigurer)
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new JwtAuthenticationEntryPoint());

@@ -30,6 +30,7 @@ public class SpringFoxConfig {
                 .apis(RequestHandlerSelectors.basePackage("ru.tpu.russian.back"))
                 .build()
                 .apiInfo(apiInfo())
+                .useDefaultResponseMessages(false)
                 .tags(new Tag(ARTICLE_REST, "Получение статей."))
                 .tags(new Tag(MEDIA_REST, "Получение изображений."))
                 .tags(new Tag(MENU_REST, "Получение меню."))

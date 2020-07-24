@@ -41,7 +41,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web
                 .ignoring()
-                .antMatchers("/api/auth/*", "/", "/test/*");
+                .antMatchers("/api/auth/**",
+                        "/", "/test/**", "/swagger-ui.html",
+                        "/webjars/springfox-swagger-ui/**",
+                        "/v2/api-docs", "/swagger-resources/**",
+                        "/csrf");
     }
 
     //    @Override

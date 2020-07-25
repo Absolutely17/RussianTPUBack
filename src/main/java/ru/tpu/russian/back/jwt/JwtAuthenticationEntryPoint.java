@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.Jwt;
+package ru.tpu.russian.back.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.Jwt;
+package ru.tpu.russian.back.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;

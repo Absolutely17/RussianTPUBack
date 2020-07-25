@@ -20,9 +20,8 @@ public class GoogleOAuthUserInfo implements OAuthUserInfo {
 
     private String lastName;
 
-    // TODO Добавить корректный CLIENT ID
     private static final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new JacksonFactory())
-            .setAudience(Collections.singletonList("TEMP"))
+            .setAudience(Collections.singletonList("827029366413-qp20e241eganed7r71c33fj1o6fcubqd.apps.googleusercontent.com"))
             .build();
 
     private GoogleOAuthUserInfo(String email, String firstName, String lastName) {

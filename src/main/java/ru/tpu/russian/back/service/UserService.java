@@ -4,12 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.Jwt.*;
 import ru.tpu.russian.back.dto.*;
 import ru.tpu.russian.back.dto.enums.ProviderType;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.exception.RegistrationException;
+import ru.tpu.russian.back.jwt.*;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
 import javax.security.auth.login.LoginException;

@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.Jwt;
+package ru.tpu.russian.back.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

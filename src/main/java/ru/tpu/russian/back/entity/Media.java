@@ -22,4 +22,7 @@ public class Media {
 
     @Column(name = "Время создания")
     private Date createDate;
+
+    @Column(name = "Дата последнего обращения")
+    private Date lastUseDate;
 }

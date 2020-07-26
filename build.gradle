@@ -26,9 +26,12 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+    // АПИ в удобном виде
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    // Токен
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    // Для аутентификации через сервисы
     compile group: 'com.google.api-client', name: 'google-api-client', version: '1.30.10'
     compile group: 'com.google.http-client', name: 'google-http-client-apache-v2', version: '1.36.0'
     compile 'org.springframework.social:spring-social-facebook:2.0.3.RELEASE'

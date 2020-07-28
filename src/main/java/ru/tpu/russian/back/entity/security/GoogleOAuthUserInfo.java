@@ -12,8 +12,6 @@ import java.util.Collections;
 @Slf4j
 public class GoogleOAuthUserInfo implements OAuthUserInfo {
 
-    private final String provider = "google";
-
     private String email;
 
     private String firstName;
@@ -21,7 +19,7 @@ public class GoogleOAuthUserInfo implements OAuthUserInfo {
     private String lastName;
 
     private static final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new JacksonFactory())
-            .setAudience(Collections.singletonList("827029366413-qp20e241eganed7r71c33fj1o6fcubqd.apps.googleusercontent.com"))
+            .setAudience(Collections.singletonList("827029366413-ckl58bbhvkl57qq2f4vnejpoijig0r2s.apps.googleusercontent.com"))
             .build();
 
     private GoogleOAuthUserInfo(String email, String firstName, String lastName) {
@@ -66,6 +64,6 @@ public class GoogleOAuthUserInfo implements OAuthUserInfo {
 
     @Override
     public String getProvider() {
-        return provider;
+        return "google";
     }
 }

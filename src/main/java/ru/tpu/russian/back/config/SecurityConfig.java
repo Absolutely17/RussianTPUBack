@@ -12,6 +12,8 @@ import ru.tpu.russian.back.jwt.*;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final int STRENGTH_BCRYPT = 15;
+
     public SecurityConfig(JwtConfigurer jwtConfigurer,
                           JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jwtConfigurer = jwtConfigurer;
@@ -34,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(STRENGTH_BCRYPT);
     }
 
     @Override

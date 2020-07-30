@@ -25,15 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
-
-//    @Bean
-//    public FilterRegistrationBean<JwtFilter> filterRegistrationBean() {
-//        FilterRegistrationBean<JwtFilter> registrationBean = new FilterRegistrationBean<>();
-//        registrationBean.setFilter(jwtFilter);
-//        registrationBean.addUrlPatterns("/test/permissions");
-//        return registrationBean;
-//    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(STRENGTH_BCRYPT);
@@ -50,18 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/csrf");
     }
 
-    //    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .httpBasic().disable()
-//                .csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/test/permissions").hasRole("USER")
-//                .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
-//    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

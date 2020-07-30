@@ -25,6 +25,8 @@ public class UserService {
 
     private static final Pattern VALID_EMAIL_ADDRESS = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
+    private static final Pattern VALID_PASSWORD = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
+
     private static final int HTTP_STATUS_REG_NEED_FILL = 210;
 
     private final UserRepository userRepository;
@@ -46,7 +48,8 @@ public class UserService {
     public void register(RegistrationRequestDto registrationRequestDto) throws RegistrationException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.info("Check registration parameters on valid.");
-        checkRegistrationParams(registrationRequestDto);
+        checkValidEmail(registrationRequestDto.getEmail());
+        checkValidPassword(registrationRequestDto.getPassword());
         User user = new User(registrationRequestDto);
         log.info("Set role user to ROLE_USER");
         user.setRole("ROLE_USER");
@@ -57,14 +60,26 @@ public class UserService {
         register(user);
     }
 
-    private void checkRegistrationParams(RegistrationRequestDto regParams) throws RegistrationException {
-        Matcher matcher = VALID_EMAIL_ADDRESS.matcher(regParams.getEmail());
+    private void checkValidEmail(String email) throws RegistrationException {
+        log.info("Check email address on valid.");
+        Matcher matcher = VALID_EMAIL_ADDRESS.matcher(email);
         if (!matcher.find()) {
+            log.error("This email address is not in the correct format.");
             throw new RegistrationException("Email address is not in the correct format.");
         }
-        Optional<User> userOptional = userRepository.getUserByEmail(regParams.getEmail());
+        Optional<User> userOptional = userRepository.getUserByEmail(email);
         if (userOptional.isPresent()) {
+            log.error("This email address already taken.");
             throw new RegistrationException("Email address already taken.");
+        }
+    }
+
+    private void checkValidPassword(String password) throws RegistrationException {
+        log.info("Check password on valid.");
+        Matcher matcher = VALID_PASSWORD.matcher(password);
+        if (!matcher.find()) {
+            log.error("This password is not in the correct format.");
+            throw new RegistrationException("Minimum eight characters, at least one letter and one number.");
         }
     }
 
@@ -136,13 +151,14 @@ public class UserService {
         }
     }
 
-    public void registerWithService(RegistrationRequestServiceDto registrationRequest) {
+    public void registerWithService(RegistrationRequestServiceDto registrationRequest) throws RegistrationException {
         log.info("Register new user through provider {}, email user {}", registrationRequest.getProvider(), registrationRequest.getEmail());
         log.info("Convert to entity User.");
         User user = new User(registrationRequest);
         user.setRole("ROLE_USER");
+        checkValidPassword(registrationRequest.getPassword());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        log.info("Saing new user in DB.");
+        log.info("Saving new user in DB.");
         register(user);
     }
 
@@ -191,6 +207,15 @@ public class UserService {
     private User findByEmail(String email) {
         Optional<User> user = userRepository.getUserByEmail(email);
         return user.orElse(null);
+    }
+
+    public boolean checkAuth(CheckAuthRequestDto requestDto) {
+        String token = requestDto.getToken();
+        if (token != null && jwtProvider.validateToken(token)) {
+            String email = jwtProvider.getEmailFromToken(token);
+            return requestDto.getEmail().equals(email);
+        }
+        return false;
     }
 
     public List<User> getAllByLanguage(String language) {

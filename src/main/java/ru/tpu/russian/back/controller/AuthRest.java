@@ -143,15 +143,31 @@ public class AuthRest {
     }
 
     @ApiOperation(value = "Регистрация нового пользователя, вошедшего с помощью соц. сети")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    message = "Success"
+            ),
+            @ApiResponse(
+                    code = 401,
+                    message = "Minimum eight characters, at least one letter and one number."
+            )
+    })
     @RequestMapping(method = POST, path = "/register/provider")
     public ResponseEntity<?> registerNewUserWithService(
             @ApiParam(value = "Данные для регистрации пользователя с помощью стороннего API", required = true)
             @RequestBody RegistrationRequestServiceDto registrationRequest
     ) {
-        userService.registerWithService(registrationRequest);
-        return new ResponseEntity<>(
-                "Success", OK
-        );
+        try {
+            userService.registerWithService(registrationRequest);
+            return new ResponseEntity<>(
+                    "Success", OK
+            );
+        } catch (RegistrationException ex) {
+            return new ResponseEntity<>(
+                    ex.getMessage(), UNAUTHORIZED
+            );
+        }
     }
 
     @ApiOperation(value = "Обновление токена пользователя")
@@ -182,6 +198,33 @@ public class AuthRest {
         } catch (LoginException ex) {
             return new ResponseEntity<>(
                     ex.getMessage(), OK
+            );
+        }
+    }
+
+    @ApiOperation(value = "Проверка аутентификации пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    message = "Authenticated"
+            ),
+            @ApiResponse(
+                    code = 401,
+                    message = "Not authenticated"
+            )
+    })
+    @RequestMapping(method = POST, path = "/check")
+    public ResponseEntity<?> checkAuth(
+            @ApiParam(value = "Данные для проверки аутентификации пользователя", required = true)
+            @RequestBody CheckAuthRequestDto requestDto
+    ) {
+        if (userService.checkAuth(requestDto)) {
+            return new ResponseEntity<>(
+                    "Authenticated", OK
+            );
+        } else {
+            return new ResponseEntity<>(
+                    "Not authenticated", UNAUTHORIZED
             );
         }
     }

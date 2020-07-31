@@ -1,8 +1,11 @@
 package ru.tpu.russian.back.dto;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 import ru.tpu.russian.back.entity.Article;
 
+@Getter
+@AllArgsConstructor
 public class ArticleResponse {
 
     @ApiModelProperty(value = "ID статьи, генерируется БД")
@@ -20,32 +23,11 @@ public class ArticleResponse {
     @ApiModelProperty(value = "Дата создания статьи, генерируется БД")
     private String createDate;
 
-
     public ArticleResponse(Article article) {
         id = article.getId();
         topic = article.getTopic();
         text = article.getText();
         subject = article.getSubject();
         createDate = article.getCreateDate();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public String getCreateDate() {
-        return createDate;
     }
 }

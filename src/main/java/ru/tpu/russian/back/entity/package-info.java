@@ -1,5 +1,5 @@
 @NonNullApi
 @NonNullFields
-package ru.tpu.russian.back;
+package ru.tpu.russian.back.entity;
 
 import org.springframework.lang.*;

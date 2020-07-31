@@ -5,7 +5,6 @@ import org.springframework.lang.Nullable;
 import ru.tpu.russian.back.dto.enums.MenuType;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 @NamedStoredProcedureQuery(
@@ -17,10 +16,9 @@ import java.util.List;
         })
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "Menu")
-public class Menu implements Serializable {
+public class Menu {
 
     @Id
     @Column(name = "ID")

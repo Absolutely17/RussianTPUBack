@@ -2,9 +2,11 @@ package ru.tpu.russian.back.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
 import ru.tpu.russian.back.entity.Article;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
 public class ArticleBriefResponse {
 
     @ApiModelProperty(notes = "ID статьи, генерируется БД")
@@ -31,30 +33,6 @@ public class ArticleBriefResponse {
         briefText = article.getBriefText();
         subject = article.getSubject();
         createDate = article.getCreateDate();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public String getBriefText() {
-        return briefText;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public byte[] getArticleImage() {
-        return articleImage;
     }
 
     public void setArticleImage(byte[] articleImage) {

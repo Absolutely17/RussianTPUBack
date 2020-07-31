@@ -43,7 +43,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 log.info("Try to find user in DB.");
                 CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userEmail);
                 log.info("User founded. Auth success.");
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        customUserDetails,
+                        null,
+                        customUserDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } else {
                 log.error("Token does not exist in request or not valid.");

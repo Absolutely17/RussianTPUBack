@@ -1,10 +1,12 @@
 package ru.tpu.russian.back.entity;
 
 import lombok.*;
-import ru.tpu.russian.back.dto.*;
+import org.springframework.lang.Nullable;
 import ru.tpu.russian.back.dto.enums.ProviderType;
 
 import javax.persistence.*;
+
+import static java.util.Objects.requireNonNull;
 
 @NamedStoredProcedureQueries({
         @NamedStoredProcedureQuery(
@@ -57,7 +59,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "UserInfo")
 public class User {
@@ -74,9 +75,11 @@ public class User {
     private String firstName;
 
     @Column(name = "Фамилия")
+    @Nullable
     private String lastName;
 
     @Column(name = "Отчество")
+    @Nullable
     private String patronymic;
 
     @Column(name = "Роль")
@@ -89,6 +92,7 @@ public class User {
     private String language;
 
     @Column(name = "Номер телефона")
+    @Nullable
     private String phoneNumber;
 
     @Column(name = "Электронная почта")
@@ -101,24 +105,24 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ProviderType provider;
 
-    public User(RegistrationRequestDto registrationRequest) {
-        lastName = registrationRequest.getLastName();
-        firstName = registrationRequest.getFirstName();
-        patronymic = registrationRequest.getPatronymic();
-        gender = registrationRequest.getGender();
-        language = registrationRequest.getLanguage();
-        phoneNumber = registrationRequest.getPhoneNumber();
-        email = registrationRequest.getEmail();
+    public User(
+            String firstName, @Nullable String lastName,
+            @Nullable String patronymic, String gender,
+            String language, @Nullable String phoneNumber,
+            String email, ProviderType provider
+    ) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.patronymic = patronymic;
+        this.gender = gender;
+        this.language = language;
+        this.phoneNumber = phoneNumber;
+        this.email = requireNonNull(email, "Email must be filled");
+        this.provider = provider;
+        role = "ROLE_USER";
     }
 
-    public User(RegistrationRequestServiceDto request) {
-        email = request.getEmail();
-        firstName = request.getFirstName();
-        lastName = request.getLastName();
-        patronymic = request.getPatronymic();
-        gender = request.getGender();
-        language = request.getLanguage();
-        phoneNumber = request.getPhoneNumber();
-        provider = request.getProvider();
+    public void setPassword(String encodePassword) {
+        password = encodePassword;
     }
 }

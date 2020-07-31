@@ -30,10 +30,4 @@ public class MenuRest {
     ) {
         return menuService.getAll(language);
     }
-
-    @ApiOperation(value = "Получение статичных пунктов меню (ДЛЯ ТЕСТА)")
-    @RequestMapping(method = GET, path = "/static")
-    public List<MenuResponseDto> getStaticMenu() {
-        return menuService.getMenuItemsStatic();
-    }
 }

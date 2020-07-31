@@ -156,7 +156,7 @@ public class AuthRest {
     @RequestMapping(method = POST, path = "/register/provider")
     public ResponseEntity<?> registerNewUserWithService(
             @ApiParam(value = "Данные для регистрации пользователя с помощью стороннего API", required = true)
-            @RequestBody RegistrationRequestServiceDto registrationRequest
+            @RequestBody RegistrationRequestDto registrationRequest
     ) {
         try {
             userService.registerWithService(registrationRequest);

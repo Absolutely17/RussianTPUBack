@@ -8,7 +8,6 @@ import java.util.Date;
 @Entity
 @Table(name = "Медиа")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Media {
@@ -25,4 +24,8 @@ public class Media {
 
     @Column(name = "Дата последнего обращения")
     private Date lastUseDate;
+
+    public void setLastUseDate(Date newDate) {
+        lastUseDate = newDate;
+    }
 }

@@ -27,7 +27,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Статья")
 @Getter
-@Setter
+@NoArgsConstructor
 public class Article {
 
     private static SimpleDateFormat formatter = new SimpleDateFormat("HH:mm dd.MM.yyyy");

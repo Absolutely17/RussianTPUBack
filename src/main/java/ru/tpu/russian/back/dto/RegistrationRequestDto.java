@@ -5,9 +5,8 @@ import lombok.*;
 import org.springframework.lang.Nullable;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class RegistrationRequestDto {
 
     @ApiModelProperty(required = true, example = "qwerty123", value = "Пароль пользователя")
@@ -28,7 +27,6 @@ public class RegistrationRequestDto {
     private String patronymic;
 
     @ApiModelProperty(example = "Male", value = "Пол пользователя")
-    @Nullable
     private String gender;
 
     @ApiModelProperty(required = true, example = "Russian", value = "Язык пользователя")
@@ -38,16 +36,20 @@ public class RegistrationRequestDto {
     @Nullable
     private String phoneNumber;
 
+    @ApiModelProperty(required = true, example = "google", value = "Сервис через который происходит аутентификация")
+    private String provider = "local";
+
     @Override
     public String toString() {
         return "RegistrationRequestDto{" +
                 "email='" + email + '\'' +
-                ", firstname='" + firstName + '\'' +
-                ", surname='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", patronymic='" + patronymic + '\'' +
-                ", sex=" + gender +
+                ", gender='" + gender + '\'' +
                 ", language='" + language + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", provider='" + provider + '\'' +
                 '}';
     }
 }

@@ -29,6 +29,9 @@ public class MediaRest {
     ) {
         return mediaService.getImage(id);
     }
+
+    // Для тестов
+
     @ApiOperation(value = "Получение тестового изображения из файловой системы сервера (ДЛЯ ТЕСТОВ)")
     @RequestMapping(method = GET, path = "/test/img/byte")
     public byte[] getTestImageInByteArray() throws IOException {

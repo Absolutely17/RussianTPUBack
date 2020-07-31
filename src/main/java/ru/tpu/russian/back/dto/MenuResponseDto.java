@@ -2,14 +2,16 @@ package ru.tpu.russian.back.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
 import org.springframework.lang.Nullable;
 import ru.tpu.russian.back.dto.enums.MenuType;
 import ru.tpu.russian.back.entity.Menu;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
 public class MenuResponseDto {
 
     @ApiModelProperty(value = "ID пункта меню, генерируется БД")
@@ -38,23 +40,6 @@ public class MenuResponseDto {
     @ApiModelProperty(value = "Дочерние пункты меню")
     private List<MenuResponseDto> children;
 
-    public MenuResponseDto(String id, String name, int level, int position, MenuType type) {
-        this.id = id;
-        this.name = name;
-        this.level = level;
-        this.position = position;
-        this.type = type;
-    }
-
-    public MenuResponseDto(String id, String name, int level, int position, MenuType type, String url) {
-        this.id = id;
-        this.name = name;
-        this.level = level;
-        this.position = position;
-        this.type = type;
-        this.url = url;
-    }
-
     public MenuResponseDto(Menu menu) {
         id = menu.getId();
         name = menu.getName();
@@ -71,41 +56,4 @@ public class MenuResponseDto {
         }
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public MenuType getType() {
-        return type;
-    }
-
-    public List<MenuResponseDto> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<MenuResponseDto> children) {
-        this.children = children;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    @Nullable
-    public String getUrl() {
-        return url;
-    }
-
-    @Nullable
-    public String getIdArticle() {
-        return idArticle;
-    }
 }

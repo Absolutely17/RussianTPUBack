@@ -15,19 +15,16 @@ import ru.tpu.russian.back.repository.user.UserRepository;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.regex.*;
+import java.util.regex.Matcher;
 
+import static com.google.api.client.util.Strings.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static ru.tpu.russian.back.dto.enums.ProviderType.valueOf;
+import static ru.tpu.russian.back.service.security.AuthConst.*;
 
 @Service
 @Slf4j
 public class UserService {
-
-    private static final Pattern VALID_EMAIL_ADDRESS = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
-
-    private static final Pattern VALID_PASSWORD = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
-
-    private static final int HTTP_STATUS_REG_NEED_FILL = 210;
 
     private final UserRepository userRepository;
 
@@ -48,16 +45,24 @@ public class UserService {
     public void register(RegistrationRequestDto registrationRequestDto) throws RegistrationException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.info("Check registration parameters on valid.");
-        checkValidEmail(registrationRequestDto.getEmail());
-        checkValidPassword(registrationRequestDto.getPassword());
-        User user = new User(registrationRequestDto);
-        log.info("Set role user to ROLE_USER");
-        user.setRole("ROLE_USER");
+        validateRegInfo(registrationRequestDto);
+        User user = convertRegRequestToUser(registrationRequestDto);
         user.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
-        log.info("Set provider to local");
-        user.setProvider(ProviderType.valueOf("local"));
         log.info("Saving new user in DB...");
         register(user);
+    }
+
+    private void validateRegInfo(RegistrationRequestDto request) throws RegistrationException {
+        log.debug("Start validating registrations info.");
+        if (isNullOrEmpty(request.getFirstName())
+                || isNullOrEmpty(request.getGender())
+                || isNullOrEmpty(request.getLanguage())
+                || isNullOrEmpty(request.getEmail())
+                || isNullOrEmpty(request.getPassword())) {
+            throw new RegistrationException("Some required fields are not filled.");
+        }
+        checkValidEmail(request.getEmail());
+        checkValidPassword(request.getPassword());
     }
 
     private void checkValidEmail(String email) throws RegistrationException {
@@ -81,6 +86,19 @@ public class UserService {
             log.error("This password is not in the correct format.");
             throw new RegistrationException("Minimum eight characters, at least one letter and one number.");
         }
+    }
+
+    private User convertRegRequestToUser(RegistrationRequestDto request) {
+        return new User(
+                request.getFirstName(),
+                request.getLastName(),
+                request.getPatronymic(),
+                request.getGender(),
+                request.getLanguage(),
+                request.getPhoneNumber(),
+                request.getEmail(),
+                valueOf("local")
+        );
     }
 
     private void register(User user) {
@@ -116,6 +134,29 @@ public class UserService {
         return new AuthResponseDto(token, true);
     }
 
+    private User findByEmailAndPassword(String email, String password) throws LoginException {
+        log.info("Try to find user with email {} in DB", email);
+        User user = findByEmail(email);
+        if (user != null) {
+            log.info("Compare password...");
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                log.info("The passwords matched. Email {}", email);
+                return user;
+            } else {
+                log.error("Password mismatch");
+                throw new LoginException("Password mismatch.");
+            }
+        } else {
+            log.error("User is not found.");
+            throw new LoginException("User is not found.");
+        }
+    }
+
+    private User findByEmail(String email) {
+        Optional<User> user = userRepository.getUserByEmail(email);
+        return user.orElse(null);
+    }
+
     public ResponseEntity<?> loginWithService(AuthRequestWithServiceDto authRequest) {
         log.info("Login in system with service {}", authRequest.getProvider());
         try {
@@ -129,7 +170,8 @@ public class UserService {
             if (user != null) {
                 if (!user.getProvider().equals(ProviderType.valueOf(authRequest.getProvider()))) {
                     throw new LoginException("It looks like you are trying to log in from the wrong provider." +
-                            " Are you trying to log in through " + authRequest.getProvider() + ", but you need to enter through " + user.getProvider());
+                            " Are you trying to log in through " + authRequest.getProvider() + "," +
+                            " but you need to enter through " + user.getProvider());
                 }
                 String token = jwtProvider.generateToken(user.getEmail());
                 String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
@@ -151,11 +193,10 @@ public class UserService {
         }
     }
 
-    public void registerWithService(RegistrationRequestServiceDto registrationRequest) throws RegistrationException {
-        log.info("Register new user through provider {}, email user {}", registrationRequest.getProvider(), registrationRequest.getEmail());
+    public void registerWithService(RegistrationRequestDto registrationRequest) throws RegistrationException {
+        log.info("Register new user through service. User {}", registrationRequest.toString());
         log.info("Convert to entity User.");
-        User user = new User(registrationRequest);
-        user.setRole("ROLE_USER");
+        User user = convertRegRequestToUser(registrationRequest);
         checkValidPassword(registrationRequest.getPassword());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         log.info("Saving new user in DB.");
@@ -186,29 +227,6 @@ public class UserService {
         }
     }
 
-    private User findByEmailAndPassword(String email, String password) throws LoginException {
-        log.info("Try to find user with email {} in DB", email);
-        User user = findByEmail(email);
-        if (user != null) {
-            log.info("Compare password...");
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                log.info("The passwords matched. Email {}", email);
-                return user;
-            } else {
-                log.error("Password mismatch");
-                throw new LoginException("Password mismatch.");
-            }
-        } else {
-            log.error("User is not found.");
-            throw new LoginException("User is not found.");
-        }
-    }
-
-    private User findByEmail(String email) {
-        Optional<User> user = userRepository.getUserByEmail(email);
-        return user.orElse(null);
-    }
-
     public boolean checkAuth(CheckAuthRequestDto requestDto) {
         String token = requestDto.getToken();
         if (token != null && jwtProvider.validateToken(token)) {
@@ -218,15 +236,15 @@ public class UserService {
         return false;
     }
 
-    public List<User> getAllByLanguage(String language) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("Language", language);
-        return userRepository.getAllByLanguage(params);
-    }
-
-    public List<User> getAllByReg(boolean reg) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("Reg", reg);
-        return userRepository.getAllByReg(params);
-    }
+//    public List<User> getAllByLanguage(String language) {
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("Language", language);
+//        return userRepository.getAllByLanguage(params);
+//    }
+//
+//    public List<User> getAllByReg(boolean reg) {
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("Reg", reg);
+//        return userRepository.getAllByReg(params);
+//    }
 }

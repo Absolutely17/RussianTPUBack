@@ -22,9 +22,6 @@ public class ArticleRest {
         this.articleService = articleService;
     }
 
-    /**
-     * Получение списка статей
-     */
     @ApiOperation(value = "Получить список статей")
     @RequestMapping(method = GET, path = "/list/{id}")
     public List<ArticleBriefResponse> getArticlesBriefFromMenuItem(
@@ -36,9 +33,6 @@ public class ArticleRest {
         return articleService.getArticlesBrief(id, fromMenu);
     }
 
-    /**
-     * Получение полной версии статьи
-     */
     @ApiOperation(value = "Получение полной версии статьи")
     @RequestMapping(method = GET, path = "/{id}")
     public ArticleResponse getArticle(

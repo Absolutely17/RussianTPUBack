@@ -22,8 +22,9 @@ public class MediaService {
     public byte[] getImage(String id) {
         log.info("Get image with ID {}", id);
         Media image = mediaRepository.getById(id);
-        log.info("Update last use date image in DB.");
-        image.setLastUseDate(new Date());
+        Date currentTime = new Date();
+        log.info("Update last use date image in DB. Current time - {}", currentTime);
+        image.setLastUseDate(currentTime);
         mediaRepository.save(image);
         return image.getData();
     }

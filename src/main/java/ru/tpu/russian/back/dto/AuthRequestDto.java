@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class AuthRequestDto {
 

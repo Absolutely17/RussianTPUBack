@@ -20,7 +20,6 @@ import java.util.regex.Matcher;
 
 import static com.google.api.client.util.Strings.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static ru.tpu.russian.back.dto.enums.ProviderType.valueOf;
 import static ru.tpu.russian.back.service.security.AuthConst.*;
 
 @Service
@@ -98,7 +97,7 @@ public class UserService {
                 request.getLanguage(),
                 request.getPhoneNumber(),
                 request.getEmail(),
-                valueOf("local")
+                ProviderType.valueOf(request.getProvider())
         );
     }
 

@@ -3,7 +3,7 @@ package ru.tpu.russian.back.controller;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
-import ru.tpu.russian.back.dto.MenuResponseDto;
+import ru.tpu.russian.back.dto.response.MenuResponseDto;
 import ru.tpu.russian.back.service.MenuService;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package ru.tpu.russian.back.controller;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
-import ru.tpu.russian.back.dto.*;
+import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.service.ArticleService;
 
 import java.util.List;
@@ -25,11 +25,12 @@ public class ArticleRest {
     @ApiOperation(value = "Получить список статей")
     @RequestMapping(method = GET, path = "/list/{id}")
     public List<ArticleBriefResponse> getArticlesBriefFromMenuItem(
-            @ApiParam(value = "ID пункта меню (если fromMenu=true) или ID страницы (если fromMenu=false)", required = true)
+            @ApiParam(value = "ID пункта меню (если fromMenu=true) или ID страницы (если fromMenu=false)",
+                    required = true)
             @PathVariable String id,
             @ApiParam(value = "Осуществлен ли переход из меню")
             @RequestParam(value = "fromMenu", defaultValue = "false") boolean fromMenu
-            ) {
+    ) {
         return articleService.getArticlesBrief(id, fromMenu);
     }
 

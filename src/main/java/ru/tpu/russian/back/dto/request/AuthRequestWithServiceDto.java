@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto;
+package ru.tpu.russian.back.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -14,8 +14,10 @@ public class AuthRequestWithServiceDto {
     @ApiModelProperty(required = true, example = "token", value = "Access token")
     private String token;
 
-    // Эти данные приходят, если аутентификация через VK. VK отдает email и user-id (нужен для запросов вместе с токеном).
-
+    /**
+     * Эти данные приходят, если аутентификация через VK.
+     * VK отдает email и user-id (нужен для запросов вместе с токеном).
+     */
     @Nullable
     @ApiModelProperty(example = "14353461", value = "UserID при аутентификации через VK")
     private Integer userId;

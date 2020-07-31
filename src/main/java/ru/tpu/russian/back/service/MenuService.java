@@ -2,7 +2,7 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.MenuResponseDto;
+import ru.tpu.russian.back.dto.response.MenuResponseDto;
 import ru.tpu.russian.back.entity.Menu;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
 

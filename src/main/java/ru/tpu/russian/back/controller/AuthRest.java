@@ -4,7 +4,8 @@ import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
-import ru.tpu.russian.back.dto.*;
+import ru.tpu.russian.back.dto.request.*;
+import ru.tpu.russian.back.dto.response.AuthResponseDto;
 import ru.tpu.russian.back.entity.security.OAuthUserInfo;
 import ru.tpu.russian.back.exception.RegistrationException;
 import ru.tpu.russian.back.service.UserService;
@@ -102,7 +103,8 @@ public class AuthRest {
             @ApiResponse(
                     code = 401,
                     message = "It looks like you are trying to log in from the wrong provider. " +
-                            "Are you trying to log in through *PROVIDER*, but you need to enter through *PROVIDER IN DB*"
+                            "Are you trying to log in through *PROVIDER*, " +
+                            "but you need to enter through *PROVIDER IN DB*"
             ),
             @ApiResponse(
                     code = 401,

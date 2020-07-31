@@ -2,7 +2,7 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.*;
+import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.Article;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
 import ru.tpu.russian.back.repository.media.MediaRepository;

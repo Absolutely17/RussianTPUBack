@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto;
+package ru.tpu.russian.back.dto.request;
 
 import lombok.*;
 

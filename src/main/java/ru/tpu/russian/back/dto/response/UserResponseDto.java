@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto;
+package ru.tpu.russian.back.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;

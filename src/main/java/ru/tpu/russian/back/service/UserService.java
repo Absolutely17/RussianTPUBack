@@ -4,8 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.*;
 import ru.tpu.russian.back.dto.enums.ProviderType;
+import ru.tpu.russian.back.dto.request.*;
+import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.exception.RegistrationException;
@@ -196,8 +197,8 @@ public class UserService {
     public void registerWithService(RegistrationRequestDto registrationRequest) throws RegistrationException {
         log.info("Register new user through service. User {}", registrationRequest.toString());
         log.info("Convert to entity User.");
+        validateRegInfo(registrationRequest);
         User user = convertRegRequestToUser(registrationRequest);
-        checkValidPassword(registrationRequest.getPassword());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         log.info("Saving new user in DB.");
         register(user);

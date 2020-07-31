@@ -24,9 +24,10 @@ public class RegistrationRequestDto {
 
     @ApiModelProperty(example = "Ivanovich", value = "Отчество пользователя")
     @Nullable
-    private String patronymic;
+    private String middleName;
 
     @ApiModelProperty(example = "Male", value = "Пол пользователя")
+    @Nullable
     private String gender;
 
     @ApiModelProperty(required = true, example = "Russian", value = "Язык пользователя")
@@ -36,7 +37,7 @@ public class RegistrationRequestDto {
     @Nullable
     private String phoneNumber;
 
-    @ApiModelProperty(required = true, example = "google", value = "Сервис через который происходит аутентификация")
+    @ApiModelProperty(example = "google", value = "Сервис через который происходит аутентификация")
     private String provider = "local";
 
     @Override
@@ -45,7 +46,7 @@ public class RegistrationRequestDto {
                 "email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", patronymic='" + patronymic + '\'' +
+                ", middleName='" + middleName + '\'' +
                 ", gender='" + gender + '\'' +
                 ", language='" + language + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +

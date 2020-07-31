@@ -80,12 +80,13 @@ public class User {
 
     @Column(name = "Отчество")
     @Nullable
-    private String patronymic;
+    private String middleName;
 
     @Column(name = "Роль")
     private String role;
 
     @Column(name = "Пол")
+    @Nullable
     private String gender;
 
     @Column(name = "Язык")
@@ -107,13 +108,13 @@ public class User {
 
     public User(
             String firstName, @Nullable String lastName,
-            @Nullable String patronymic, String gender,
+            @Nullable String middleName, @Nullable String gender,
             String language, @Nullable String phoneNumber,
             String email, ProviderType provider
     ) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.patronymic = patronymic;
+        this.middleName = middleName;
         this.gender = gender;
         this.language = language;
         this.phoneNumber = phoneNumber;

@@ -14,14 +14,19 @@ public class UserResponseDto {
     @ApiModelProperty(example = "test@test.com", value = "Email пользователя")
     private String email;
 
-    @ApiModelProperty(example = "Ivanov", value = "Фамилия пользователя")
+    @ApiModelProperty(example = "Ivan", value = "Имя пользователя")
     private String firstName;
 
-    @ApiModelProperty(example = "Ivanovich", value = "Отчество пользователя")
+    @ApiModelProperty(example = "Ivanov", value = "Фамилия пользователя")
     @Nullable
     private String lastName;
 
+    @ApiModelProperty(example = "Ivanovich", value = "Отчество пользователя")
+    @Nullable
+    private String middleName;
+
     @ApiModelProperty(example = "Male", value = "Пол пользователя")
+    @Nullable
     private String gender;
 
     @ApiModelProperty(example = "Russian", value = "Язык пользователя")
@@ -35,6 +40,7 @@ public class UserResponseDto {
         email = user.getEmail();
         firstName = user.getFirstName();
         lastName = user.getLastName();
+        middleName = user.getMiddleName();
         gender = user.getGender();
         language = user.getLanguage();
         phoneNumber = user.getPhoneNumber();

@@ -92,7 +92,7 @@ public class UserService {
         return new User(
                 request.getFirstName(),
                 request.getLastName(),
-                request.getPatronymic(),
+                request.getMiddleName(),
                 request.getGender(),
                 request.getLanguage(),
                 request.getPhoneNumber(),
@@ -116,7 +116,7 @@ public class UserService {
         params.put("Sex", user.getGender());
         params.put("Language", user.getLanguage());
         params.put("Role", user.getRole());
-        params.put("Patronymic", user.getPatronymic());
+        params.put("Patronymic", user.getMiddleName());
         params.put("PhoneNumber", user.getPhoneNumber());
         params.put("Provider", user.getProvider().toString());
         return params;

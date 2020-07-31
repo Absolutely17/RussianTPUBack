@@ -55,7 +55,6 @@ public class UserService {
     private void validateRegInfo(RegistrationRequestDto request) throws RegistrationException {
         log.debug("Start validating registrations info.");
         if (isNullOrEmpty(request.getFirstName())
-                || isNullOrEmpty(request.getGender())
                 || isNullOrEmpty(request.getLanguage())
                 || isNullOrEmpty(request.getEmail())
                 || isNullOrEmpty(request.getPassword())) {

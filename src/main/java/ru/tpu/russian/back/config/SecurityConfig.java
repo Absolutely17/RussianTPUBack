@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoring()
                 // Отключаем срабатывание фильтра на запросы аутентификации и тестовые запросы
                 .antMatchers("/api/auth/**",
-                        "/", "/test/**")
+                        "/", "/test/**", "/api/media/img/*")
                 // Отключаем срабатывания фильтра на Swagger
                 .antMatchers("/swagger-ui.html", "/webjars/springfox-swagger-ui/**",
                         "/v2/api-docs", "/swagger-resources/**", "/csrf");

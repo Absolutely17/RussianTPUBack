@@ -1,12 +1,16 @@
 package ru.tpu.russian.back.controller;
 
 import io.swagger.annotations.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.service.MediaService;
 
+import javax.persistence.NoResultException;
 import java.io.IOException;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
@@ -23,11 +27,18 @@ public class MediaRest {
 
     @ApiOperation(value = "Получене изображения из БД")
     @RequestMapping(method = GET, path = "/img/{id}")
-    public byte[] getImage(
+    public ResponseEntity<?> getImage(
             @ApiParam(value = "ID изображения", required = true)
             @PathVariable String id
     ) {
-        return mediaService.getImage(id);
+        try {
+            return new ResponseEntity<>(
+                    mediaService.getImage(id), OK);
+        } catch (NoResultException ex) {
+            return new ResponseEntity<>(
+                    ex.getMessage(), BAD_REQUEST
+            );
+        }
     }
 
     // Для тестов

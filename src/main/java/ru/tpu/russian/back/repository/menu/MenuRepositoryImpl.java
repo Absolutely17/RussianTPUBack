@@ -1,6 +1,5 @@
 package ru.tpu.russian.back.repository.menu;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.entity.Menu;
 
 import javax.persistence.*;
@@ -14,7 +13,6 @@ public class MenuRepositoryImpl implements IMenuRepository {
     private EntityManager em;
 
     @Override
-    @Transactional(readOnly = true)
     public List<Menu> getAll(Map<String, Object> params) {
         StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_MENU);
         for (String key : params.keySet()) {

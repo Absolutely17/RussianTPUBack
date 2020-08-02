@@ -6,13 +6,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
+import javax.annotation.Nullable;
+import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
 import java.time.*;
 import java.util.Date;
 
+import static org.springframework.util.StringUtils.hasText;
+
 @Component
 @Slf4j
 public class JwtProvider {
+
+    private static final SecureRandom random = new SecureRandom();
+
+    private static final String ALL_SYMBOLS_TO_GENERATE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/*&^$@!";
+
+    private static final String AUTHORIZATION = "Authorization";
 
     private final UserRepository userRepository;
 
@@ -20,20 +30,19 @@ public class JwtProvider {
         this.userRepository = userRepository;
     }
 
-    private static final long DAYS_EXP_ACCESS_TOKEN = 7L;
-
-    private static final long DAYS_EXP_REFRESH_TOKEN = 15L;
-
-    private static SecureRandom random = new SecureRandom();
-
-    private static final String ALL_SYMBOLS_TO_GENERATE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/*&^$@!";
-
     @Value("$(jwt.secret)")
     private String jwtSecret;
 
+    @Value("${jwt.expiration.access.token:7}")
+    private long expAccessToken;
+
+    @Value("${jwt.expiration.refresh.token:15}")
+    private long expRefreshToken;
+
     public String generateToken(String email) {
-        log.info("Starting generate access token, email {}, expiration time {}", email, DAYS_EXP_ACCESS_TOKEN);
-        Date date = Date.from(LocalDate.now().plusDays(DAYS_EXP_ACCESS_TOKEN).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        log.info("Starting generate access token, email {}, expiration time {}d", email, expAccessToken);
+        Date date = Date.from(LocalDate.now().plusDays(expAccessToken)
+                .atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .setSubject(email)
                 .setExpiration(date)
@@ -43,8 +52,9 @@ public class JwtProvider {
     }
 
     public String generateRefreshToken(String email) {
-        log.info("Starting generate refresh token, email {}, expiration time {}", email, DAYS_EXP_REFRESH_TOKEN);
-        Date date = Date.from(LocalDate.now().plusDays(DAYS_EXP_REFRESH_TOKEN).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        log.info("Starting generate refresh token, email {}, expiration time {}d", email, expRefreshToken);
+        Date date = Date.from(LocalDate.now().plusDays(expRefreshToken)
+                .atStartOfDay(ZoneId.systemDefault()).toInstant());
         String refreshSalt = generateRandomSalt();
         userRepository.editRefreshSalt(email, refreshSalt);
         return Jwts.builder()
@@ -75,13 +85,25 @@ public class JwtProvider {
         return false;
     }
 
-    public static String generateRandomSalt() {
+    private static String generateRandomSalt() {
         StringBuilder sb = new StringBuilder();
         int lengthSalt = random.nextInt(15 - 10) + 10;
         for (int i = 0; i < lengthSalt; i++) {
             sb.append(ALL_SYMBOLS_TO_GENERATE.charAt(random.nextInt(ALL_SYMBOLS_TO_GENERATE.length())));
         }
         return sb.toString();
+    }
+
+    @Nullable
+    public String getTokenFromRequest(HttpServletRequest servletRequest) {
+        log.info("Getting token from request...");
+        String bearer = servletRequest.getHeader(AUTHORIZATION);
+        if (hasText(bearer) && bearer.startsWith("Bearer")) {
+            return bearer.substring(7);
+        } else {
+            log.error("Could not find a token in the header.");
+            return null;
+        }
     }
 
     public String getEmailFromToken(String token) {

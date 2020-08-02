@@ -31,14 +31,14 @@ public class SpringFoxConfig {
                 .build()
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false)
-                .tags(new Tag(ARTICLE_REST, "Получение статей."))
-                .tags(new Tag(MEDIA_REST, "Получение изображений."))
-                .tags(new Tag(MENU_REST, "Получение меню."))
+                .tags(new Tag(ARTICLE_REST, "Получение статей"))
+                .tags(new Tag(MEDIA_REST, "Получение изображений"))
+                .tags(new Tag(MENU_REST, "Получение меню"))
                 .tags(new Tag(USER_REST, "Получение пользователей"))
                 .tags(new Tag(AUTH_REST, "Аутентификация пользователя"));
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("My API").version("1.0.0").build();
+        return new ApiInfoBuilder().title("RussianTPU API").version("1.0.0").build();
     }
 }

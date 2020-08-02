@@ -2,6 +2,7 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.response.MenuResponseDto;
 import ru.tpu.russian.back.entity.Menu;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
@@ -19,6 +20,7 @@ public class MenuService {
         this.menuRepository = menuRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponseDto> getAll(String language) {
         log.info("Getting all menu items. Language = {}", language);
         Map<String, Object> params = new HashMap<>();

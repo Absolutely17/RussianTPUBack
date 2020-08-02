@@ -24,7 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(STRENGTH_BCRYPT);
@@ -34,11 +33,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web
                 .ignoring()
+                // Отключаем срабатывание фильтра на запросы аутентификации и тестовые запросы
                 .antMatchers("/api/auth/**",
-                        "/", "/test/**", "/swagger-ui.html",
-                        "/webjars/springfox-swagger-ui/**",
-                        "/v2/api-docs", "/swagger-resources/**",
-                        "/csrf");
+                        "/", "/test/**")
+                // Отключаем срабатывания фильтра на Swagger
+                .antMatchers("/swagger-ui.html", "/webjars/springfox-swagger-ui/**",
+                        "/v2/api-docs", "/swagger-resources/**", "/csrf");
     }
 
     @Override

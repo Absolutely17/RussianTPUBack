@@ -7,7 +7,8 @@ import ru.tpu.russian.back.entity.Article;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
 import ru.tpu.russian.back.repository.media.MediaRepository;
 
-import java.util.List;
+import javax.persistence.NoResultException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +36,9 @@ public class ArticleService {
             log.info("Get brief articles from page. ID page = {}", id);
             articles = articleRepository.getBriefArticles(id);
         }
+        if (articles == null || articles.isEmpty()) {
+            throw new NoResultException("Could not find articles.");
+        }
         log.info("Count brief articles {}", articles.size());
         return articles
                 .stream()
@@ -52,6 +56,8 @@ public class ArticleService {
 
     public ArticleResponse getArticle(String id) {
         log.info("Get article. ID article = {}", id);
-        return new ArticleResponse(articleRepository.getById(id));
+        Optional<Article> article = articleRepository.getById(id);
+        return new ArticleResponse(articleRepository.getById(id)
+                .orElseThrow(() -> new NoResultException("Wrong ID article.")));
     }
 }

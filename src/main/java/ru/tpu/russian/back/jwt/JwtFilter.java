@@ -12,12 +12,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 
-import static org.springframework.util.StringUtils.hasText;
-
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-
-    private static final String AUTHORIZATION = "Authorization";
 
     private final JwtProvider jwtProvider;
 
@@ -34,8 +30,8 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
+        String token = jwtProvider.getTokenFromRequest(request);
         try {
-            String token = getTokenFromRequest(request);
             if (token != null && jwtProvider.validateToken(token)) {
                 log.info("Token in request - {}", token);
                 String userEmail = jwtProvider.getEmailFromToken(token);
@@ -53,18 +49,8 @@ public class JwtFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException ex) {
+            log.error("Token {} expired", token);
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired.");
-        }
-    }
-
-    public static String getTokenFromRequest(HttpServletRequest servletRequest) {
-        log.info("Getting token from request...");
-        String bearer = servletRequest.getHeader(AUTHORIZATION);
-        if (hasText(bearer) && bearer.startsWith("Bearer")) {
-            return bearer.substring(7);
-        } else {
-            log.error("Could not find a token in the header.");
-            return null;
         }
     }
 }

@@ -199,7 +199,7 @@ public class AuthRest {
             );
         } catch (LoginException ex) {
             return new ResponseEntity<>(
-                    ex.getMessage(), OK
+                    ex.getMessage(), UNAUTHORIZED
             );
         }
     }

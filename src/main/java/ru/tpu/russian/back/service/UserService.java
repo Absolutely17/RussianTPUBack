@@ -10,7 +10,7 @@ import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.exception.RegistrationException;
-import ru.tpu.russian.back.jwt.*;
+import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
 import javax.security.auth.login.LoginException;
@@ -130,14 +130,14 @@ public class UserService {
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
             return new AuthResponseDto(token, refreshToken, true, new UserResponseDto(user));
         }
-        return new AuthResponseDto(token, true);
+        return new AuthResponseDto(token, true, new UserResponseDto(user));
     }
 
     private User findByEmailAndPassword(String email, String password) throws LoginException {
         log.info("Try to find user with email {} in DB", email);
         User user = findByEmail(email);
         if (user != null) {
-            log.info("Compare password...");
+            log.info("User founded. Compare password...");
             if (passwordEncoder.matches(password, user.getPassword())) {
                 log.info("The passwords matched. Email {}", email);
                 return user;
@@ -204,7 +204,7 @@ public class UserService {
 
     public AuthResponseDto refreshToken(HttpServletRequest servletRequest) throws LoginException {
         log.info("Refresh access token");
-        String token = JwtFilter.getTokenFromRequest(servletRequest);
+        String token = jwtProvider.getTokenFromRequest(servletRequest);
         if (token != null && jwtProvider.validateToken(token)) {
             String email = jwtProvider.getEmailFromToken(token);
             String refreshSaltInToken = jwtProvider.getSaltFromRefreshToken(token);
@@ -222,16 +222,19 @@ public class UserService {
             }
         } else {
             log.error("The token was not found in the request headers.");
-            throw new LoginException("The token was not found in the request headers.");
+            throw new LoginException("The token was not found in the request headers or not valid.");
         }
     }
 
     public boolean checkAuth(CheckAuthRequestDto requestDto) {
+        log.info("Checking user on authenticated.");
         String token = requestDto.getToken();
         if (token != null && jwtProvider.validateToken(token)) {
+            log.info("Compare email in request with email in token.");
             String email = jwtProvider.getEmailFromToken(token);
             return requestDto.getEmail().equals(email);
         }
+        log.error("User not authenticated.");
         return false;
     }
 

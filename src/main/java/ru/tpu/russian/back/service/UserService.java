@@ -96,7 +96,7 @@ public class UserService {
                 request.getLanguage(),
                 request.getPhoneNumber(),
                 request.getEmail(),
-                ProviderType.valueOf(request.getProvider())
+                request.getProvider()
         );
     }
 

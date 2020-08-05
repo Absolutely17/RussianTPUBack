@@ -3,6 +3,7 @@ package ru.tpu.russian.back.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.Nullable;
+import ru.tpu.russian.back.dto.enums.ProviderType;
 
 @Getter
 @AllArgsConstructor
@@ -38,7 +39,7 @@ public class RegistrationRequestDto {
     private String phoneNumber;
 
     @ApiModelProperty(example = "google", value = "Сервис через который происходит аутентификация")
-    private String provider = "local";
+    private ProviderType provider = ProviderType.valueOf("local");
 
     @Override
     public String toString() {

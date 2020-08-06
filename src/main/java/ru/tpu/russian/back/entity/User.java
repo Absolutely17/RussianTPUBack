@@ -68,35 +68,35 @@ public class User {
     @Column(name = "Id Пользователя")
     private String id;
 
-    @Column(name = "Пароль")
+    @Column(name = "Пароль", length = 100)
     private String password;
 
-    @Column(name = "Имя")
+    @Column(name = "Имя", length = 50)
     private String firstName;
 
-    @Column(name = "Фамилия")
+    @Column(name = "Фамилия", length = 50)
     @Nullable
     private String lastName;
 
-    @Column(name = "Отчество")
+    @Column(name = "Отчество", length = 50)
     @Nullable
     private String middleName;
 
     @Column(name = "Роль")
     private String role;
 
-    @Column(name = "Пол")
+    @Column(name = "Пол", length = 20)
     @Nullable
     private String gender;
 
-    @Column(name = "Язык")
+    @Column(name = "Язык", length = 20)
     private String language;
 
-    @Column(name = "Номер телефона")
+    @Column(name = "Номер телефона", length = 20)
     @Nullable
     private String phoneNumber;
 
-    @Column(name = "Электронная почта")
+    @Column(name = "Электронная почта", length = 100)
     private String email;
 
     @Column(name = "refresh salt")

@@ -2,6 +2,8 @@ package ru.tpu.russian.back.controller;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.request.*;
@@ -12,6 +14,8 @@ import ru.tpu.russian.back.service.UserService;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.*;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -46,7 +50,7 @@ public class AuthRest {
     @RequestMapping(method = POST, path = "/register")
     public ResponseEntity<?> register(
             @ApiParam(value = "Данные пользователя для регистрации", required = true)
-            @RequestBody RegistrationRequestDto registrationRequestDto
+            @Valid @RequestBody RegistrationRequestDto registrationRequestDto
     ) {
         try {
             userService.register(registrationRequestDto);
@@ -58,6 +62,19 @@ public class AuthRest {
                     ex.getMessage(), BAD_REQUEST
             );
         }
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 
     @ApiOperation(value = "Аутентифицировать пользователя")
@@ -158,7 +175,7 @@ public class AuthRest {
     @RequestMapping(method = POST, path = "/register/provider")
     public ResponseEntity<?> registerNewUserWithService(
             @ApiParam(value = "Данные для регистрации пользователя с помощью стороннего API", required = true)
-            @RequestBody RegistrationRequestDto registrationRequest
+            @Valid @RequestBody RegistrationRequestDto registrationRequest
     ) {
         try {
             userService.registerWithService(registrationRequest);

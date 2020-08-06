@@ -16,11 +16,9 @@ import ru.tpu.russian.back.repository.user.UserRepository;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.regex.Matcher;
 
-import static com.google.api.client.util.Strings.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static ru.tpu.russian.back.service.security.AuthConst.*;
+import static ru.tpu.russian.back.service.security.AuthConst.HTTP_STATUS_REG_NEED_FILL;
 
 @Service
 @Slf4j
@@ -45,45 +43,19 @@ public class UserService {
     public void register(RegistrationRequestDto registrationRequestDto) throws RegistrationException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.info("Check registration parameters on valid.");
-        validateRegInfo(registrationRequestDto);
+        checkValidEmail(registrationRequestDto.getEmail());
         User user = convertRegRequestToUser(registrationRequestDto);
         user.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
         log.info("Saving new user in DB...");
         register(user);
     }
 
-    private void validateRegInfo(RegistrationRequestDto request) throws RegistrationException {
-        log.debug("Start validating registrations info.");
-        if (isNullOrEmpty(request.getFirstName())
-                || isNullOrEmpty(request.getLanguage())
-                || isNullOrEmpty(request.getEmail())
-                || isNullOrEmpty(request.getPassword())) {
-            throw new RegistrationException("Some required fields are not filled.");
-        }
-        checkValidEmail(request.getEmail());
-        checkValidPassword(request.getPassword());
-    }
-
     private void checkValidEmail(String email) throws RegistrationException {
-        log.info("Check email address on valid.");
-        Matcher matcher = VALID_EMAIL_ADDRESS.matcher(email);
-        if (!matcher.find()) {
-            log.error("This email address is not in the correct format.");
-            throw new RegistrationException("Email address is not in the correct format.");
-        }
+        log.info("Check email address for availability in the database.");
         Optional<User> userOptional = userRepository.getUserByEmail(email);
         if (userOptional.isPresent()) {
             log.error("This email address already taken.");
             throw new RegistrationException("Email address already taken.");
-        }
-    }
-
-    private void checkValidPassword(String password) throws RegistrationException {
-        log.info("Check password on valid.");
-        Matcher matcher = VALID_PASSWORD.matcher(password);
-        if (!matcher.find()) {
-            log.error("This password is not in the correct format.");
-            throw new RegistrationException("Minimum eight characters, at least one letter and one number.");
         }
     }
 
@@ -195,7 +167,7 @@ public class UserService {
     public void registerWithService(RegistrationRequestDto registrationRequest) throws RegistrationException {
         log.info("Register new user through service. User {}", registrationRequest.toString());
         log.info("Convert to entity User.");
-        validateRegInfo(registrationRequest);
+        checkValidEmail(registrationRequest.getEmail());
         User user = convertRegRequestToUser(registrationRequest);
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         log.info("Saving new user in DB.");

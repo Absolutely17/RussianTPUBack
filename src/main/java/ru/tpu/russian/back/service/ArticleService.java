@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.Article;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
-import ru.tpu.russian.back.repository.media.MediaRepository;
 
 import javax.persistence.NoResultException;
 import java.util.*;
@@ -17,14 +16,14 @@ public class ArticleService {
 
     private ArticleRepository articleRepository;
 
-    private MediaRepository mediaRepository;
+    private final MediaService mediaService;
 
     public ArticleService(
             ArticleRepository articleRepository,
-            MediaRepository mediaRepository
+            MediaService mediaService
     ) {
         this.articleRepository = articleRepository;
-        this.mediaRepository = mediaRepository;
+        this.mediaService = mediaService;
     }
 
     public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) {
@@ -49,7 +48,7 @@ public class ArticleService {
     private ArticleBriefResponse convertToBriefResponse(Article article) {
         ArticleBriefResponse response = new ArticleBriefResponse(article);
         if (article.getArticleImage() != null) {
-            response.setArticleImage(mediaRepository.getById(article.getArticleImage()).getData());
+            response.setArticleImage(mediaService.getImage(article.getArticleImage()));
         }
         return response;
     }

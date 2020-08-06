@@ -2,10 +2,10 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.entity.Media;
 import ru.tpu.russian.back.repository.media.MediaRepository;
 
-import javax.persistence.NoResultException;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -20,18 +20,17 @@ public class MediaService {
         this.mediaRepository = mediaRepository;
     }
 
+    @Transactional
     public byte[] getImage(String id) {
-        log.info("Get image with ID {}", id);
         Media image = mediaRepository.getById(id);
         if (image == null) {
-            log.error("Image by specified ID not found.");
-            throw new NoResultException("Image by specified ID not found");
+            return null;
+        } else {
+            Date currentTime = new Date();
+            image.setLastUseDate(currentTime);
+            mediaRepository.save(image);
+            return image.getData();
         }
-        Date currentTime = new Date();
-        log.info("Update last use date image in DB. Current time - {}", currentTime);
-        image.setLastUseDate(currentTime);
-        mediaRepository.save(image);
-        return image.getData();
     }
 
     // Для тестов

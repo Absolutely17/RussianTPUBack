@@ -16,8 +16,13 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
 
-    public MenuService(MenuRepository menuRepository) {
+    private final MediaService mediaService;
+
+    public MenuService(
+            MenuRepository menuRepository,
+            MediaService mediaService) {
         this.menuRepository = menuRepository;
+        this.mediaService = mediaService;
     }
 
     @Transactional(readOnly = true)
@@ -34,5 +39,13 @@ public class MenuService {
         return menuItems.stream()
                 .map(MenuResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    private MenuResponseDto convertToMenuResponse(Menu menuItem) {
+        MenuResponseDto menuResponse = new MenuResponseDto(menuItem);
+        if (menuItem.getImage() != null) {
+            menuResponse.setImage(mediaService.getImage(menuItem.getImage()));
+        }
+        return menuResponse;
     }
 }

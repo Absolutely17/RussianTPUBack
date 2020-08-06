@@ -2,7 +2,7 @@ package ru.tpu.russian.back.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.lang.Nullable;
 import ru.tpu.russian.back.dto.enums.MenuType;
 import ru.tpu.russian.back.entity.Menu;
@@ -39,6 +39,11 @@ public class MenuResponseDto {
 
     @ApiModelProperty(value = "Дочерние пункты меню")
     private List<MenuResponseDto> children;
+
+    @Nullable
+    @ApiModelProperty(value = "Изображение пункта меню")
+    @Setter
+    private byte[] image;
 
     public MenuResponseDto(Menu menu) {
         id = menu.getId();

@@ -53,8 +53,12 @@ public class Menu {
     @Nullable
     private String idArticle;
 
-    @OneToMany(mappedBy="parent")
+    @OneToMany(mappedBy = "parent")
     @OrderBy("position ASC")
     private List<Menu> children;
+
+    @Column(name = "ID картинки")
+    @Nullable
+    private String image;
 }
 

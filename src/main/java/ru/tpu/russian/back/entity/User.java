@@ -2,7 +2,7 @@ package ru.tpu.russian.back.entity;
 
 import lombok.*;
 import org.springframework.lang.Nullable;
-import ru.tpu.russian.back.dto.enums.ProviderType;
+import ru.tpu.russian.back.dto.enums.*;
 
 import javax.persistence.*;
 
@@ -40,6 +40,15 @@ import static java.util.Objects.requireNonNull;
                 }
         ),
         @NamedStoredProcedureQuery(
+                name = "EditRegisteredStatus",
+                procedureName = "EditRegisteredStatus",
+                resultClasses = {int.class},
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "status", type = boolean.class)
+                }
+        ),
+        @NamedStoredProcedureQuery(
                 name = "AddUser",
                 procedureName = "AddUser",
                 parameters = {
@@ -52,7 +61,8 @@ import static java.util.Objects.requireNonNull;
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Role", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Patronymic", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "PhoneNumber", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Provider", type = String.class)
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Provider", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "verified", type = boolean.class)
                 }
         )
 })
@@ -90,7 +100,7 @@ public class User {
     private String gender;
 
     @Column(name = "Язык", length = 20)
-    private String language;
+    private Languages language;
 
     @Column(name = "Номер телефона", length = 20)
     @Nullable
@@ -106,10 +116,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ProviderType provider;
 
+    @Column(name = "Подтвержден")
+    private boolean isConfirm;
+
     public User(
             String firstName, @Nullable String lastName,
             @Nullable String middleName, @Nullable String gender,
-            String language, @Nullable String phoneNumber,
+            Languages language, @Nullable String phoneNumber,
             String email, ProviderType provider
     ) {
         this.firstName = firstName;
@@ -125,5 +138,9 @@ public class User {
 
     public void setPassword(String encodePassword) {
         password = encodePassword;
+    }
+
+    public void setConfirm(boolean isConfirm) {
+        this.isConfirm = isConfirm;
     }
 }

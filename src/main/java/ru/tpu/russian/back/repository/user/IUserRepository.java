@@ -15,4 +15,6 @@ public interface IUserRepository {
     void editRefreshSalt(String email, String salt);
 
     Optional<User> getUserByEmail(String email);
+
+    int editRegisteredStatus(String email, boolean status);
 }

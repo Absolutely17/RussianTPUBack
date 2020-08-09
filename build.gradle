@@ -26,6 +26,10 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+    // Mail sender
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.2.6.RELEASE'
+    // Velocity for parsing html template
+    compile group: 'org.apache.velocity', name: 'velocity', version: '1.7'
     // Валидатор
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     // АПИ в удобном виде

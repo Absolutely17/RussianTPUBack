@@ -20,6 +20,8 @@ public class UserRepositoryImpl implements IUserRepository {
 
     private static final String PROCEDURE_GET_USER_BY_EMAIL = "GetUserByEmail";
 
+    private static final String PROCEDURE_SET_REGISTERED_STATUS = "EditRegisteredStatus";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -76,5 +78,15 @@ public class UserRepositoryImpl implements IUserRepository {
         } catch (NoResultException ex) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    @Transactional
+    public int editRegisteredStatus(String email, boolean status) {
+        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_SET_REGISTERED_STATUS);
+        storedProcedureQuery.setParameter("email", email);
+        storedProcedureQuery.setParameter("status", status);
+        storedProcedureQuery.execute();
+        return storedProcedureQuery.getUpdateCount();
     }
 }

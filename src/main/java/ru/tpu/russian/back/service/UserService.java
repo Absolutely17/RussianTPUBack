@@ -30,14 +30,27 @@ public class UserService {
 
     private final JwtProvider jwtProvider;
 
+    private final MailService mailService;
+
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtProvider jwtProvider
+            JwtProvider jwtProvider,
+            MailService mailService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
+        this.mailService = mailService;
+    }
+
+    public void confirmRegistration(String token) {
+        log.debug("Check input token on valid.");
+        if (token != null && jwtProvider.validateToken(token)) {
+            String email = jwtProvider.getEmailFromToken(token);
+            int isSuccess = userRepository.editRegisteredStatus(email, true);
+            log.debug("Confirm email {}", isSuccess > 0 ? "success" : "failed");
+        }
     }
 
     public void register(RegistrationRequestDto registrationRequestDto) throws RegistrationException {
@@ -48,6 +61,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
         log.info("Saving new user in DB...");
         register(user);
+        mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getFirstName());
     }
 
     private void checkValidEmail(String email) throws RegistrationException {
@@ -85,11 +99,12 @@ public class UserService {
         params.put("FirstName", user.getFirstName());
         params.put("SecondName", user.getLastName());
         params.put("Sex", user.getGender());
-        params.put("Language", user.getLanguage());
+        params.put("Language", user.getLanguage().toString());
         params.put("Role", user.getRole());
         params.put("Patronymic", user.getMiddleName());
         params.put("PhoneNumber", user.getPhoneNumber());
         params.put("Provider", user.getProvider().toString());
+        params.put("verified", user.isConfirm());
         return params;
     }
 
@@ -170,6 +185,7 @@ public class UserService {
         checkValidEmail(registrationRequest.getEmail());
         User user = convertRegRequestToUser(registrationRequest);
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        user.setConfirm(true);
         log.info("Saving new user in DB.");
         register(user);
     }

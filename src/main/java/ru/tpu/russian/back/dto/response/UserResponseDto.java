@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.Nullable;
+import ru.tpu.russian.back.dto.enums.Languages;
 import ru.tpu.russian.back.entity.User;
 
 @Getter
@@ -30,7 +31,7 @@ public class UserResponseDto {
     private String gender;
 
     @ApiModelProperty(example = "Russian", value = "Язык пользователя")
-    private String language;
+    private Languages language;
 
     @ApiModelProperty(example = "88005553535", value = "Номер телефона пользователя")
     @Nullable

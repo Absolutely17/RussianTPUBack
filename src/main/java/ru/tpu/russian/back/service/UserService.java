@@ -61,7 +61,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
         log.info("Saving new user in DB...");
         register(user);
-        mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getFirstName());
+        //mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getFirstName());
     }
 
     private void checkValidEmail(String email) throws RegistrationException {

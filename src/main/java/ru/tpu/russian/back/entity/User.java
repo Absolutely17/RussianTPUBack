@@ -100,6 +100,7 @@ public class User {
     private String gender;
 
     @Column(name = "Язык", length = 20)
+    @Enumerated(EnumType.STRING)
     private Languages language;
 
     @Column(name = "Номер телефона", length = 20)

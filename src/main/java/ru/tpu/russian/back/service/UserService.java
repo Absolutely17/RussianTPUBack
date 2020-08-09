@@ -45,11 +45,11 @@ public class UserService {
     }
 
     public void confirmRegistration(String token) {
-        log.debug("Check input token on valid.");
+        log.info("Check input token on valid.");
         if (token != null && jwtProvider.validateToken(token)) {
             String email = jwtProvider.getEmailFromToken(token);
             int isSuccess = userRepository.editRegisteredStatus(email, true);
-            log.debug("Confirm email {}", isSuccess > 0 ? "success" : "failed");
+            log.info("Confirm email {}", isSuccess > 0 ? "success" : "failed");
         }
     }
 

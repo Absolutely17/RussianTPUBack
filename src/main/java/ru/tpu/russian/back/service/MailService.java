@@ -2,6 +2,7 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.*;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.entity.User;
@@ -56,6 +57,7 @@ public class MailService {
     }
 
     public void sendMessage(String email, String firstName) throws IOException, MessagingException {
+        log.info("Starting to create message.");
         String token = jwtProvider.generateTokenForConfirmEmail(email);
         Map<String, Object> model = new LinkedHashMap<>();
         model.put("token", token);
@@ -66,6 +68,11 @@ public class MailService {
         helper.setSubject("RussianTPU - Confirmation registration");
         helper.setFrom(mailFrom);
         helper.setText(merger.merge(model), true);
-        sender.send(message);
+        log.info("Try to sending email to {}.", email);
+        try {
+            sender.send(message);
+        } catch (MailSendException ex) {
+            log.warn("Problem with access to SMTP Gmail. Exception - {}", ex);
+        }
     }
 }

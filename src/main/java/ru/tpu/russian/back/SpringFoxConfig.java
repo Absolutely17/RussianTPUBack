@@ -23,7 +23,7 @@ public class SpringFoxConfig {
 
     public static final String AUTH_REST = "AuthRest";
 
-    public static final String MAIL_CONFIRM_REST = "MailConfirmRest";
+    public static final String MAIL_REST = "MailRest";
 
     @Bean
     public Docket api() {
@@ -38,7 +38,7 @@ public class SpringFoxConfig {
                 .tags(new Tag(MENU_REST, "Получение меню"))
                 .tags(new Tag(USER_REST, "Получение пользователей"))
                 .tags(new Tag(AUTH_REST, "Аутентификация пользователя"))
-                .tags(new Tag(MAIL_CONFIRM_REST, "Подтверждение Email пользователя"));
+                .tags(new Tag(MAIL_REST, "Подтверждение Email пользователя"));
     }
 
     private ApiInfo apiInfo() {

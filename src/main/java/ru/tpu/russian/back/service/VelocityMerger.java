@@ -4,7 +4,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.exception.RegistrationException;
 
 import java.io.*;
 import java.util.Map;
@@ -21,14 +20,12 @@ public class VelocityMerger {
         engine.init();
     }
 
-    public String merge(Map<String, Object> model) throws RegistrationException {
+    public String merge(Map<String, Object> model) throws IOException {
         try (StringWriter writer = new StringWriter()) {
             File template = new ClassPathResource("templates/registration-confirm.html").getFile();
             FileReader reader = new FileReader(template);
             engine.evaluate(new VelocityContext(model), writer, LOG_TAG, reader);
             return writer.toString();
-        } catch (IOException ex) {
-            throw new RegistrationException(ex.getMessage());
         }
     }
 }

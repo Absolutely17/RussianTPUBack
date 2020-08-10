@@ -18,9 +18,4 @@ public class TestRest {
     public String getCurrentTime() {
         return "Web-service worked. Current time = " + new Date().toString();
     }
-
-    @RequestMapping(method = GET, path = "/permissions")
-    public String testPermissions() {
-        return "You have permissions.";
-    }
 }

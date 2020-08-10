@@ -13,8 +13,10 @@ import ru.tpu.russian.back.exception.RegistrationException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
+import javax.mail.MessagingException;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -44,15 +46,6 @@ public class UserService {
         this.mailService = mailService;
     }
 
-    public void confirmRegistration(String token) {
-        log.info("Check input token on valid.");
-        if (token != null && jwtProvider.validateToken(token)) {
-            String email = jwtProvider.getEmailFromToken(token);
-            int isSuccess = userRepository.editRegisteredStatus(email, true);
-            log.info("Confirm email {}", isSuccess > 0 ? "success" : "failed");
-        }
-    }
-
     public void register(RegistrationRequestDto registrationRequestDto) throws RegistrationException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.info("Check registration parameters on valid.");
@@ -61,7 +54,11 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
         log.info("Saving new user in DB...");
         register(user);
-        //mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getFirstName());
+        try {
+            mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getFirstName());
+        } catch (MessagingException | IOException ex) {
+            log.warn("Register success. But some problem with sending confirm email.");
+        }
     }
 
     private void checkValidEmail(String email) throws RegistrationException {

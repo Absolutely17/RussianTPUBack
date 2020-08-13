@@ -3,7 +3,7 @@ package ru.tpu.russian.back.repository.menu;
 import ru.tpu.russian.back.entity.Menu;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.List;
 
 public class MenuRepositoryImpl implements IMenuRepository {
 
@@ -13,11 +13,10 @@ public class MenuRepositoryImpl implements IMenuRepository {
     private EntityManager em;
 
     @Override
-    public List<Menu> getAll(Map<String, Object> params) {
+    public List<Menu> getAll(String language) {
         StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_MENU);
-        for (String key : params.keySet()) {
-            storedProcedureQuery.setParameter(key, params.get(key));
-        }
+        storedProcedureQuery.setParameter("Language", language);
+        ;
         storedProcedureQuery.execute();
         return storedProcedureQuery.getResultList();
     }

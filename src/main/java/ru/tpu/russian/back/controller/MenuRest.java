@@ -23,7 +23,7 @@ public class MenuRest {
     }
 
     @ApiOperation(value = "Получение пунктов меню из БД")
-    @RequestMapping(method = GET, path = "")
+    @RequestMapping(method = GET)
     public List<MenuResponseDto> getMenu(
             @ApiParam(value = "Язык пунктов меню", required = true)
             @RequestParam String language

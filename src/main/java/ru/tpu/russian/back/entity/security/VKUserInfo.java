@@ -40,7 +40,7 @@ public class VKUserInfo implements OAuthUserInfo {
             UserSettings user = vk.account().getProfileInfo(actor).execute();
             return new VKUserInfo(email, user.getFirstName(), user.getLastName());
         } catch (Exception ex) {
-            log.error("Problems with access to API VK or incorrect input data. Exception {}", ex);
+            log.error("Problems with access to API VK or incorrect input data.", ex);
             throw new LoginException("Problems with access to API VK or incorrect input data.");
         }
     }

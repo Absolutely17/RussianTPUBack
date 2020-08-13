@@ -36,6 +36,7 @@ public class ArticleService {
             articles = articleRepository.getBriefArticles(id);
         }
         if (articles == null || articles.isEmpty()) {
+            log.error("Could not find articles. FromMenu {}, id {}", fromMenu, id);
             throw new NoResultException("Could not find articles.");
         }
         log.info("Count brief articles {}", articles.size());
@@ -56,7 +57,11 @@ public class ArticleService {
     public ArticleResponse getArticle(String id) {
         log.info("Get article. ID article = {}", id);
         Optional<Article> article = articleRepository.getById(id);
-        return new ArticleResponse(articleRepository.getById(id)
-                .orElseThrow(() -> new NoResultException("Wrong ID article.")));
+        if (article.isPresent()) {
+            return new ArticleResponse(article.get());
+        } else {
+            log.error("Could not find article with id {}", id);
+            throw new NoResultException("Could not find article.");
+        }
     }
 }

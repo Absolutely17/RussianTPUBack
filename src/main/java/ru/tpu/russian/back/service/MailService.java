@@ -41,7 +41,7 @@ public class MailService {
     }
 
     public void confirmRegistration(String token) {
-        log.info("Check input token on valid.");
+        log.debug("Check input token on valid.");
         if (token != null && jwtProvider.validateToken(token)) {
             String email = jwtProvider.getEmailFromToken(token);
             int isSuccess = userRepository.editRegisteredStatus(email, true);
@@ -50,24 +50,34 @@ public class MailService {
     }
 
     public void reSendEmail(String email) throws MessagingException, IOException {
-        User user = userRepository.getUserByEmail(email).orElseThrow(
-                () -> new IllegalArgumentException("Wrong email or user does not exist."));
-        sendMessage(user.getEmail(), user.getFirstName());
+        Optional<User> user = userRepository.getUserByEmail(email);
+        if (user.isPresent()) {
+            sendMessage(user.get().getEmail(), user.get().getFirstName());
+        } else {
+            log.error("Wrong email or user does not exist. Email {}", email);
+            throw new IllegalArgumentException("Wrong email or user does not exist.");
+        }
     }
 
+    // TODO доработать отлов исключения
     public void sendMessage(String email, String firstName) throws IOException, MessagingException {
-        log.info("Starting to create message.");
+        log.debug("Starting to create message.");
         String token = jwtProvider.generateTokenForConfirmEmail(email);
         Map<String, Object> model = new LinkedHashMap<>();
         model.put("token", token);
         model.put("name", firstName);
-        MimeMessage message = sender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setTo(email);
-        helper.setSubject("RussianTPU - Confirmation registration");
-        helper.setFrom(mailFrom);
-        helper.setText(merger.merge(model), true);
-        log.info("Try to sending email to {}.", email);
-        sender.send(message);
+        try {
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(email);
+            helper.setSubject("RussianTPU - Confirmation registration");
+            helper.setFrom(mailFrom);
+            helper.setText(merger.merge(model), true);
+            log.info("Try to sending email to {}.", email);
+            sender.send(message);
+        } catch (IOException | MessagingException ex) {
+            log.error("Wrong in sending message. Email {}", email, ex);
+            throw ex;
+        }
     }
 }

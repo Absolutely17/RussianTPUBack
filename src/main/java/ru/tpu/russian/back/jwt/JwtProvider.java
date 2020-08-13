@@ -109,7 +109,7 @@ public class JwtProvider {
 
     @Nullable
     public String getTokenFromRequest(HttpServletRequest servletRequest) {
-        log.info("Getting token from request...");
+        log.debug("Getting token from request...");
         String bearer = servletRequest.getHeader(AUTHORIZATION);
         if (hasText(bearer) && bearer.startsWith("Bearer")) {
             return bearer.substring(7);
@@ -120,13 +120,13 @@ public class JwtProvider {
     }
 
     public String getEmailFromToken(String token) {
-        log.info("Getting email from token...");
+        log.debug("Getting email from token...");
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
 
     public String getSaltFromRefreshToken(String token) {
-        log.info("Getting salt from token...");
+        log.debug("Getting salt from token...");
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return (String) claims.get("refresh_salt");
     }

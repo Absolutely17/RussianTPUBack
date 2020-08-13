@@ -42,7 +42,7 @@ public class GoogleOAuthUserInfo implements OAuthUserInfo {
                 throw new LoginException("Access token invalid.");
             }
         } catch (Exception ex) {
-            log.error("Problem with verifying token {}", ex);
+            log.error("Problem with verifying token", ex);
             throw new LoginException("Problem with verifying token in Google API.");
         }
     }

@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.service.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.entity.User;
@@ -10,6 +11,7 @@ import javax.persistence.NoResultException;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
     private UserRepository userRepository;
@@ -21,6 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public CustomUserDetails loadUserByUsername(String email) {
         Optional<User> user = userRepository.getUserByEmail(email);
-        return CustomUserDetails.create(user.orElseThrow(() -> new NoResultException("User does not exist")));
+        if (user.isPresent()) {
+            return CustomUserDetails.create(user.get());
+        } else {
+            log.error("User does not exist.");
+            throw new NoResultException("User does not exist");
+        }
     }
 }

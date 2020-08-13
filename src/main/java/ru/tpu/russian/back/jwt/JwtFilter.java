@@ -33,10 +33,10 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = jwtProvider.getTokenFromRequest(request);
         try {
             if (token != null && jwtProvider.validateToken(token)) {
-                log.info("Token in request - {}", token);
+                log.debug("Token in request - {}", token);
                 String userEmail = jwtProvider.getEmailFromToken(token);
-                log.info("Email in token: {}", userEmail);
-                log.info("Try to find user in DB.");
+                log.debug("Email in token: {}", userEmail);
+                log.debug("Try to find user in DB.");
                 CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userEmail);
                 log.info("User founded. Auth success.");
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(

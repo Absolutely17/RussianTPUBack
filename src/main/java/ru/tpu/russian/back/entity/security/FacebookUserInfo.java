@@ -34,7 +34,7 @@ public class FacebookUserInfo implements OAuthUserInfo {
                     profile.getFirstName(),
                     profile.getLastName());
         } catch (Exception ex) {
-            log.error("Some problems with Facebook API. Exception {}", ex);
+            log.error("Some problems with Facebook API.", ex);
             throw new LoginException("Problem with Facebook API or with input data.");
         }
     }

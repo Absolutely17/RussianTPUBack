@@ -7,7 +7,7 @@ import ru.tpu.russian.back.dto.response.MenuResponseDto;
 import ru.tpu.russian.back.entity.Menu;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
 
-import java.util.*;
+import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
@@ -29,9 +29,7 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<MenuResponseDto> getAll(String language) {
         log.info("Getting all menu items. Language = {}", language);
-        Map<String, Object> params = new HashMap<>();
-        params.put("Language", language);
-        return convertToDto(menuRepository.getAll(params));
+        return convertToDto(menuRepository.getAll(language));
     }
 
     private List<MenuResponseDto> convertToDto(List<Menu> menuItems) {

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.Nullable;
-import ru.tpu.russian.back.dto.enums.MenuType;
 import ru.tpu.russian.back.entity.Menu;
+import ru.tpu.russian.back.enums.MenuType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,13 +37,13 @@ public class MenuResponseDto {
     @ApiModelProperty(value = "ID статьи, если TYPE = ARTICLE")
     private String idArticle;
 
-    @ApiModelProperty(value = "Дочерние пункты меню")
-    private List<MenuResponseDto> children;
-
     @Nullable
     @ApiModelProperty(value = "Изображение пункта меню")
     @Setter
     private byte[] image;
+
+    @ApiModelProperty(value = "Дочерние пункты меню")
+    private List<MenuResponseDto> children;
 
     public MenuResponseDto(Menu menu) {
         id = menu.getId();

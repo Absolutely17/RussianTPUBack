@@ -37,7 +37,7 @@ public class MenuService {
         log.info("From DB received {} menu items", menuItems.size());
         menuItems.removeIf(menuItem -> menuItem.getLevel() != 1);
         return menuItems.stream()
-                .map(MenuResponseDto::new)
+                .map(this::convertToMenuResponse)
                 .collect(Collectors.toList());
     }
 

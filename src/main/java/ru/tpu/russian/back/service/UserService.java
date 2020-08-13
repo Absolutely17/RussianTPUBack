@@ -4,11 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.enums.ProviderType;
 import ru.tpu.russian.back.dto.request.*;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.security.*;
+import ru.tpu.russian.back.enums.ProviderType;
 import ru.tpu.russian.back.exception.RegistrationException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
@@ -20,11 +20,12 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static ru.tpu.russian.back.service.security.AuthConst.HTTP_STATUS_REG_NEED_FILL;
 
 @Service
 @Slf4j
 public class UserService {
+
+    private static final int HTTP_STATUS_REG_NEED_FILL = 210;
 
     private final UserRepository userRepository;
 
@@ -57,7 +58,7 @@ public class UserService {
         try {
             mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getFirstName());
         } catch (MessagingException | IOException ex) {
-            log.warn("Register success. But some problem with sending confirm email.");
+            log.warn("Register success. But some problem with sending confirm email. Exception {}", ex);
         }
     }
 

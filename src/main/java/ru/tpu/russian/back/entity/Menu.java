@@ -2,7 +2,7 @@ package ru.tpu.russian.back.entity;
 
 import lombok.*;
 import org.springframework.lang.Nullable;
-import ru.tpu.russian.back.dto.enums.MenuType;
+import ru.tpu.russian.back.enums.MenuType;
 
 import javax.persistence.*;
 import java.util.List;

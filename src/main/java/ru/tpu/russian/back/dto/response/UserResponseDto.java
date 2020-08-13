@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.Nullable;
-import ru.tpu.russian.back.dto.enums.Languages;
 import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.enums.Languages;
 
 @Getter
 @AllArgsConstructor

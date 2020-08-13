@@ -22,6 +22,8 @@ public class UserRepositoryImpl implements IUserRepository {
 
     private static final String PROCEDURE_SET_REGISTERED_STATUS = "EditRegisteredStatus";
 
+    private static final String PROCEDURE_EDIT_USER = "EditUser";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -88,5 +90,15 @@ public class UserRepositoryImpl implements IUserRepository {
         storedProcedureQuery.setParameter("status", status);
         storedProcedureQuery.execute();
         return storedProcedureQuery.getUpdateCount();
+    }
+
+    @Override
+    @Transactional
+    public void editUser(Map<String, Object> params) {
+        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_EDIT_USER);
+        for (String key : params.keySet()) {
+            storedProcedureQuery.setParameter(key, params.get(key));
+        }
+        storedProcedureQuery.execute();
     }
 }

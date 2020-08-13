@@ -17,4 +17,6 @@ public interface IUserRepository {
     Optional<User> getUserByEmail(String email);
 
     int editRegisteredStatus(String email, boolean status);
+
+    void editUser(Map<String, Object> params);
 }

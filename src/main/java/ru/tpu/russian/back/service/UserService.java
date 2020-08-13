@@ -86,11 +86,11 @@ public class UserService {
 
     private void register(User user) {
         log.info("Register new user.");
-        Map<String, Object> params = putUserFieldToMap(user);
+        Map<String, Object> params = putUserFieldToRegMap(user);
         userRepository.saveUser(params);
     }
 
-    private Map<String, Object> putUserFieldToMap(User user) {
+    private Map<String, Object> putUserFieldToRegMap(User user) {
         Map<String, Object> params = new HashMap<>();
         params.put("Password", user.getPassword());
         params.put("Email", user.getEmail());
@@ -222,6 +222,29 @@ public class UserService {
         }
         log.error("User not authenticated.");
         return false;
+    }
+
+    public void editUser(UserEditRequestDto requestDto) throws LoginException {
+        User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getCurrentPassword());
+        Map<String, Object> paramsToProcedure = putEditedUserFieldToMap(requestDto);
+        userRepository.editUser(paramsToProcedure);
+    }
+
+    private Map<String, Object> putEditedUserFieldToMap(UserEditRequestDto requestDto) {
+        Map<String, Object> paramsToProcedure = new HashMap<>();
+        paramsToProcedure.put("psw", passwordEncoder.encode(requestDto.getNewPassword()));
+        paramsToProcedure.put("firstName", requestDto.getFirstName());
+        paramsToProcedure.put("lang", requestDto.getLanguage().toString());
+        paramsToProcedure.put("secondName", requestDto.getLastName());
+        paramsToProcedure.put("patronymic", requestDto.getMiddleName());
+        paramsToProcedure.put("sex", requestDto.getGender());
+        paramsToProcedure.put("phoneNum", requestDto.getPhoneNumber());
+        return paramsToProcedure;
+    }
+
+    public UserResponseDto getUserProfile(String email) {
+        return new UserResponseDto(userRepository.getUserByEmail(email).orElseThrow(
+                () -> new IllegalArgumentException("User does not exist.")));
     }
 
 //    public List<User> getAllByLanguage(String language) {

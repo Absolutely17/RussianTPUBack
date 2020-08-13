@@ -64,6 +64,19 @@ import static java.util.Objects.requireNonNull;
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Provider", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "verified", type = boolean.class)
                 }
+        ),
+        @NamedStoredProcedureQuery(
+                name = "EditUser",
+                procedureName = "EditUser",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "psw", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "firstName", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "lang", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "secondName", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "patronymic", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "sex", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "phoneNum", type = String.class)
+                }
         )
 })
 

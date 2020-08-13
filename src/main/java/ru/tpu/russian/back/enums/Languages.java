@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto.enums;
+package ru.tpu.russian.back.enums;
 
 public enum Languages {
     rus,

@@ -8,7 +8,8 @@ import ru.tpu.russian.back.entity.Menu;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -38,11 +39,18 @@ public class MenuService {
         menuItems.removeIf(menuItem -> menuItem.getLevel() != 1);
         return menuItems.stream()
                 .map(this::convertToMenuResponse)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private MenuResponseDto convertToMenuResponse(Menu menuItem) {
         MenuResponseDto menuResponse = new MenuResponseDto(menuItem);
+        List<Menu> children = menuItem.getChildren();
+        if (children != null) {
+            menuResponse.setChildren(children
+                    .stream()
+                    .map(this::convertToMenuResponse)
+                    .collect(toList()));
+        }
         if (menuItem.getImage() != null) {
             menuResponse.setImage(mediaService.getImage(menuItem.getImage()));
         }

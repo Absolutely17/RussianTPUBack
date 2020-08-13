@@ -55,6 +55,7 @@ public class Menu {
 
     @OneToMany(mappedBy = "parent")
     @OrderBy("position ASC")
+    @Nullable
     private List<Menu> children;
 
     @Column(name = "ID картинки")

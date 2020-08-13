@@ -44,7 +44,6 @@ public class MenuResponseDto {
 
     @ApiModelProperty(value = "Дочерние пункты меню")
     @Setter
-    @Nullable
     private List<MenuResponseDto> children;
 
     public MenuResponseDto(Menu menu) {

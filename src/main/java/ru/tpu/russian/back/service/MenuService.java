@@ -45,7 +45,7 @@ public class MenuService {
     private MenuResponseDto convertToMenuResponse(Menu menuItem) {
         MenuResponseDto menuResponse = new MenuResponseDto(menuItem);
         List<Menu> children = menuItem.getChildren();
-        if (children != null) {
+        if (!children.isEmpty()) {
             menuResponse.setChildren(children
                     .stream()
                     .map(this::convertToMenuResponse)

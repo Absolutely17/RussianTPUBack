@@ -26,6 +26,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+    compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
     // Mail sender
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.2.6.RELEASE'
     // Velocity for parsing html template

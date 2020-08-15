@@ -7,9 +7,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.exception.*;
 
-import java.util.*;
+import java.util.Locale;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.joining;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @ControllerAdvice
@@ -27,10 +27,10 @@ public class CustomExceptionHandler {
             Locale locale
     ) {
         BindingResult result = ex.getBindingResult();
-        List<String> errorMessages = result.getAllErrors()
+        String errorMessages = result.getAllErrors()
                 .stream()
                 .map(error -> messageSource.getMessage(error, locale))
-                .collect(toList());
+                .collect(joining("\n"));
         return new ResponseEntity<>(new ExceptionMessage(errorMessages), BAD_REQUEST);
     }
 

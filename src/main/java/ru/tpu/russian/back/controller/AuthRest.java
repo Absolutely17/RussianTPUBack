@@ -37,11 +37,11 @@ public class AuthRest {
             ),
             @ApiResponse(
                     code = 400,
-                    message = "Email address is not in the correct format."
+                    message = "Error due to incorrectly filled in field during registration (about 8 different errors)"
             ),
             @ApiResponse(
                     code = 400,
-                    message = "Email address already taken."
+                    message = "Email address {email} is already taken"
             )
     })
     @RequestMapping(method = POST, path = "/register")
@@ -60,12 +60,12 @@ public class AuthRest {
                     response = AuthResponseDto.class
             ),
             @ApiResponse(
-                    code = 401,
-                    message = "Password mismatch."
+                    code = 400,
+                    message = "The specified password is invalid"
             ),
             @ApiResponse(
-                    code = 401,
-                    message = "User is not found."
+                    code = 400,
+                    message = "The user {email} could not be found"
             )
     })
     @RequestMapping(method = POST, path = "/login")
@@ -100,25 +100,23 @@ public class AuthRest {
                     response = OAuthUserInfo.class
             ),
             @ApiResponse(
-                    code = 401,
-                    message = "Access token invalid."
+                    code = 400,
+                    message = "The specified service is not supported for authentication"
             ),
             @ApiResponse(
-                    code = 401,
-                    message = "Problem with verifying token in Google API."
+                    code = 400,
+                    message = "It looks like you are trying to authenticate with the wrong service. " +
+                            "You are trying to login with {provider_in_request}, " +
+                            "but you need to login with {provider_in_db}"
             ),
             @ApiResponse(
-                    code = 401,
-                    message = "Problem with Facebook API or with input data."
+                    code = 400,
+                    message = "Problems with token from service"
             ),
             @ApiResponse(
-                    code = 401,
-                    message = "UserID and Email must not be empty through VK auth"
-            ),
-            @ApiResponse(
-                    code = 401,
-                    message = "Problems with access to API VK or incorrect input data."
-            ),
+                    code = 400,
+                    message = "Internal problems with the service. Try a little later"
+            )
     })
     @RequestMapping(method = POST, path = "/login/provider")
     public ResponseEntity<?> loginWithService(
@@ -135,8 +133,12 @@ public class AuthRest {
                     message = "Success"
             ),
             @ApiResponse(
-                    code = 401,
-                    message = "Minimum eight characters, at least one letter and one number."
+                    code = 400,
+                    message = "Error due to incorrectly filled in field during registration (about 8 different errors)"
+            ),
+            @ApiResponse(
+                    code = 400,
+                    message = "Email address {email} is already taken"
             )
     })
     @RequestMapping(method = POST, path = "/register/provider")
@@ -155,12 +157,12 @@ public class AuthRest {
                     response = AuthResponseDto.class
             ),
             @ApiResponse(
-                    code = 401,
-                    message = "The secret of the refresh token did not match."
+                    code = 400,
+                    message = "Failed to refresh token. The refresh token secret did not match"
             ),
             @ApiResponse(
                     code = 401,
-                    message = "The token was not found in the request headers."
+                    message = "Token not found or damaged. Try to re-login"
             )
     })
     @RequestMapping(method = POST, path = "/token/refresh")

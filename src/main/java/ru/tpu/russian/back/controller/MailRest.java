@@ -2,10 +2,8 @@ package ru.tpu.russian.back.controller;
 
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
+import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.service.MailService;
-
-import javax.mail.MessagingException;
-import java.io.IOException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static ru.tpu.russian.back.SpringFoxConfig.MAIL_REST;
@@ -28,7 +26,7 @@ public class MailRest {
     }
 
     @RequestMapping(method = POST, path = "/resend?email={email}")
-    public void reSendEmail(@PathVariable String email) throws IOException, MessagingException {
+    public void reSendEmail(@PathVariable String email) throws InternalException {
         mailService.reSendEmail(email);
     }
 }

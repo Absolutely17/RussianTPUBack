@@ -3,11 +3,11 @@ package ru.tpu.russian.back.controller;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
-import ru.tpu.russian.back.dto.request.UserEditRequestDto;
+import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
 import ru.tpu.russian.back.dto.response.UserResponseDto;
+import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.service.UserService;
 
-import javax.security.auth.login.LoginException;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
@@ -27,12 +27,12 @@ public class UserRest {
     }
 
     @RequestMapping(method = POST, path = "/edit")
-    public void editUserInfo(@Valid @RequestBody UserEditRequestDto requestDto) throws LoginException {
+    public void editUserInfo(@Valid @RequestBody BaseUserRequestDto requestDto) throws InternalException {
         userService.editUser(requestDto);
     }
 
     @RequestMapping(method = GET, path = "/profile")
-    public UserResponseDto getUserProfile(@PathParam(value = "email") String email) {
+    public UserResponseDto getUserProfile(@PathParam(value = "email") String email) throws InternalException {
         return userService.getUserProfile(email);
     }
 

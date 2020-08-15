@@ -2,8 +2,7 @@ package ru.tpu.russian.back.entity.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
-
-import javax.security.auth.login.LoginException;
+import ru.tpu.russian.back.exception.InternalException;
 
 @Slf4j
 public class OAuthServiceUserInfoFactory {
@@ -12,7 +11,7 @@ public class OAuthServiceUserInfoFactory {
             String provider,
             String token,
             @Nullable Integer userId,
-            @Nullable String email) throws LoginException {
+            @Nullable String email) throws InternalException {
         switch (provider) {
             case "google":
                 return GoogleOAuthUserInfo.create(token);
@@ -22,7 +21,7 @@ public class OAuthServiceUserInfoFactory {
                 return VKUserInfo.create(token, userId, email);
             default:
                 log.error("This provider is not supported.");
-                throw new LoginException("This provider is not supported");
+                throw new InternalException("Exception.login.service.notSupported");
         }
     }
 }

@@ -10,47 +10,51 @@ import javax.validation.constraints.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationRequestDto {
+public class BaseUserRequestDto {
 
     @ApiModelProperty(required = true, example = "qwerty123", value = "Пароль пользователя")
-    @NotNull(message = "Password must be filled.")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Minimum eight characters, " +
-            "at least one letter and one number.")
+    @NotNull
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")
     private String password;
 
+    @ApiModelProperty(required = true, example = "qwerty123", value = "Новый пароль пользователя")
+    @Nullable
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")
+    private String newPassword;
+
     @ApiModelProperty(required = true, example = "test@test.com", value = "Email пользователя")
-    @NotNull(message = "Email must be filled.")
-    @Email(message = "This email address is not in the correct format.")
+    @NotNull
+    @Email
     private String email;
 
     @ApiModelProperty(required = true, example = "Ivan", value = "Имя пользователя")
-    @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters.")
-    @NotNull(message = "First name must be filled.")
+    @Size(min = 1, max = 50)
+    @NotNull
     private String firstName;
 
     @ApiModelProperty(example = "Ivanov", value = "Фамилия пользователя")
     @Nullable
-    @Size(min = 1, max = 50, message = "Last name must be between 1 and 50 characters.")
+    @Size(min = 1, max = 50)
     private String lastName;
 
     @ApiModelProperty(example = "Ivanovich", value = "Отчество пользователя")
     @Nullable
-    @Size(min = 1, max = 50, message = "Middle name must be between 1 and 50 characters.")
+    @Size(min = 1, max = 50)
     private String middleName;
 
     @ApiModelProperty(example = "Male", value = "Пол пользователя")
     @Nullable
-    @Size(min = 1, max = 20, message = "Middle name must be between 1 and 50 characters.")
+    @Size(min = 1, max = 20)
     private String gender;
 
     @ApiModelProperty(required = true, example = "Russian", value = "Язык пользователя")
-    @NotNull(message = "Language must be filled.")
+    @NotNull
     private Languages language;
 
     @ApiModelProperty(example = "88005553535", value = "Номер телефона")
     @Nullable
-    @Size(min = 5, max = 20, message = "Middle name must be between 5 and 50 characters.")
-    @Pattern(regexp = "^\\d+$", message = "Phone number must contain only numbers")
+    @Size(min = 5, max = 20)
+    @Pattern(regexp = "^\\d+$")
     private String phoneNumber;
 
     @ApiModelProperty(example = "google", value = "Сервис через который происходит аутентификация")
@@ -59,15 +63,14 @@ public class RegistrationRequestDto {
 
     @Override
     public String toString() {
-        return "RegistrationRequestDto{" +
+        return "BaseUserRequestDto{" +
                 "email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", gender='" + gender + '\'' +
-                ", language='" + language + '\'' +
+                ", language=" + language +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", provider='" + provider + '\'' +
                 '}';
     }
 }

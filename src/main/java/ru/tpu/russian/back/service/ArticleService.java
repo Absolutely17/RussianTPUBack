@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.Article;
+import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
 
-import javax.persistence.NoResultException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class ArticleService {
         this.mediaService = mediaService;
     }
 
-    public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) {
+    public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) throws InternalException {
         List<Article> articles;
         if (fromMenu) {
             log.info("Get brief articles from menu. ID menu item = {}", id);
@@ -37,7 +37,7 @@ public class ArticleService {
         }
         if (articles == null || articles.isEmpty()) {
             log.error("Could not find articles. FromMenu {}, id {}", fromMenu, id);
-            throw new NoResultException("Could not find articles.");
+            throw new InternalException("Exception.briefArticle.notFound", id);
         }
         log.info("Count brief articles {}", articles.size());
         return articles
@@ -54,14 +54,14 @@ public class ArticleService {
         return response;
     }
 
-    public ArticleResponse getArticle(String id) {
+    public ArticleResponse getArticle(String id) throws InternalException {
         log.info("Get article. ID article = {}", id);
         Optional<Article> article = articleRepository.getById(id);
         if (article.isPresent()) {
             return new ArticleResponse(article.get());
         } else {
             log.error("Could not find article with id {}", id);
-            throw new NoResultException("Could not find article.");
+            throw new InternalException("Exception.article.notFound", id);
         }
     }
 }

@@ -2,22 +2,19 @@ package ru.tpu.russian.back.controller;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.request.*;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
 import ru.tpu.russian.back.entity.security.OAuthUserInfo;
-import ru.tpu.russian.back.exception.RegistrationException;
+import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.service.UserService;
 
-import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -48,32 +45,11 @@ public class AuthRest {
             )
     })
     @RequestMapping(method = POST, path = "/register")
-    public ResponseEntity<?> register(
+    public void register(
             @ApiParam(value = "Данные пользователя для регистрации", required = true)
-            @Valid @RequestBody RegistrationRequestDto registrationRequestDto
-    ) {
-        try {
-            userService.register(registrationRequestDto);
-            return new ResponseEntity<>(
-                    "Success", OK
-            );
-        } catch (RegistrationException ex) {
-            return new ResponseEntity<>(
-                    ex.getMessage(), BAD_REQUEST
-            );
-        }
-    }
-
-    @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
+            @Valid @RequestBody BaseUserRequestDto registrationRequestDto
+    ) throws InternalException {
+        userService.register(registrationRequestDto);
     }
 
     @ApiOperation(value = "Аутентифицировать пользователя")
@@ -93,20 +69,12 @@ public class AuthRest {
             )
     })
     @RequestMapping(method = POST, path = "/login")
-    public ResponseEntity<?> login(
+    public AuthResponseDto login(
             @ApiParam(value = "Данные пользователя для аутентификации", required = true)
             @RequestBody AuthRequestDto authRequest
-    ) {
-        try {
-            AuthResponseDto response = userService.login(authRequest);
-            return new ResponseEntity<>(
-                    response, OK
-            );
-        } catch (LoginException ex) {
-            return new ResponseEntity<>(
-                    ex.getMessage(), UNAUTHORIZED
-            );
-        }
+    ) throws InternalException {
+
+        return userService.login(authRequest);
     }
 
     @ApiOperation(value = "Аутентификация через сторонние сервисы")
@@ -156,7 +124,7 @@ public class AuthRest {
     public ResponseEntity<?> loginWithService(
             @ApiParam(value = "Данные сервиса для аутентификации", required = true)
             @RequestBody AuthRequestWithServiceDto authServiceRequest
-    ) {
+    ) throws InternalException {
         return userService.loginWithService(authServiceRequest);
     }
 
@@ -172,20 +140,11 @@ public class AuthRest {
             )
     })
     @RequestMapping(method = POST, path = "/register/provider")
-    public ResponseEntity<?> registerNewUserWithService(
+    public void registerNewUserWithService(
             @ApiParam(value = "Данные для регистрации пользователя с помощью стороннего API", required = true)
-            @Valid @RequestBody RegistrationRequestDto registrationRequest
-    ) {
-        try {
-            userService.registerWithService(registrationRequest);
-            return new ResponseEntity<>(
-                    "Success", OK
-            );
-        } catch (RegistrationException ex) {
-            return new ResponseEntity<>(
-                    ex.getMessage(), UNAUTHORIZED
-            );
-        }
+            @Valid @RequestBody BaseUserRequestDto registrationRequest
+    ) throws InternalException {
+        userService.registerWithService(registrationRequest);
     }
 
     @ApiOperation(value = "Обновление токена пользователя")
@@ -205,19 +164,10 @@ public class AuthRest {
             )
     })
     @RequestMapping(method = POST, path = "/token/refresh")
-    public ResponseEntity<?> refreshToken(
+    public AuthResponseDto refreshToken(
             HttpServletRequest servletRequest
-    ) {
-        try {
-            AuthResponseDto response = userService.refreshToken(servletRequest);
-            return new ResponseEntity<>(
-                    response, OK
-            );
-        } catch (LoginException ex) {
-            return new ResponseEntity<>(
-                    ex.getMessage(), UNAUTHORIZED
-            );
-        }
+    ) throws InternalException {
+        return userService.refreshToken(servletRequest);
     }
 
     @ApiOperation(value = "Проверка аутентификации пользователя")

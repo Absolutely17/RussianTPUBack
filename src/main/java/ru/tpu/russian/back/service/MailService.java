@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.*;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
@@ -49,17 +50,20 @@ public class MailService {
         }
     }
 
-    public void reSendEmail(String email) throws MessagingException, IOException {
+    public void reSendEmail(String email) throws InternalException {
         Optional<User> user = userRepository.getUserByEmail(email);
         if (user.isPresent()) {
-            sendMessage(user.get().getEmail(), user.get().getFirstName());
+            try {
+                sendMessage(user.get().getEmail(), user.get().getFirstName());
+            } catch (Exception ex) {
+                throw new InternalException("Exception.mail.send");
+            }
         } else {
             log.error("Wrong email or user does not exist. Email {}", email);
-            throw new IllegalArgumentException("Wrong email or user does not exist.");
+            throw new InternalException("Exception.login.notFound", email);
         }
     }
 
-    // TODO доработать отлов исключения
     public void sendMessage(String email, String firstName) throws IOException, MessagingException {
         log.debug("Starting to create message.");
         String token = jwtProvider.generateTokenForConfirmEmail(email);

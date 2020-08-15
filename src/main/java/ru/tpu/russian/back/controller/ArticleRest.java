@@ -1,15 +1,14 @@
 package ru.tpu.russian.back.controller;
 
 import io.swagger.annotations.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
+import ru.tpu.russian.back.dto.response.*;
+import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.service.ArticleService;
 
-import javax.persistence.NoResultException;
+import java.util.List;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
@@ -26,39 +25,23 @@ public class ArticleRest {
 
     @ApiOperation(value = "Получить список статей")
     @RequestMapping(method = GET, path = "/list/{id}")
-    public ResponseEntity<?> getArticlesBriefFromMenuItem(
+    public List<ArticleBriefResponse> getArticlesBriefFromMenuItem(
             @ApiParam(value = "ID пункта меню (если fromMenu=true) или ID страницы (если fromMenu=false)",
                     required = true)
             @PathVariable String id,
             @ApiParam(value = "Осуществлен ли переход из меню")
             @RequestParam(value = "fromMenu", defaultValue = "false") boolean fromMenu
-    ) {
-        try {
-            return new ResponseEntity<>(
-                    articleService.getArticlesBrief(id, fromMenu), OK
-            );
-        } catch (NoResultException ex) {
-            return new ResponseEntity<>(
-                    ex.getMessage(), BAD_REQUEST
-            );
-        }
+    ) throws InternalException {
+        return articleService.getArticlesBrief(id, fromMenu);
     }
 
     @ApiOperation(value = "Получение полной версии статьи")
     @RequestMapping(method = GET, path = "/{id}")
-    public ResponseEntity<?> getArticle(
+    public ArticleResponse getArticle(
             @ApiParam(value = "ID статьи", required = true)
             @PathVariable String id
-    ) {
-        try {
-            return new ResponseEntity<>(
-                    articleService.getArticle(id), OK
-            );
-        } catch (NoResultException ex) {
-            return new ResponseEntity<>(
-                    ex.getMessage(), BAD_REQUEST
-            );
-        }
+    ) throws InternalException {
+        return articleService.getArticle(id);
     }
 
 }

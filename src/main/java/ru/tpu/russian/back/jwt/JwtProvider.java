@@ -98,6 +98,16 @@ public class JwtProvider {
         return false;
     }
 
+    public boolean validateToken(String token, HttpServletRequest request) {
+        try {
+            validateToken(token);
+            return true;
+        } catch (ExpiredJwtException ex) {
+            request.setAttribute("expired", ex.getMessage());
+        }
+        return false;
+    }
+
     private static String generateRandomSalt() {
         StringBuilder sb = new StringBuilder();
         int lengthSalt = random.nextInt(15 - 10) + 10;

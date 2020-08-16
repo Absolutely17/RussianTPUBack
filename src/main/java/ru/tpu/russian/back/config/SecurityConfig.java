@@ -52,6 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**").hasRole("USER")
                 .and().apply(jwtConfigurer)
                 .and()
-                .exceptionHandling().authenticationEntryPoint(new JwtAuthenticationEntryPoint());
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 }

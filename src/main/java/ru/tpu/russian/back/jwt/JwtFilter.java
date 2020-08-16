@@ -1,6 +1,5 @@
 package ru.tpu.russian.back.jwt;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,26 +30,21 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
         String token = jwtProvider.getTokenFromRequest(request);
-        try {
-            if (token != null && jwtProvider.validateToken(token)) {
-                log.debug("Token in request - {}", token);
-                String userEmail = jwtProvider.getEmailFromToken(token);
-                log.debug("Email in token: {}", userEmail);
-                log.debug("Try to find user in DB.");
-                CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userEmail);
-                log.info("User founded. Auth success.");
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        customUserDetails,
-                        null,
-                        customUserDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            } else {
-                log.error("Token does not exist in request or not valid.");
-            }
-            filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException ex) {
-            log.error("Token {} expired", token);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired.");
+        if (token != null && jwtProvider.validateToken(token, request)) {
+            log.debug("Token in request - {}", token);
+            String userEmail = jwtProvider.getEmailFromToken(token);
+            log.debug("Email in token: {}", userEmail);
+            log.debug("Try to find user in DB.");
+            CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userEmail);
+            log.info("User founded. Auth success.");
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                    customUserDetails,
+                    null,
+                    customUserDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        } else {
+            log.error("Token does not exist in request or not valid.");
         }
+        filterChain.doFilter(request, response);
     }
 }

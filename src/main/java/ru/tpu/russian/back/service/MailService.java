@@ -79,7 +79,7 @@ public class MailService {
             helper.setText(merger.merge(model), true);
             log.info("Try to sending email to {}.", email);
             sender.send(message);
-        } catch (IOException | MessagingException ex) {
+        } catch (Exception ex) {
             log.error("Wrong in sending message. Email {}", email, ex);
             throw ex;
         }

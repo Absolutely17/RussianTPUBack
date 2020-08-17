@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -26,7 +26,7 @@ public class UserRest {
         this.userService = userService;
     }
 
-    @RequestMapping(method = POST, path = "/edit")
+    @RequestMapping(method = PUT, path = "/edit")
     public void editUserInfo(@Valid @RequestBody BaseUserRequestDto requestDto) throws InternalException {
         userService.editUser(requestDto);
     }

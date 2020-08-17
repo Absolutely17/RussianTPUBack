@@ -13,9 +13,7 @@ import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -54,7 +52,7 @@ public class UserService {
         register(user);
         try {
             mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getFirstName());
-        } catch (MessagingException | IOException ex) {
+        } catch (Exception ex) {
             log.warn("Register success. But some problem with sending confirm email.", ex);
         }
     }

@@ -15,12 +15,6 @@ public class CustomUserDetails implements UserDetails {
 
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
-    public CustomUserDetails(String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.email = email;
-        this.password = password;
-        grantedAuthorities = authorities;
-    }
-
     public static CustomUserDetails create(User user) {
         List<GrantedAuthority> authorities = Collections.
                 singletonList(new SimpleGrantedAuthority("ROLE_USER"));
@@ -30,6 +24,12 @@ public class CustomUserDetails implements UserDetails {
                 user.getPassword(),
                 authorities
         );
+    }
+
+    private CustomUserDetails(String email, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.email = email;
+        this.password = password;
+        grantedAuthorities = authorities;
     }
 
     @Override
@@ -65,9 +65,5 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getEmail() {
-        return email;
     }
 }

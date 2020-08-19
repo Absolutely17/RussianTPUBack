@@ -12,8 +12,6 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 public class VKUserInfo implements OAuthUserInfo {
 
-    private final String provider = "vk";
-
     private static final VkApiClient vk = new VkApiClient(new HttpTransportClient());
 
     private String email;
@@ -59,6 +57,6 @@ public class VKUserInfo implements OAuthUserInfo {
 
     @Override
     public String getProvider() {
-        return provider;
+        return "vk";
     }
 }

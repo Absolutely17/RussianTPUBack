@@ -10,8 +10,6 @@ import static ru.tpu.russian.back.entity.security.FacebookUtils.*;
 @Slf4j
 public class FacebookUserInfo implements OAuthUserInfo {
 
-    private final String provider = "facebook";
-
     private String email;
 
     private String firstName;
@@ -61,6 +59,6 @@ public class FacebookUserInfo implements OAuthUserInfo {
 
     @Override
     public String getProvider() {
-        return provider;
+        return "facebook";
     }
 }

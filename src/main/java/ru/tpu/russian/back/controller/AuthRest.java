@@ -10,11 +10,8 @@ import ru.tpu.russian.back.entity.security.OAuthUserInfo;
 import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -44,7 +41,7 @@ public class AuthRest {
                     message = "Email address {email} is already taken"
             )
     })
-    @RequestMapping(method = POST, path = "/register")
+    @RequestMapping(method = POST, path = "/local/registration")
     public void register(
             @ApiParam(value = "Данные пользователя для регистрации", required = true)
             @Valid @RequestBody BaseUserRequestDto registrationRequestDto
@@ -68,7 +65,7 @@ public class AuthRest {
                     message = "The user {email} could not be found"
             )
     })
-    @RequestMapping(method = POST, path = "/login")
+    @RequestMapping(method = POST, path = "/local/login")
     public AuthResponseDto login(
             @ApiParam(value = "Данные пользователя для аутентификации", required = true)
             @RequestBody AuthRequestDto authRequest
@@ -118,7 +115,7 @@ public class AuthRest {
                     message = "Internal problems with the service. Try a little later"
             )
     })
-    @RequestMapping(method = POST, path = "/login/provider")
+    @RequestMapping(method = POST, path = "/provider/login")
     public ResponseEntity<?> loginWithService(
             @ApiParam(value = "Данные сервиса для аутентификации", required = true)
             @RequestBody AuthRequestWithServiceDto authServiceRequest
@@ -141,7 +138,7 @@ public class AuthRest {
                     message = "Email address {email} is already taken"
             )
     })
-    @RequestMapping(method = POST, path = "/register/provider")
+    @RequestMapping(method = POST, path = "/provider/registration")
     public void registerNewUserWithService(
             @ApiParam(value = "Данные для регистрации пользователя с помощью стороннего API", required = true)
             @Valid @RequestBody BaseUserRequestDto registrationRequest
@@ -149,53 +146,5 @@ public class AuthRest {
         userService.registerWithService(registrationRequest);
     }
 
-    @ApiOperation(value = "Обновление токена пользователя")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 200,
-                    message = "Success",
-                    response = AuthResponseDto.class
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = "Failed to refresh token. The refresh token secret did not match"
-            ),
-            @ApiResponse(
-                    code = 401,
-                    message = "Token not found or damaged. Try to re-login"
-            )
-    })
-    @RequestMapping(method = POST, path = "/token/refresh")
-    public AuthResponseDto refreshToken(
-            HttpServletRequest servletRequest
-    ) throws InternalException {
-        return userService.refreshToken(servletRequest);
-    }
 
-    @ApiOperation(value = "Проверка аутентификации пользователя")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 200,
-                    message = "Authenticated"
-            ),
-            @ApiResponse(
-                    code = 401,
-                    message = "Not authenticated"
-            )
-    })
-    @RequestMapping(method = POST, path = "/check")
-    public ResponseEntity<?> checkAuth(
-            @ApiParam(value = "Данные для проверки аутентификации пользователя", required = true)
-            @RequestBody CheckAuthRequestDto requestDto
-    ) {
-        if (userService.checkAuth(requestDto)) {
-            return new ResponseEntity<>(
-                    "Authenticated", OK
-            );
-        } else {
-            return new ResponseEntity<>(
-                    "Not authenticated", UNAUTHORIZED
-            );
-        }
-    }
 }

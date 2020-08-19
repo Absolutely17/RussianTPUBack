@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.controller;
+package ru.tpu.russian.back.controller.handler;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;

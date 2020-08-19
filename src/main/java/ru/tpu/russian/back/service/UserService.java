@@ -13,7 +13,6 @@ import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Service
@@ -45,7 +44,7 @@ public class UserService {
     public void register(BaseUserRequestDto registrationRequestDto) throws InternalException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.debug("Check registration parameters on valid.");
-        checkValidEmail(registrationRequestDto.getEmail());
+        checkEmailOnExist(registrationRequestDto.getEmail());
         User user = convertRegRequestToUser(registrationRequestDto);
         user.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
         log.debug("Saving new user in DB.");
@@ -57,7 +56,7 @@ public class UserService {
         }
     }
 
-    private void checkValidEmail(String email) throws InternalException {
+    private void checkEmailOnExist(String email) throws InternalException {
         log.debug("Check email address for availability in the database.");
         Optional<User> userOptional = userRepository.getUserByEmail(email);
         if (userOptional.isPresent()) {
@@ -108,9 +107,9 @@ public class UserService {
         if (authRequest.isRememberMe()) {
             log.debug("Option rememberMe selected.");
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
-            return new AuthResponseDto(token, refreshToken, true, new UserResponseDto(user));
+            return new AuthResponseDto(token, refreshToken, new UserResponseDto(user));
         }
-        return new AuthResponseDto(token, true, new UserResponseDto(user));
+        return new AuthResponseDto(token, new UserResponseDto(user));
     }
 
     private User findByEmailAndPassword(String email, String password) throws InternalException {
@@ -152,7 +151,7 @@ public class UserService {
             }
             String token = jwtProvider.generateToken(user.getEmail());
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
-            AuthResponseDto response = new AuthResponseDto(token, refreshToken, true, new UserResponseDto(user));
+            AuthResponseDto response = new AuthResponseDto(token, refreshToken, new UserResponseDto(user));
             return new ResponseEntity<>(
                     response, HttpStatus.OK
             );
@@ -168,48 +167,12 @@ public class UserService {
     public void registerWithService(BaseUserRequestDto registrationRequest) throws InternalException {
         log.info("Register new user through service. User {}", registrationRequest.toString());
         log.debug("Convert to entity User.");
-        checkValidEmail(registrationRequest.getEmail());
+        checkEmailOnExist(registrationRequest.getEmail());
         User user = convertRegRequestToUser(registrationRequest);
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setConfirm(true);
         log.debug("Saving new user in DB.");
         register(user);
-    }
-
-    public AuthResponseDto refreshToken(HttpServletRequest servletRequest) throws InternalException {
-        log.info("Refresh access token");
-        String token = jwtProvider.getTokenFromRequest(servletRequest);
-        if (token != null && jwtProvider.validateToken(token)) {
-            String email = jwtProvider.getEmailFromToken(token);
-            String refreshSaltInToken = jwtProvider.getSaltFromRefreshToken(token);
-            String refreshSaltInDB = findByEmail(email).getRefreshSalt();
-            if (refreshSaltInDB.equals(refreshSaltInToken)) {
-                log.info("Salt matched. Generating new tokens and new salt. Email {}", email);
-                return new AuthResponseDto(
-                        jwtProvider.generateToken(email),
-                        jwtProvider.generateRefreshToken(email),
-                        true
-                );
-            } else {
-                log.error("The secret of the refresh token did not match.");
-                throw new InternalException("Exception.login.refreshToken.mismatch");
-            }
-        } else {
-            log.error("The token was not found in the request headers.");
-            throw new InternalException("Exception.login.token.notFoundOrInvalid");
-        }
-    }
-
-    public boolean checkAuth(CheckAuthRequestDto requestDto) {
-        log.info("Checking user on authenticated.");
-        String token = requestDto.getToken();
-        if (token != null && jwtProvider.validateToken(token)) {
-            log.debug("Compare email in request with email in token.");
-            String email = jwtProvider.getEmailFromToken(token);
-            return requestDto.getEmail().equals(email);
-        }
-        log.warn("User not authenticated.");
-        return false;
     }
 
     public void editUser(BaseUserRequestDto requestDto) throws InternalException {

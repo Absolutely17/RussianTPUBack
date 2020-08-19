@@ -6,11 +6,12 @@ import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.service.MailService;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import static ru.tpu.russian.back.SpringFoxConfig.MAIL_REST;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping(value = "/email")
+@RequestMapping(value = "/api/email")
 @Api(tags = {MAIL_REST})
 public class MailRest {
 
@@ -20,12 +21,12 @@ public class MailRest {
         this.mailService = mailService;
     }
 
-    @RequestMapping(method = POST, path = "/confirm?token={token}")
+    @RequestMapping(method = PUT, path = "/confirmation?token={token}")
     public void confirmEmail(@PathVariable String token) {
         mailService.confirmRegistration(token);
     }
 
-    @RequestMapping(method = POST, path = "/resend?email={email}")
+    @RequestMapping(method = POST, path = "/send?email={email}")
     public void reSendEmail(@PathVariable String email) throws InternalException {
         mailService.reSendEmail(email);
     }

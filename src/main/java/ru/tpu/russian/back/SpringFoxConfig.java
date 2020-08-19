@@ -25,6 +25,8 @@ public class SpringFoxConfig {
 
     public static final String MAIL_REST = "MailRest";
 
+    public static final String TOKEN_REST = "TokenRest";
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -38,10 +40,11 @@ public class SpringFoxConfig {
                 .tags(new Tag(MENU_REST, "Получение меню"))
                 .tags(new Tag(USER_REST, "Получение пользователей"))
                 .tags(new Tag(AUTH_REST, "Аутентификация/регистрация пользователя"))
-                .tags(new Tag(MAIL_REST, "Подтверждение Email пользователя"));
+                .tags(new Tag(MAIL_REST, "Подтверждение Email пользователя"))
+                .tags(new Tag(TOKEN_REST, "Токен пользователя"));
     }
 
-    private ApiInfo apiInfo() {
+    private static ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("RussianTPU API").version("1.0.0").build();
     }
 }

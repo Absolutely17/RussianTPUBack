@@ -129,10 +129,16 @@ public class JwtProvider {
         }
     }
 
+    @Nullable
     public String getEmailFromToken(String token) {
         log.debug("Getting email from token...");
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        return claims.getSubject();
+        try {
+            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+            return claims.getSubject();
+        } catch (Exception ex) {
+            log.error("Problem with unwrapping email from token.", ex);
+            return null;
+        }
     }
 
     public String getSaltFromRefreshToken(String token) {

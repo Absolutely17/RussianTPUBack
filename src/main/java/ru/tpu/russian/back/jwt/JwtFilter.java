@@ -11,6 +11,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -33,15 +35,21 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token != null && jwtProvider.validateToken(token, request)) {
             log.debug("Token in request - {}", token);
             String userEmail = jwtProvider.getEmailFromToken(token);
-            log.debug("Email in token: {}", userEmail);
-            log.debug("Try to find user in DB.");
-            CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userEmail);
-            log.info("User founded. Auth success.");
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    customUserDetails,
-                    null,
-                    customUserDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            if (!isNullOrEmpty(userEmail)) {
+                log.debug("Email in token: {}", userEmail);
+                log.debug("Try to find user in DB.");
+                CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userEmail);
+                if (customUserDetails != null) {
+                    log.info("User founded. Auth success.");
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                            customUserDetails,
+                            null,
+                            customUserDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } else {
+                log.error("Email is empty or null. Auth failed.");
+            }
         } else {
             log.error("Token does not exist in request or not valid.");
         }

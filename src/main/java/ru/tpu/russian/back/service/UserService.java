@@ -65,7 +65,7 @@ public class UserService {
         }
     }
 
-    private User convertRegRequestToUser(BaseUserRequestDto request) {
+    private static User convertRegRequestToUser(BaseUserRequestDto request) {
         return new User(
                 request.getFirstName(),
                 request.getLastName(),
@@ -84,7 +84,7 @@ public class UserService {
         userRepository.saveUser(params);
     }
 
-    private Map<String, Object> putUserFieldToRegMap(User user) {
+    private static Map<String, Object> putUserFieldToRegMap(User user) {
         Map<String, Object> params = new HashMap<>();
         params.put("Password", user.getPassword());
         params.put("Email", user.getEmail());

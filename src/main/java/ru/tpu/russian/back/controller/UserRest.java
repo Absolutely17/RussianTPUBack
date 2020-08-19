@@ -35,22 +35,4 @@ public class UserRest {
     public UserResponseDto getUserProfile(@PathParam(value = "email") String email) throws InternalException {
         return userService.getUserProfile(email);
     }
-
-//    @RequestMapping(method = GET, path = "/language")
-//    public String getUsersByLanguage(@RequestParam("language") String language) {
-//        StringBuilder sb = new StringBuilder();
-//        for (User s : userService.getAllByLanguage(language)) {
-//            sb.append(s.toString()).append("\n");
-//        }
-//        return sb.toString();
-//    }
-//
-//    @RequestMapping(method = GET, path = "/reg")
-//    public String getUsersByReg(@RequestParam("reg") boolean reg) {
-//        StringBuilder sb = new StringBuilder();
-//        for (User s : userService.getAllByReg(reg)) {
-//            sb.append(s.toString()).append("\n");
-//        }
-//        return sb.toString();
-//    }
 }

@@ -197,16 +197,4 @@ public class UserService {
         return new UserResponseDto(userRepository.getUserByEmail(email).orElseThrow(
                 () -> new InternalException("Exception.login.notFound", email)));
     }
-
-//    public List<User> getAllByLanguage(String language) {
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("Language", language);
-//        return userRepository.getAllByLanguage(params);
-//    }
-//
-//    public List<User> getAllByReg(boolean reg) {
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("Reg", reg);
-//        return userRepository.getAllByReg(params);
-//    }
 }

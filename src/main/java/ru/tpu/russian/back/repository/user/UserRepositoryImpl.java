@@ -10,10 +10,6 @@ import java.util.*;
 @Slf4j
 public class UserRepositoryImpl implements IUserRepository {
 
-    private static final String PROCEDURE_GET_USER_BY_LANGUAGE = "GetUserByLanguage";
-
-    private static final String PROCEDURE_GET_USER_BY_REG = "GetRegistered";
-
     private static final String PROCEDURE_ADD_USER = "AddUser";
 
     private static final String PROCEDURE_EDIT_REFRESH_SALT = "EditUserRefreshSalt";
@@ -26,28 +22,6 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @PersistenceContext
     private EntityManager em;
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<User> getAllByLanguage(Map<String, Object> params) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_USER_BY_LANGUAGE);
-        for (String key : params.keySet()) {
-            storedProcedureQuery.setParameter(key, params.get(key));
-        }
-        storedProcedureQuery.execute();
-        return storedProcedureQuery.getResultList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<User> getAllByReg(Map<String, Object> params) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_USER_BY_REG);
-        for (String key : params.keySet()) {
-            storedProcedureQuery.setParameter(key, params.get(key));
-        }
-        storedProcedureQuery.execute();
-        return storedProcedureQuery.getResultList();
-    }
 
     @Override
     @Transactional

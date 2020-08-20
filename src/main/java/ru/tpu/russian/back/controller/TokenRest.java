@@ -4,7 +4,6 @@ import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
-import ru.tpu.russian.back.dto.request.CheckAuthRequestDto;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
 import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.service.TokenService;
@@ -65,10 +64,10 @@ public class TokenRest {
 
     @RequestMapping(method = GET, path = "/status")
     public ResponseEntity<?> getStatusAuthUser(
-            @ApiParam(value = "Данные для проверки аутентификации пользователя", required = true)
-            @RequestBody CheckAuthRequestDto requestDto
+            @RequestParam("token") String token,
+            @RequestParam("email") String email
     ) {
-        if (tokenService.checkAuth(requestDto)) {
+        if (tokenService.checkAuth(token, email)) {
             return new ResponseEntity<>(
                     "Authenticated", OK
             );

@@ -2,7 +2,6 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.request.CheckAuthRequestDto;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
 import ru.tpu.russian.back.exception.InternalException;
 import ru.tpu.russian.back.jwt.JwtProvider;
@@ -48,13 +47,12 @@ public class TokenService {
         }
     }
 
-    public boolean checkAuth(CheckAuthRequestDto requestDto) {
+    public boolean checkAuth(String token, String email) {
         log.info("Checking user on authenticated.");
-        String token = requestDto.getToken();
         if (token != null && jwtProvider.validateToken(token)) {
             log.debug("Compare email in request with email in token.");
-            String email = jwtProvider.getEmailFromToken(token);
-            return requestDto.getEmail().equals(email);
+            String emailInToken = jwtProvider.getEmailFromToken(token);
+            return email.equals(emailInToken);
         }
         log.warn("User not authenticated.");
         return false;

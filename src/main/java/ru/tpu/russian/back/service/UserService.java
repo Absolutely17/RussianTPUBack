@@ -183,7 +183,8 @@ public class UserService {
 
     private Map<String, Object> putEditedUserFieldToMap(BaseUserRequestDto requestDto) {
         Map<String, Object> paramsToProcedure = new HashMap<>();
-        paramsToProcedure.put("psw", passwordEncoder.encode(requestDto.getNewPassword()));
+        paramsToProcedure.put("psw", requestDto.getNewPassword() != null ?
+                passwordEncoder.encode(requestDto.getNewPassword()) : null);
         paramsToProcedure.put("firstName", requestDto.getFirstName());
         paramsToProcedure.put("lang", requestDto.getLanguage().toString());
         paramsToProcedure.put("secondName", requestDto.getLastName());

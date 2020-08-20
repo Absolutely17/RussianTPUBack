@@ -69,6 +69,7 @@ import static java.util.Objects.requireNonNull;
                 name = "EditUser",
                 procedureName = "EditUser",
                 parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "psw", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "firstName", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "lang", type = String.class),

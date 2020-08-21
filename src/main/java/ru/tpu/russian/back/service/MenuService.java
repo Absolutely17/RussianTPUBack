@@ -1,6 +1,7 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.response.MenuResponseDto;
@@ -19,6 +20,9 @@ public class MenuService {
     private final MenuRepository menuRepository;
 
     private final MediaService mediaService;
+
+    @Value("${service.url}")
+    private String serviceUrl;
 
     public MenuService(
             MenuRepository menuRepository,
@@ -55,7 +59,7 @@ public class MenuService {
                     .collect(toList()));
         }
         if (menuItem.getImage() != null) {
-            menuResponse.setImage(mediaService.getImage(menuItem.getImage()));
+            menuResponse.setImage(serviceUrl + "img/" + menuItem.getImage());
         }
         return menuResponse;
     }

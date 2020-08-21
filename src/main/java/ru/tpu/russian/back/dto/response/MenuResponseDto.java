@@ -40,7 +40,7 @@ public class MenuResponseDto {
     @Nullable
     @ApiModelProperty(value = "Изображение пункта меню")
     @Setter
-    private byte[] image;
+    private String image;
 
     @ApiModelProperty(value = "Дочерние пункты меню")
     @Setter

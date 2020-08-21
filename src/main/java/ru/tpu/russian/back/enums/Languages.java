@@ -1,7 +1,7 @@
 package ru.tpu.russian.back.enums;
 
 public enum Languages {
-    rus,
-    eng,
+    ru,
+    en,
     zh
 }

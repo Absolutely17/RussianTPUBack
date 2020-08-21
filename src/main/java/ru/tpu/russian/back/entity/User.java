@@ -42,7 +42,6 @@ import static java.util.Objects.requireNonNull;
         @NamedStoredProcedureQuery(
                 name = "EditRegisteredStatus",
                 procedureName = "EditRegisteredStatus",
-                resultClasses = {int.class},
                 parameters = {
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "status", type = boolean.class)

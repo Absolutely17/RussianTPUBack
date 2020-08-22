@@ -59,7 +59,7 @@ public class MenuService {
                     .collect(toList()));
         }
         if (menuItem.getImage() != null) {
-            menuResponse.setImage(serviceUrl + "img/" + menuItem.getImage());
+            menuResponse.setImage(serviceUrl + "media/img/" + menuItem.getImage());
         }
         return menuResponse;
     }

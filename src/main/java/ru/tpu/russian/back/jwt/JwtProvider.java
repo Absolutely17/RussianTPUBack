@@ -85,7 +85,6 @@ public class JwtProvider {
             return true;
         } catch (ExpiredJwtException expEx) {
             log.error("Token expired");
-            throw expEx;
         } catch (UnsupportedJwtException unsEx) {
             log.error("Unsupported jwt");
         } catch (MalformedJwtException mjEx) {
@@ -94,16 +93,6 @@ public class JwtProvider {
             log.error("Invalid signature");
         } catch (Exception e) {
             log.error("Invalid token");
-        }
-        return false;
-    }
-
-    public boolean validateToken(String token, HttpServletRequest request) {
-        try {
-            validateToken(token);
-            return true;
-        } catch (ExpiredJwtException ex) {
-            request.setAttribute("expired", ex.getMessage());
         }
         return false;
     }

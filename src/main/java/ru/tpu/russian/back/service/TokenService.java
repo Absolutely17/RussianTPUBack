@@ -3,7 +3,7 @@ package ru.tpu.russian.back.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
@@ -22,14 +22,14 @@ public class TokenService {
         this.userRepository = userRepository;
     }
 
-    public AuthResponseDto refreshToken(HttpServletRequest servletRequest) throws InternalException {
+    public AuthResponseDto refreshToken(HttpServletRequest servletRequest) throws BusinessException {
         log.info("Refresh access token");
         String token = jwtProvider.getTokenFromRequest(servletRequest);
         if (token != null && jwtProvider.validateToken(token)) {
             String email = jwtProvider.getEmailFromToken(token);
             String refreshSaltInToken = jwtProvider.getSaltFromRefreshToken(token);
             String refreshSaltInDB = userRepository.getUserByEmail(email)
-                    .orElseThrow(() -> new InternalException("Exception.login.notFound"))
+                    .orElseThrow(() -> new BusinessException("Exception.login.user.notFound"))
                     .getRefreshSalt();
             if (refreshSaltInDB.equals(refreshSaltInToken)) {
                 log.info("Salt matched. Generating new tokens and new salt. Email {}", email);
@@ -39,11 +39,11 @@ public class TokenService {
                 );
             } else {
                 log.error("The secret of the refresh token did not match.");
-                throw new InternalException("Exception.login.refreshToken.mismatch");
+                throw new BusinessException("Exception.login.refreshToken.mismatchSalt");
             }
         } else {
             log.error("The token was not found in the request headers.");
-            throw new InternalException("Exception.login.token.notFoundOrInvalid");
+            throw new BusinessException("Exception.login.token.notFoundOrInvalid");
         }
     }
 

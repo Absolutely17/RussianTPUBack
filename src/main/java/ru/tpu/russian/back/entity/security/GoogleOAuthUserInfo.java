@@ -5,7 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import lombok.extern.slf4j.Slf4j;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 
 import java.util.Collections;
 
@@ -30,7 +30,7 @@ public class GoogleOAuthUserInfo implements OAuthUserInfo {
         this.lastName = lastName;
     }
 
-    public static GoogleOAuthUserInfo create(String token) throws InternalException {
+    public static GoogleOAuthUserInfo create(String token) throws BusinessException {
         try {
             GoogleIdToken idToken = verifier.verify(token);
             if (idToken != null) {
@@ -41,11 +41,11 @@ public class GoogleOAuthUserInfo implements OAuthUserInfo {
                         (String) payload.get("family_name"));
             } else {
                 log.error("Token invalid.");
-                throw new InternalException("Exception.login.service.invalidToken");
+                throw new BusinessException("Exception.login.service.invalidToken");
             }
         } catch (Exception ex) {
             log.error("Problem with verifying token", ex);
-            throw new InternalException("Exception.login.service.internalProblem");
+            throw new BusinessException("Exception.login.service.internalProblem");
         }
     }
 

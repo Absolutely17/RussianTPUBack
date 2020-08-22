@@ -3,7 +3,7 @@ package ru.tpu.russian.back.entity.security;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.social.facebook.api.*;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 
 import static ru.tpu.russian.back.entity.security.FacebookUtils.*;
 
@@ -22,7 +22,7 @@ public class FacebookUserInfo implements OAuthUserInfo {
         this.lastName = lastName;
     }
 
-    public static FacebookUserInfo create(String token) throws InternalException {
+    public static FacebookUserInfo create(String token) throws BusinessException {
         try {
             Facebook facebook = new FacebookTemplate(token);
             User profile = facebook.fetchObject(
@@ -38,7 +38,7 @@ public class FacebookUserInfo implements OAuthUserInfo {
                     profile.getLastName());
         } catch (Exception ex) {
             log.error("Some problems with Facebook API.", ex);
-            throw new InternalException("Exception.login.service.internalProblem");
+            throw new BusinessException("Exception.login.service.internalProblem");
         }
     }
 

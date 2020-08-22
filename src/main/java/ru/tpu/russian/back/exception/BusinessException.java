@@ -3,16 +3,16 @@ package ru.tpu.russian.back.exception;
 import lombok.Getter;
 
 @Getter
-public class InternalException extends Exception {
+public class BusinessException extends Exception {
 
     private Object[] args;
 
-    public InternalException(String message, Object... args) {
+    public BusinessException(String message, Object... args) {
         super(message);
         this.args = args;
     }
 
-    public InternalException(String message) {
+    public BusinessException(String message) {
         super(message);
     }
 }

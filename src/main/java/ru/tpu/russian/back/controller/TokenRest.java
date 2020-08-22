@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.TokenService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +46,7 @@ public class TokenRest {
     @RequestMapping(method = PUT)
     public AuthResponseDto refreshToken(
             HttpServletRequest servletRequest
-    ) throws InternalException {
+    ) throws BusinessException {
         return tokenService.refreshToken(servletRequest);
     }
 

@@ -9,7 +9,7 @@ import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.enums.ProviderType;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
@@ -41,7 +41,7 @@ public class UserService {
         this.mailService = mailService;
     }
 
-    public void register(BaseUserRequestDto registrationRequestDto) throws InternalException {
+    public void register(BaseUserRequestDto registrationRequestDto) throws BusinessException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.debug("Check registration parameters on valid.");
         checkEmailOnExist(registrationRequestDto.getEmail());
@@ -56,12 +56,12 @@ public class UserService {
         }
     }
 
-    private void checkEmailOnExist(String email) throws InternalException {
+    private void checkEmailOnExist(String email) throws BusinessException {
         log.debug("Check email address for availability in the database.");
         Optional<User> userOptional = userRepository.getUserByEmail(email);
         if (userOptional.isPresent()) {
             log.warn("This email address already taken.");
-            throw new InternalException("Exception.reg.email.exist", email);
+            throw new BusinessException("Exception.registration.email.exist", email);
         }
     }
 
@@ -100,7 +100,7 @@ public class UserService {
         return params;
     }
 
-    public AuthResponseDto login(AuthRequestDto authRequest) throws InternalException {
+    public AuthResponseDto login(AuthRequestDto authRequest) throws BusinessException {
         log.info("Login in system with email {}", authRequest.getEmail());
         User user = findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
         String token = jwtProvider.generateToken(user.getEmail());
@@ -112,7 +112,7 @@ public class UserService {
         return new AuthResponseDto(token, new UserResponseDto(user));
     }
 
-    private User findByEmailAndPassword(String email, String password) throws InternalException {
+    private User findByEmailAndPassword(String email, String password) throws BusinessException {
         log.debug("Try to find user with email {} in DB", email);
         User user = findByEmail(email);
         if (user != null) {
@@ -122,11 +122,11 @@ public class UserService {
                 return user;
             } else {
                 log.warn("Password mismatch");
-                throw new InternalException("Exception.login.mismatch");
+                throw new BusinessException("Exception.login.password.mismatch");
             }
         } else {
             log.error("User is not found.");
-            throw new InternalException("Exception.login.notFound", email);
+            throw new BusinessException("Exception.login.user.notFound", email);
         }
     }
 
@@ -135,7 +135,7 @@ public class UserService {
         return user.orElse(null);
     }
 
-    public ResponseEntity<?> loginWithService(AuthRequestWithServiceDto authRequest) throws InternalException {
+    public ResponseEntity<?> loginWithService(AuthRequestWithServiceDto authRequest) throws BusinessException {
         log.info("Login in system with service {}", authRequest.getProvider());
         OAuthUserInfo userInfo = OAuthServiceUserInfoFactory.getOAuthUserInfo(
                 authRequest.getProvider(),
@@ -146,7 +146,7 @@ public class UserService {
         User user = findByEmail(userInfo.getEmail());
         if (user != null) {
             if (!user.getProvider().equals(ProviderType.valueOf(authRequest.getProvider()))) {
-                throw new InternalException("Exception.login.service.wrongService",
+                throw new BusinessException("Exception.login.service.wrongService",
                         authRequest.getProvider(), user.getProvider());
             }
             String token = jwtProvider.generateToken(user.getEmail());
@@ -164,7 +164,7 @@ public class UserService {
             }
     }
 
-    public void registerWithService(BaseUserRequestDto registrationRequest) throws InternalException {
+    public void registerWithService(BaseUserRequestDto registrationRequest) throws BusinessException {
         log.info("Register new user through service. User {}", registrationRequest.toString());
         log.debug("Convert to entity User.");
         checkEmailOnExist(registrationRequest.getEmail());
@@ -175,7 +175,7 @@ public class UserService {
         register(user);
     }
 
-    public void editUser(BaseUserRequestDto requestDto) throws InternalException {
+    public void editUser(BaseUserRequestDto requestDto) throws BusinessException {
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
         Map<String, Object> paramsToProcedure = putEditedUserFieldToMap(requestDto);
         userRepository.editUser(paramsToProcedure);
@@ -195,8 +195,8 @@ public class UserService {
         return paramsToProcedure;
     }
 
-    public UserResponseDto getUserProfile(String email) throws InternalException {
+    public UserResponseDto getUserProfile(String email) throws BusinessException {
         return new UserResponseDto(userRepository.getUserByEmail(email).orElseThrow(
-                () -> new InternalException("Exception.login.notFound", email)));
+                () -> new BusinessException("Exception.login.user.notFound", email)));
     }
 }

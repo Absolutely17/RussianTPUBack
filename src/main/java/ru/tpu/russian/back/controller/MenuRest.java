@@ -4,7 +4,7 @@ import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.response.MenuResponseDto;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.MenuService;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class MenuRest {
     public List<MenuResponseDto> getMenu(
             @ApiParam(value = "Язык пунктов меню", required = true)
             @RequestParam String language
-    ) throws InternalException {
+    ) throws BusinessException {
         return menuService.getAll(language);
     }
 }

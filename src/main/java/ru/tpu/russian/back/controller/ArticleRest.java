@@ -4,7 +4,7 @@ import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.response.*;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.ArticleService;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class ArticleRest {
             @PathVariable String id,
             @ApiParam(value = "Осуществлен ли переход из меню")
             @RequestParam(value = "fromMenu", defaultValue = "false") boolean fromMenu
-    ) throws InternalException {
+    ) throws BusinessException {
         return articleService.getArticlesBrief(id, fromMenu);
     }
 
@@ -40,7 +40,7 @@ public class ArticleRest {
     public ArticleResponse getArticle(
             @ApiParam(value = "ID статьи", required = true)
             @PathVariable String id
-    ) throws InternalException {
+    ) throws BusinessException {
         return articleService.getArticle(id);
     }
 

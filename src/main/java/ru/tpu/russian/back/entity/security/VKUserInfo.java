@@ -5,7 +5,7 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.account.UserSettings;
 import lombok.extern.slf4j.Slf4j;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,14 +29,14 @@ public class VKUserInfo implements OAuthUserInfo {
     public static VKUserInfo create(
             String token,
             Integer userId,
-            String email) throws InternalException {
+            String email) throws BusinessException {
         try {
             UserActor actor = new UserActor(requireNonNull(userId), token);
             UserSettings user = vk.account().getProfileInfo(actor).execute();
             return new VKUserInfo(requireNonNull(email), user.getFirstName(), user.getLastName());
         } catch (Exception ex) {
             log.error("Problems with access to API VK or incorrect input data.", ex);
-            throw new InternalException("Exception.login.service.internalProblem");
+            throw new BusinessException("Exception.login.service.internalProblem");
         }
     }
 

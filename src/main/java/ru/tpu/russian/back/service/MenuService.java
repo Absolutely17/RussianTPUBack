@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.response.MenuResponseDto;
 import ru.tpu.russian.back.entity.Menu;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
 
 import java.util.List;
@@ -32,15 +32,15 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuResponseDto> getAll(String language) throws InternalException {
+    public List<MenuResponseDto> getAll(String language) throws BusinessException {
         log.info("Getting all menu items. Language = {}", language);
         return convertToDto(menuRepository.getAll(language));
     }
 
-    private List<MenuResponseDto> convertToDto(List<Menu> menuItems) throws InternalException {
+    private List<MenuResponseDto> convertToDto(List<Menu> menuItems) throws BusinessException {
         if (menuItems.isEmpty()) {
             log.warn("Could not find menu items.");
-            throw new InternalException("Exception.menuItem.notFound");
+            throw new BusinessException("Exception.menuItem.notFound");
         }
         log.info("From DB received {} menu items", menuItems.size());
         menuItems.removeIf(menuItem -> menuItem.getLevel() != 1);

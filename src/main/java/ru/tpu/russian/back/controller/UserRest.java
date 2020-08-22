@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
 import ru.tpu.russian.back.dto.response.UserResponseDto;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.UserService;
 
 import javax.validation.Valid;
@@ -27,12 +27,12 @@ public class UserRest {
     }
 
     @RequestMapping(method = PUT, path = "/edit")
-    public void editUserInfo(@Valid @RequestBody BaseUserRequestDto requestDto) throws InternalException {
+    public void editUserInfo(@Valid @RequestBody BaseUserRequestDto requestDto) throws BusinessException {
         userService.editUser(requestDto);
     }
 
     @RequestMapping(method = GET, path = "/profile")
-    public UserResponseDto getUserProfile(@PathParam(value = "email") String email) throws InternalException {
+    public UserResponseDto getUserProfile(@PathParam(value = "email") String email) throws BusinessException {
         return userService.getUserProfile(email);
     }
 }

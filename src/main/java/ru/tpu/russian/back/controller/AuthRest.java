@@ -7,7 +7,7 @@ import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.request.*;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
 import ru.tpu.russian.back.entity.security.OAuthUserInfo;
-import ru.tpu.russian.back.exception.InternalException;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.UserService;
 
 import javax.validation.Valid;
@@ -45,7 +45,7 @@ public class AuthRest {
     public void register(
             @ApiParam(value = "Данные пользователя для регистрации", required = true)
             @Valid @RequestBody BaseUserRequestDto registrationRequestDto
-    ) throws InternalException {
+    ) throws BusinessException {
         userService.register(registrationRequestDto);
     }
 
@@ -68,8 +68,8 @@ public class AuthRest {
     @RequestMapping(method = POST, path = "/local/login")
     public AuthResponseDto login(
             @ApiParam(value = "Данные пользователя для аутентификации", required = true)
-            @RequestBody AuthRequestDto authRequest
-    ) throws InternalException {
+            @Valid @RequestBody AuthRequestDto authRequest
+    ) throws BusinessException {
 
         return userService.login(authRequest);
     }
@@ -119,7 +119,7 @@ public class AuthRest {
     public ResponseEntity<?> loginWithService(
             @ApiParam(value = "Данные сервиса для аутентификации", required = true)
             @RequestBody AuthRequestWithServiceDto authServiceRequest
-    ) throws InternalException {
+    ) throws BusinessException {
         return userService.loginWithService(authServiceRequest);
     }
 
@@ -142,7 +142,7 @@ public class AuthRest {
     public void registerNewUserWithService(
             @ApiParam(value = "Данные для регистрации пользователя с помощью стороннего API", required = true)
             @Valid @RequestBody BaseUserRequestDto registrationRequest
-    ) throws InternalException {
+    ) throws BusinessException {
         userService.registerWithService(registrationRequest);
     }
 

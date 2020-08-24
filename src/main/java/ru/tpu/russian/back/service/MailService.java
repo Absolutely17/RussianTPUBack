@@ -67,6 +67,8 @@ public class MailService {
             } catch (Exception ex) {
                 throw new BusinessException("Exception.mail.send");
             }
+        } else {
+            log.warn("User {} already confirmed.", email);
         }
     }
 

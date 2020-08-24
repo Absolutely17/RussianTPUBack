@@ -61,9 +61,7 @@ public class MailService {
     public void reSendEmail(String email) throws BusinessException {
         User user = userRepository.getUserByEmail(email)
                 .orElseThrow(() -> new BusinessException("Exception.login.user.notFound", email));
-        log.info(user.toString());
-        log.info("boolean isConfirm {}", user.isConfirm());
-        if (user.isConfirm()) {
+        if (!user.isConfirm()) {
             try {
                 sendMessage(user.getEmail());
             } catch (Exception ex) {

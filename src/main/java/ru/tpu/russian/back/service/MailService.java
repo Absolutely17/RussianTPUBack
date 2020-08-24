@@ -63,19 +63,19 @@ public class MailService {
                 .orElseThrow(() -> new BusinessException("Exception.login.user.notFound", email));
         if (user.isConfirm()) {
             try {
-                sendMessage(user.getEmail(), user.getFirstName());
+                sendMessage(user.getEmail());
             } catch (Exception ex) {
                 throw new BusinessException("Exception.mail.send");
             }
         }
     }
 
-    public void sendMessage(String email, String firstName) throws IOException, MessagingException {
+    public void sendMessage(String email) throws IOException, MessagingException {
         log.debug("Starting to create message.");
         String token = jwtProvider.generateTokenForConfirmEmail(email);
         Map<String, Object> model = new LinkedHashMap<>();
         model.put("token", token);
-        model.put("name", firstName);
+        model.put("email", email);
         try {
             MimeMessage message = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

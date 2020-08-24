@@ -157,4 +157,23 @@ public class User {
     public void setConfirm(boolean isConfirm) {
         this.isConfirm = isConfirm;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", role='" + role + '\'' +
+                ", gender='" + gender + '\'' +
+                ", language=" + language +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", refreshSalt='" + refreshSalt + '\'' +
+                ", provider=" + provider +
+                ", isConfirm=" + isConfirm +
+                '}';
+    }
 }

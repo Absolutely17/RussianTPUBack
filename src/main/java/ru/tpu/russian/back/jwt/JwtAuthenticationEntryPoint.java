@@ -15,7 +15,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         OutputStream out = response.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();

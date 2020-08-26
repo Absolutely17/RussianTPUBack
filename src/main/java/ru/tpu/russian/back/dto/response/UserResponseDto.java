@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.Nullable;
 import ru.tpu.russian.back.entity.User;
-import ru.tpu.russian.back.enums.Languages;
+import ru.tpu.russian.back.enums.Language;
 
 @Getter
 @AllArgsConstructor
@@ -31,7 +31,7 @@ public class UserResponseDto {
     private String gender;
 
     @ApiModelProperty(example = "Russian", value = "Язык пользователя")
-    private Languages language;
+    private Language language;
 
     @ApiModelProperty(example = "88005553535", value = "Номер телефона пользователя")
     @Nullable

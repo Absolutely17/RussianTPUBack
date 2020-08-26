@@ -50,7 +50,7 @@ public class UserService {
         log.debug("Saving new user in DB.");
         register(user);
         try {
-            mailService.sendMessage(registrationRequestDto.getEmail());
+            mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getLanguage());
         } catch (Exception ex) {
             log.warn("Register success. But some problem with sending confirm email.", ex);
         }

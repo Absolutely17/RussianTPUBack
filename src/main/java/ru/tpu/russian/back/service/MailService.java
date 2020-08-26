@@ -2,9 +2,11 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.*;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.enums.Language;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
@@ -29,6 +31,8 @@ public class MailService {
 
     private final UserRepository userRepository;
 
+    private final MessageSource messageSource;
+
     @Value("${spring.mail.from}")
     private String mailFrom;
 
@@ -36,12 +40,14 @@ public class MailService {
             JavaMailSender sender,
             JwtProvider provider,
             VelocityMerger merger,
-            UserRepository userRepository
+            UserRepository userRepository,
+            MessageSource messageSource
     ) {
         this.sender = sender;
         jwtProvider = provider;
         this.merger = merger;
         this.userRepository = userRepository;
+        this.messageSource = messageSource;
     }
 
     public void confirmRegistration(String token, HttpServletResponse response) {
@@ -63,7 +69,7 @@ public class MailService {
                 .orElseThrow(() -> new BusinessException("Exception.login.user.notFound", email));
         if (!user.isConfirm()) {
             try {
-                sendMessage(user.getEmail());
+                sendMessage(user.getEmail(), user.getLanguage());
             } catch (Exception ex) {
                 throw new BusinessException("Exception.mail.send");
             }
@@ -72,19 +78,20 @@ public class MailService {
         }
     }
 
-    public void sendMessage(String email) throws IOException, MessagingException {
+    public void sendMessage(String email, Language language) throws IOException, MessagingException {
         log.debug("Starting to create message.");
         String token = jwtProvider.generateTokenForConfirmEmail(email);
         Map<String, Object> model = new LinkedHashMap<>();
         model.put("token", token);
         model.put("email", email);
+        Locale currentLocale = new Locale(language.toString());
         try {
             MimeMessage message = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(email);
-            helper.setSubject("RussianTPU - Confirmation registration");
+            helper.setSubject(messageSource.getMessage("Mail.subject", null, currentLocale));
             helper.setFrom(mailFrom);
-            helper.setText(merger.merge(model), true);
+            helper.setText(merger.merge(model, language), true);
             log.info("Try to sending email to {}.", email);
             sender.send(message);
         } catch (Exception ex) {

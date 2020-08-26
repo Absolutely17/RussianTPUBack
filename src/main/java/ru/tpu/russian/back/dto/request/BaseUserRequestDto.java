@@ -49,7 +49,7 @@ public class BaseUserRequestDto {
 
     @ApiModelProperty(required = true, example = "Russian", value = "Язык пользователя")
     @NotNull
-    private Languages language;
+    private Language language;
 
     @ApiModelProperty(example = "88005553535", value = "Номер телефона")
     @Nullable

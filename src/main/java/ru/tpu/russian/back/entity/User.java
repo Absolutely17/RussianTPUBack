@@ -114,7 +114,7 @@ public class User {
 
     @Column(name = "Язык", length = 20)
     @Enumerated(EnumType.STRING)
-    private Languages language;
+    private Language language;
 
     @Column(name = "Номер телефона", length = 20)
     @Nullable
@@ -136,7 +136,7 @@ public class User {
     public User(
             String firstName, @Nullable String lastName,
             @Nullable String middleName, @Nullable String gender,
-            Languages language, @Nullable String phoneNumber,
+            Language language, @Nullable String phoneNumber,
             String email, ProviderType provider
     ) {
         this.firstName = firstName;

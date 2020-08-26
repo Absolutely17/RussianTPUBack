@@ -1,8 +1,9 @@
 package ru.tpu.russian.back.service;
 
-import org.apache.velocity.VelocityContext;
+import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
-import org.springframework.core.io.ClassPathResource;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.enums.Language;
 
@@ -22,14 +23,19 @@ public class VelocityMerger {
 
     public VelocityMerger() {
         engine = new VelocityEngine();
+        engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+        engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         engine.init();
     }
 
     public String merge(Map<String, Object> model, Language language) throws IOException {
+
+        Template template = engine.getTemplate(
+                format(TEMPLATE_MAIL, language.toString()),
+                "UTF-8"
+        );
         try (StringWriter writer = new StringWriter()) {
-            File template = new ClassPathResource(format(TEMPLATE_MAIL, language.toString())).getFile();
-            FileReader reader = new FileReader(template);
-            engine.evaluate(new VelocityContext(model), writer, LOG_TAG, reader);
+            template.merge(new VelocityContext(model), writer);
             return writer.toString();
         }
     }

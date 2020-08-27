@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
-import ru.tpu.russian.back.exception.BusinessException;
+import ru.tpu.russian.back.exception.*;
 import ru.tpu.russian.back.service.TokenService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +73,8 @@ public class TokenRest {
             );
         } else {
             return new ResponseEntity<>(
-                    "Not authenticated", UNAUTHORIZED
+                    new ExceptionMessage("Unauthorized."),
+                    UNAUTHORIZED
             );
         }
     }

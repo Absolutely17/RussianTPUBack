@@ -15,6 +15,8 @@ import ru.tpu.russian.back.repository.user.UserRepository;
 
 import java.util.*;
 
+import static ru.tpu.russian.back.enums.ProviderType.valueOf;
+
 @Service
 @Slf4j
 public class UserService {
@@ -145,9 +147,15 @@ public class UserService {
         );
         User user = findByEmail(userInfo.getEmail());
         if (user != null) {
-            if (!user.getProvider().equals(ProviderType.valueOf(authRequest.getProvider()))) {
-                throw new BusinessException("Exception.login.service.wrongService",
-                        authRequest.getProvider(), user.getProvider());
+            if (!user.getProvider().equals(valueOf(authRequest.getProvider()))) {
+                log.warn("It looks like you are trying to authenticate with the wrong service." +
+                        " You are trying to login with {}, but you need to login with {}", authRequest.getProvider(), user.getProvider());
+                if (ProviderType.local.equals(user.getProvider())) {
+                    throw new BusinessException("Exception.login.conflict.providerAndLocal", authRequest.getProvider());
+                } else {
+                    throw new BusinessException("Exception.login.service.wrongService",
+                            authRequest.getProvider(), user.getProvider());
+                }
             }
             String token = jwtProvider.generateToken(user.getEmail());
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());

@@ -184,6 +184,7 @@ public class UserService {
     }
 
     public void editUser(BaseUserRequestDto requestDto) throws BusinessException {
+        log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
         Map<String, Object> paramsToProcedure = putEditedUserFieldToMap(requestDto);
         userRepository.editUser(paramsToProcedure);
@@ -204,6 +205,7 @@ public class UserService {
     }
 
     public UserResponseDto getUserProfile(String email) throws BusinessException {
+        log.info("Get user profile {}", email);
         return new UserResponseDto(userRepository.getUserByEmail(email).orElseThrow(
                 () -> new BusinessException("Exception.login.user.notFound", email)));
     }

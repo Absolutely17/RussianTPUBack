@@ -17,8 +17,6 @@ public class VelocityMerger {
 
     private static final String TEMPLATE_MAIL = "templates/registration-confirm-%s.html";
 
-    private static final String LOG_TAG = "";
-
     private final VelocityEngine engine;
 
     public VelocityMerger() {

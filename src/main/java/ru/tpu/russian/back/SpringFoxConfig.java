@@ -40,7 +40,7 @@ public class SpringFoxConfig {
                 .tags(new Tag(MENU_REST, "Получение меню"))
                 .tags(new Tag(USER_REST, "Получение пользователей"))
                 .tags(new Tag(AUTH_REST, "Аутентификация/регистрация пользователя"))
-                .tags(new Tag(MAIL_REST, "Подтверждение Email пользователя"))
+                .tags(new Tag(MAIL_REST, "Операции с почтой"))
                 .tags(new Tag(TOKEN_REST, "Токен пользователя"));
     }
 

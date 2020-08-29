@@ -54,7 +54,7 @@ public class BaseUserRequestDto {
     @ApiModelProperty(example = "88005553535", value = "Номер телефона")
     @Nullable
     @Size(min = 5, max = 20)
-    @Pattern(regexp = "^\\d+$")
+    @Pattern(regexp = "^[+]\\d+$")
     private String phoneNumber;
 
     @ApiModelProperty(example = "google", value = "Сервис через который происходит аутентификация")

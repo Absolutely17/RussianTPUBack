@@ -12,7 +12,7 @@
             <charset>UTF-8</charset>
             <pattern>%-4r [%thread] %X{clientIP} %d{HH:mm:ss.SSS} [%p] [%thread@%C{1}:%L] - %m%n</pattern>
         </encoder>
-        <file>app.log</file>
+        <file>${LOG_PATH}/app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>app.log.%d{yyyy-MM-dd}.gz}</fileNamePattern>
             <maxHistory>${LOG_FILE_MAX_HISTORY:-30}</maxHistory>

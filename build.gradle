@@ -45,6 +45,8 @@ dependencies {
     compile ('com.vk.api:sdk:1.0.6') {
         exclude group: 'org.apache.logging.log4j'
     }
+    // Firebase
+    compile group: 'com.google.firebase', name: 'firebase-admin', version: '7.0.0'
 }
 
 test {

@@ -2,20 +2,39 @@ package ru.tpu.russian.back.service;
 
 import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.request.NotificationRequestDto;
+import ru.tpu.russian.back.exception.ExceptionMessage;
 
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
+
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @Slf4j
 public class NotificationService {
 
-    public void send(NotificationRequestDto request) throws ExecutionException, InterruptedException {
-        Message message = getPreConfiguredMessage(request);
-        String response = sendAndGetResponse(message);
-        log.info("Response {}", response);
+    private static final String TOPIC_NAME = "news_";
+
+    public ResponseEntity<?> send(NotificationRequestDto request) {
+        log.info("Send notification on app.", request.toString());
+        request.setTopic(TOPIC_NAME + request.getLanguage().toString());
+        try {
+            Message message = getPreConfiguredMessage(request);
+            String response = sendAndGetResponse(message);
+            log.info("Notification send. Response {}", response);
+            return new ResponseEntity<>(
+                    OK
+            );
+        } catch (ExecutionException | InterruptedException ex) {
+            return new ResponseEntity<>(
+                    "Problems sending notification",
+                    INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     private String sendAndGetResponse(Message message) throws ExecutionException, InterruptedException {

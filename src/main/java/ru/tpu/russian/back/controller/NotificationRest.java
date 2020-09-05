@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.request.NotificationRequestDto;
 import ru.tpu.russian.back.service.NotificationService;
 
-import java.util.concurrent.ExecutionException;
-
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -20,8 +18,7 @@ public class NotificationRest {
 
     @RequestMapping(method = POST)
     public void sendNotification(
-            @RequestBody NotificationRequestDto requestDto
-    ) throws ExecutionException, InterruptedException {
+            @RequestBody NotificationRequestDto requestDto) {
         notificationService.send(requestDto);
     }
 

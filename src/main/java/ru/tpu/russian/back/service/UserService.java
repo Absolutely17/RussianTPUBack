@@ -105,7 +105,7 @@ public class UserService {
     public AuthResponseDto login(AuthRequestDto authRequest) throws BusinessException {
         log.info("Login in system with email {}", authRequest.getEmail());
         User user = findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
-        String token = jwtProvider.generateToken(user.getEmail());
+        String token = jwtProvider.generateAccessToken(user.getEmail());
         if (authRequest.isRememberMe()) {
             log.debug("Option rememberMe selected.");
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
@@ -114,7 +114,7 @@ public class UserService {
         return new AuthResponseDto(token, new UserResponseDto(user));
     }
 
-    private User findByEmailAndPassword(String email, String password) throws BusinessException {
+    public User findByEmailAndPassword(String email, String password) throws BusinessException {
         log.debug("Try to find user with email {} in DB", email);
         User user = findByEmail(email);
         if (user != null) {
@@ -157,7 +157,7 @@ public class UserService {
                             authRequest.getProvider(), user.getProvider());
                 }
             }
-            String token = jwtProvider.generateToken(user.getEmail());
+            String token = jwtProvider.generateAccessToken(user.getEmail());
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
             AuthResponseDto response = new AuthResponseDto(token, refreshToken, new UserResponseDto(user));
             return new ResponseEntity<>(

@@ -15,6 +15,10 @@ public class NotificationRequestDto {
 
     private String message;
 
+    private String email;
+
+    private String token;
+
     @JsonIgnore
     private String topic;
 
@@ -24,6 +28,7 @@ public class NotificationRequestDto {
                 "language=" + language +
                 ", title='" + title + '\'' +
                 ", message='" + message + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

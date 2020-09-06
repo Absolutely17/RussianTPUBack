@@ -2,7 +2,9 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.tpu.russian.back.dto.request.AuthRequestDto;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
+import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
@@ -17,9 +19,12 @@ public class TokenService {
 
     private final UserRepository userRepository;
 
-    public TokenService(JwtProvider jwtProvider, UserRepository userRepository) {
+    private final UserService userService;
+
+    public TokenService(JwtProvider jwtProvider, UserRepository userRepository, UserService userService) {
         this.jwtProvider = jwtProvider;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public AuthResponseDto refreshToken(HttpServletRequest servletRequest) throws BusinessException {
@@ -34,7 +39,7 @@ public class TokenService {
             if (refreshSaltInDB.equals(refreshSaltInToken)) {
                 log.info("Salt matched. Generating new tokens and new salt. Email {}", email);
                 return new AuthResponseDto(
-                        jwtProvider.generateToken(email),
+                        jwtProvider.generateAccessToken(email),
                         jwtProvider.generateRefreshToken(email)
                 );
             } else {
@@ -56,5 +61,11 @@ public class TokenService {
         }
         log.warn("User not authenticated.");
         return false;
+    }
+
+    public String generateTokenForAdmin(AuthRequestDto requestDto) throws BusinessException {
+        User admin = userService.findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
+        log.debug("Generate token for admin.");
+        return jwtProvider.generateTokenWithExpiration(admin.getEmail(), 1L);
     }
 }

@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
+import ru.tpu.russian.back.dto.request.AuthRequestDto;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
 import ru.tpu.russian.back.exception.*;
 import ru.tpu.russian.back.service.TokenService;
@@ -12,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -77,5 +77,12 @@ public class TokenRest {
                     UNAUTHORIZED
             );
         }
+    }
+
+    @RequestMapping(method = POST, path = "/web-admin")
+    public String generateTokenForAdmin(
+            @RequestBody AuthRequestDto requestDto
+    ) throws BusinessException {
+        return tokenService.generateTokenForAdmin(requestDto);
     }
 }

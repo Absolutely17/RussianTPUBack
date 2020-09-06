@@ -39,11 +39,8 @@ public class JwtProvider {
     @Value("${jwt.expiration.refresh.token:15}")
     private long expRefreshToken;
 
-    @Value("${spring.mail.token.expiration:1}")
-    private long mailConfirmExp;
-
-    public String generateTokenForConfirmEmail(String email) {
-        Date date = Date.from(LocalDate.now().plusDays(mailConfirmExp)
+    public String generateTokenWithExpiration(String email, long expirationDays) {
+        Date date = Date.from(LocalDate.now().plusDays(expirationDays)
                 .atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .setSubject(email)
@@ -52,7 +49,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String generateToken(String email) {
+    public String generateAccessToken(String email) {
         log.info("Starting generate access token, email {}, expiration time {}d", email, expAccessToken);
         Date date = Date.from(LocalDate.now().plusDays(expAccessToken)
                 .atStartOfDay(ZoneId.systemDefault()).toInstant());

@@ -16,7 +16,6 @@ public class MenuRepositoryImpl implements IMenuRepository {
     public List<Menu> getAll(String language) {
         StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_MENU);
         storedProcedureQuery.setParameter("Language", language);
-        ;
         storedProcedureQuery.execute();
         return storedProcedureQuery.getResultList();
     }

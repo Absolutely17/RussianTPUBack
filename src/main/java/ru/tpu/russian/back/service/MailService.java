@@ -23,6 +23,8 @@ public class MailService {
 
     private static final String REDIRECT_URL = "https://tpu.ru/";
 
+    private static final long EXPIRATION_CONFIRM_MAIL_TOKEN = 2L;
+
     private final JavaMailSender sender;
 
     private final JwtProvider jwtProvider;
@@ -80,7 +82,7 @@ public class MailService {
 
     public void sendMessage(String email, Language language) throws IOException, MessagingException {
         log.debug("Starting to create message.");
-        String token = jwtProvider.generateTokenForConfirmEmail(email);
+        String token = jwtProvider.generateTokenWithExpiration(email, EXPIRATION_CONFIRM_MAIL_TOKEN);
         Map<String, Object> model = new LinkedHashMap<>();
         model.put("token", token);
         model.put("email", email);

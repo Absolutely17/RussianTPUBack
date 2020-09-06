@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.request.NotificationRequestDto;
 import ru.tpu.russian.back.service.NotificationService;
@@ -17,9 +18,9 @@ public class NotificationRest {
     }
 
     @RequestMapping(method = POST)
-    public void sendNotification(
+    public ResponseEntity<?> sendNotification(
             @RequestBody NotificationRequestDto requestDto) {
-        notificationService.send(requestDto);
+        return notificationService.send(requestDto);
     }
 
 }

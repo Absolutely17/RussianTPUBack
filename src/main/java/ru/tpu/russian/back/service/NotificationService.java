@@ -27,7 +27,7 @@ public class NotificationService {
 
     private final UserRepository userRepository;
 
-    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     private static final String TOPIC_NAME = "news_";
 

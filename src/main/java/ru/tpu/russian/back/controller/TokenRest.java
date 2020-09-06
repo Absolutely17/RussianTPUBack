@@ -80,9 +80,9 @@ public class TokenRest {
     }
 
     @RequestMapping(method = POST, path = "/web-admin")
-    public void generateTokenForAdmin(
+    public ResponseEntity<?> generateTokenForAdmin(
             @RequestBody AuthRequestDto requestDto
     ) throws BusinessException {
-        tokenService.generateTokenForAdmin(requestDto);
+        return tokenService.generateTokenForAdmin(requestDto);
     }
 }

@@ -126,7 +126,6 @@ public class NotificationService {
                 .setPriority(AndroidConfig.Priority.HIGH)
                 .setNotification(AndroidNotification.builder()
                         .setTag(topic)
-                        .setIcon("ic_launcher_tpu")
                         .build())
                 .build();
     }

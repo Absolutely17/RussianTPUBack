@@ -125,7 +125,10 @@ public class NotificationService {
                 .setTtl(Duration.ofMinutes(2).toMillis()).setCollapseKey(topic)
                 .setPriority(AndroidConfig.Priority.HIGH)
                 .setNotification(AndroidNotification.builder()
-                        .setTag(topic).build()).build();
+                        .setTag(topic)
+                        .setIcon("ic_launcher_tpu")
+                        .build())
+                .build();
     }
 
     private ApnsConfig getApnsConfig(String topic) {

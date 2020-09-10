@@ -14,12 +14,12 @@ public class BaseUserRequestDto {
 
     @ApiModelProperty(required = true, example = "qwerty123", value = "Пароль пользователя")
     @NotNull
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!&^%$#@_|\\/\\\\]{8,}$")
     private String password;
 
     @ApiModelProperty(required = true, example = "qwerty123", value = "Новый пароль пользователя")
     @Nullable
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!&^%$#@_|\\/\\\\]{8,}$")
     private String newPassword;
 
     @ApiModelProperty(required = true, example = "test@test.com", value = "Email пользователя")

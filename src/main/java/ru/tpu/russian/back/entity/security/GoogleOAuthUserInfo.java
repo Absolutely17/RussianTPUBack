@@ -21,7 +21,7 @@ public class GoogleOAuthUserInfo implements OAuthUserInfo {
     private static final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
             new ApacheHttpTransport(),
             new JacksonFactory())
-            .setAudience(Collections.singletonList("827029366413-ckl58bbhvkl57qq2f4vnejpoijig0r2s.apps.googleusercontent.com"))
+            .setAudience(Collections.singletonList("1039916265675-58mc9f11474pqvg8sskigitndr6odt0b.apps.googleusercontent.com"))
             .build();
 
     private GoogleOAuthUserInfo(String email, String firstName, String lastName) {

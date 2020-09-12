@@ -25,8 +25,7 @@ public class MediaService {
             return null;
         } else {
             Date currentTime = new Date();
-            image.setLastUseDate(currentTime);
-            mediaRepository.save(image);
+            mediaRepository.updateLastUseDate(currentTime, id);
             return image.getData();
         }
     }

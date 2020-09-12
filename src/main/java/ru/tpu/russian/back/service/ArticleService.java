@@ -8,7 +8,8 @@ import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -43,7 +44,7 @@ public class ArticleService {
         return articles
                 .stream()
                 .map(this::convertToBriefResponse)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private ArticleBriefResponse convertToBriefResponse(Article article) {

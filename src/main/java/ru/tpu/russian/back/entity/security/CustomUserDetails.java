@@ -20,7 +20,6 @@ public class CustomUserDetails implements UserDetails {
         this.email = email;
         this.password = password;
         grantedAuthorities = singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-        ;
     }
 
     @Override

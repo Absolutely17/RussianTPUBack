@@ -244,6 +244,7 @@ public class UserService {
      * @param resetDto новые данные
      */
     public void resetPassword(ResetPasswordDto resetDto) throws BusinessException {
+        log.info("Starting to reset password. Token {}", resetDto.getToken());
         String token = resetDto.getToken();
         if (token != null && jwtProvider.validateToken(token)) {
             String email = jwtProvider.getEmailFromToken(token);

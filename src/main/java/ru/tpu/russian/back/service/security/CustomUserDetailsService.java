@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Nullable
     public CustomUserDetails loadUserByUsername(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
+        Optional<User> user = userRepository.getUserByEmail(email);
         if (user.isPresent()) {
             return CustomUserDetails.create(user.get());
         } else {

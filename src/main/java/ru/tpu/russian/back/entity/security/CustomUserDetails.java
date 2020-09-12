@@ -3,9 +3,10 @@ package ru.tpu.russian.back.entity.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.tpu.russian.back.entity.User;
 
-import java.util.*;
+import java.util.Collection;
+
+import static java.util.Collections.singletonList;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -15,21 +16,11 @@ public class CustomUserDetails implements UserDetails {
 
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
-    public static CustomUserDetails create(User user) {
-        List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-
-        return new CustomUserDetails(
-                user.getEmail(),
-                user.getPassword(),
-                authorities
-        );
-    }
-
-    private CustomUserDetails(String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(String email, String password) {
         this.email = email;
         this.password = password;
-        grantedAuthorities = authorities;
+        grantedAuthorities = singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        ;
     }
 
     @Override

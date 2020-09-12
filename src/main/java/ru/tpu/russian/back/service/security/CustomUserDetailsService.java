@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.security.CustomUserDetails;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
@@ -23,9 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Nullable
     public CustomUserDetails loadUserByUsername(String email) {
-        Optional<User> user = userRepository.getUserByEmail(email);
+        Optional<CustomUserDetails> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
-            return CustomUserDetails.create(user.get());
+            return user.get();
         } else {
             log.error("User {} does not exist in DB.", email);
             return null;

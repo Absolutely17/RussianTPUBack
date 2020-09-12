@@ -20,6 +20,10 @@ public class UserRepositoryImpl implements IUserRepository {
 
     private static final String PROCEDURE_EDIT_USER = "EditUser";
 
+    private static final String PROCEDURE_RESET_AND_EDIT_PASS = "EditPasswordUser";
+
+    private static final String PROCEDURE_ADD_RESET_PASSWORD_TOKEN = "AddResetPasswordRequest";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -73,6 +77,26 @@ public class UserRepositoryImpl implements IUserRepository {
         for (String key : params.keySet()) {
             storedProcedureQuery.setParameter(key, params.get(key));
         }
+        storedProcedureQuery.execute();
+    }
+
+    @Override
+    @Transactional
+    public int resetAndEditPassword(String email, String newPassword, String token) {
+        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_RESET_AND_EDIT_PASS);
+        storedProcedureQuery.setParameter("email", email);
+        storedProcedureQuery.setParameter("newPassword", newPassword);
+        storedProcedureQuery.setParameter("token", token);
+        storedProcedureQuery.execute();
+        return storedProcedureQuery.getUpdateCount();
+    }
+
+    @Override
+    @Transactional
+    public void addResetToken(String email, String token) {
+        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_ADD_RESET_PASSWORD_TOKEN);
+        storedProcedureQuery.setParameter("email", email);
+        storedProcedureQuery.setParameter("token", token);
         storedProcedureQuery.execute();
     }
 }

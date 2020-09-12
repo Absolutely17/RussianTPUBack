@@ -30,6 +30,6 @@ public class MailRest {
 
     @RequestMapping(method = POST, path = "/send")
     public void reSendEmail(@RequestParam("email") String email) throws BusinessException {
-        mailService.reSendEmail(email);
+        mailService.reSendConfirmationEmail(email);
     }
 }

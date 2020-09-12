@@ -15,4 +15,8 @@ public interface IUserRepository {
     int editRegisteredStatus(String email, boolean status);
 
     void editUser(Map<String, Object> params);
+
+    int resetAndEditPassword(String email, String newPassword, String token);
+
+    void addResetToken(String email, String token);
 }

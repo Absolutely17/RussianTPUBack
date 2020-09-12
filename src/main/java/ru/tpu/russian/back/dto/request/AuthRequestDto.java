@@ -16,6 +16,7 @@ public class AuthRequestDto {
 
     @ApiModelProperty(required = true, example = "qwerty123", value = "Пароль пользователя")
     @NotNull
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!&^%$#@_|/\\\\]{8,}$")
     private String password;
 
     @ApiModelProperty(example = "true", value = "Запомнить аутентификацию пользователя")

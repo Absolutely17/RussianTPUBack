@@ -146,5 +146,21 @@ public class AuthRest {
         userService.registerWithService(registrationRequest);
     }
 
+    @ApiOperation(value = "Запрос на сброс пароля")
+    @RequestMapping(method = POST, path = "/password/reset/request")
+    public void resetPasswordRequest(
+            @ApiParam(value = "Электронная почта аккаунта для восстановления пароля", required = true)
+            @RequestParam("email") String email
+    ) throws BusinessException {
+        userService.resetPasswordRequest(email);
+    }
 
+    @ApiOperation(value = "Сброс пароля")
+    @RequestMapping(method = POST, path = "/password/reset")
+    public void resetPassword(
+            @ApiParam(value = "Новые данные пользователя", required = true)
+            @Valid @RequestBody ResetPasswordDto resetDto
+    ) throws BusinessException {
+        userService.resetPassword(resetDto);
+    }
 }

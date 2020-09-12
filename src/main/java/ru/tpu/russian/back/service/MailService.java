@@ -11,15 +11,22 @@ import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 
+import static ru.tpu.russian.back.service.MailService.TypeMessages.CONFIRMATION_MESSAGE;
+import static ru.tpu.russian.back.service.MailService.TypeMessages.RESET_PASSWORD_MESSAGE;
+
 @Service
 @Slf4j
 public class MailService {
+
+    protected enum TypeMessages {
+        CONFIRMATION_MESSAGE,
+        RESET_PASSWORD_MESSAGE
+    }
 
     private static final String REDIRECT_URL = "https://tpu.ru/";
 
@@ -57,7 +64,7 @@ public class MailService {
         if (token != null && jwtProvider.validateToken(token)) {
             String email = jwtProvider.getEmailFromToken(token);
             int isSuccess = userRepository.editRegisteredStatus(email, true);
-            log.info("Confirm email {}", isSuccess > 0 ? "success" : "failed");
+            log.info("Confirm email {} {}", email, isSuccess > 0 ? "success" : "failed");
         }
         try {
             response.sendRedirect(REDIRECT_URL);
@@ -66,13 +73,14 @@ public class MailService {
         }
     }
 
-    public void reSendEmail(String email) throws BusinessException {
+    public void reSendConfirmationEmail(String email) throws BusinessException {
         User user = userRepository.getUserByEmail(email)
                 .orElseThrow(() -> new BusinessException("Exception.login.user.notFound", email));
         if (!user.isConfirm()) {
             try {
-                sendMessage(user.getEmail(), user.getLanguage());
+                sendMessage(CONFIRMATION_MESSAGE, email, user.getLanguage());
             } catch (Exception ex) {
+                log.error("Wrong in sending confirmation email.", ex);
                 throw new BusinessException("Exception.mail.send");
             }
         } else {
@@ -80,25 +88,55 @@ public class MailService {
         }
     }
 
-    public void sendMessage(String email, Language language) throws IOException, MessagingException {
-        log.debug("Starting to create message.");
-        String token = jwtProvider.generateTokenWithExpiration(email, EXPIRATION_CONFIRM_MAIL_TOKEN);
-        Map<String, Object> model = new LinkedHashMap<>();
-        model.put("token", token);
-        model.put("email", email);
+    public void sendMessage(TypeMessages type, String email, Language language) {
+        log.debug("Starting to create message type {}.", type.toString());
         Locale currentLocale = new Locale(language.toString());
+        MimeMessage message;
+        switch (type) {
+            case CONFIRMATION_MESSAGE:
+                message = createConfirmationMessage(currentLocale, email);
+                break;
+            case RESET_PASSWORD_MESSAGE:
+                message = createResetPasswordMessage(currentLocale, email);
+                break;
+            default:
+                throw new IllegalArgumentException("Wrong type message.");
+        }
+        sender.send(message);
+    }
+
+    private MimeMessage createResetPasswordMessage(Locale currentLocale, String email) {
+        Map<String, Object> model = new LinkedHashMap<>();
+        String token = jwtProvider.generateResetPasswordToken(email);
+        model.put("token", token);
+        MimeMessage message = sender.createMimeMessage();
         try {
-            MimeMessage message = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(email);
-            helper.setSubject(messageSource.getMessage("Mail.subject", null, currentLocale));
+            helper.setSubject(messageSource.getMessage("Mail.resetPassword.subject", null, currentLocale));
             helper.setFrom(mailFrom);
-            helper.setText(merger.merge(model, language), true);
-            log.info("Try to sending email to {}.", email);
-            sender.send(message);
+            helper.setText(merger.merge(model, currentLocale.toString(), RESET_PASSWORD_MESSAGE), true);
         } catch (Exception ex) {
-            log.error("Wrong in sending message. Email {}", email, ex);
-            throw ex;
+            log.error("Error in creating confirmation message", ex);
         }
+        return message;
+    }
+
+    private MimeMessage createConfirmationMessage(Locale currentLocale, String email) {
+        Map<String, Object> model = new LinkedHashMap<>();
+        String token = jwtProvider.generateTokenWithExpiration(email, EXPIRATION_CONFIRM_MAIL_TOKEN);
+        model.put("email", email);
+        model.put("token", token);
+        MimeMessage message = sender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(email);
+            helper.setSubject(messageSource.getMessage("Mail.confirmation.subject", null, currentLocale));
+            helper.setFrom(mailFrom);
+            helper.setText(merger.merge(model, currentLocale.toString(), CONFIRMATION_MESSAGE), true);
+        } catch (Exception ex) {
+            log.error("Error in creating confirmation message", ex);
+        }
+        return message;
     }
 }

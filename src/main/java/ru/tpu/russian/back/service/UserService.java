@@ -15,7 +15,10 @@ import ru.tpu.russian.back.repository.user.UserRepository;
 
 import java.util.*;
 
+import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
 import static ru.tpu.russian.back.enums.ProviderType.valueOf;
+import static ru.tpu.russian.back.service.MailService.TypeMessages.CONFIRMATION_MESSAGE;
+import static ru.tpu.russian.back.service.MailService.TypeMessages.RESET_PASSWORD_MESSAGE;
 
 @Service
 @Slf4j
@@ -52,7 +55,11 @@ public class UserService {
         log.debug("Saving new user in DB.");
         register(user);
         try {
-            mailService.sendMessage(registrationRequestDto.getEmail(), registrationRequestDto.getLanguage());
+            mailService.sendMessage(
+                    CONFIRMATION_MESSAGE,
+                    registrationRequestDto.getEmail(),
+                    registrationRequestDto.getLanguage()
+            );
         } catch (Exception ex) {
             log.warn("Register success. But some problem with sending confirm email.", ex);
         }
@@ -208,5 +215,47 @@ public class UserService {
         log.info("Get user profile {}", email);
         return new UserResponseDto(userRepository.getUserByEmail(email).orElseThrow(
                 () -> new BusinessException("Exception.login.user.notFound", email)));
+    }
+
+    /**
+     * Данный рест отправляет письмо на почту пользователя с ссылкой на сброс пароля
+     *
+     * @param email
+     */
+    public void resetPasswordRequest(String email) throws BusinessException {
+        log.info("Send request to reset password {}", email);
+        User user = findByEmail(email);
+        if (user == null) {
+            log.error("User is not found.");
+            throw new BusinessException("Exception.login.user.notFound", email);
+        } else {
+            try {
+                mailService.sendMessage(RESET_PASSWORD_MESSAGE, email, user.getLanguage());
+            } catch (Exception ex) {
+                log.error("Error in sending reset password mail.", ex);
+                throw new BusinessException("Exception.mail.send");
+            }
+        }
+    }
+
+    /**
+     * Данный рест взаимодействует с админкой. Выполняет непосредственную смену пароля.
+     *
+     * @param resetDto новые данные
+     */
+    public void resetPassword(ResetPasswordDto resetDto) throws BusinessException {
+        String token = resetDto.getToken();
+        if (token != null && jwtProvider.validateToken(token)) {
+            String email = jwtProvider.getEmailFromToken(token);
+            log.info("Trying to reset and edit password on {}", email);
+            int success = userRepository.resetAndEditPassword(
+                    email,
+                    passwordEncoder.encode(resetDto.getPassword()),
+                    sha1Hex(token)
+            );
+            log.info("Reset and editing password {}", success > 0 ? "success" : "failed");
+        } else {
+            throw new BusinessException("Exception.resetPassword.tokenExpired");
+        }
     }
 }

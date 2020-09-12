@@ -77,6 +77,23 @@ import static java.util.Objects.requireNonNull;
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "sex", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "phoneNum", type = String.class)
                 }
+        ),
+        @NamedStoredProcedureQuery(
+                name = "EditPasswordUser",
+                procedureName = "EditPasswordUser",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "token", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "newPassword", type = String.class)
+                }
+        ),
+        @NamedStoredProcedureQuery(
+                name = "AddResetPasswordRequest",
+                procedureName = "AddResetPasswordRequest",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "token", type = String.class)
+                }
         )
 })
 

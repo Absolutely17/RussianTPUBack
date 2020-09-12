@@ -2,6 +2,7 @@ package ru.tpu.russian.back.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.tpu.russian.back.repository.user.UserRepository;
@@ -9,9 +10,12 @@ import ru.tpu.russian.back.repository.user.UserRepository;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.*;
 import java.util.Date;
 
+import static io.jsonwebtoken.SignatureAlgorithm.HS512;
+import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
@@ -39,13 +43,26 @@ public class JwtProvider {
     @Value("${jwt.expiration.refresh.token:15}")
     private long expRefreshToken;
 
+    public String generateResetPasswordToken(String email) {
+        DateTimeZone zone = DateTimeZone.getDefault();
+        DateTime date = new DateTime().withZone(zone).plusHours(1);
+        String token = Jwts.builder()
+                .setSubject(email)
+                .setExpiration(date.toDate())
+                .signWith(HS512, jwtSecret)
+                .compact();
+        log.info("Saving reset token in DB.");
+        userRepository.addResetToken(email, sha1Hex(token));
+        return token;
+    }
+
     public String generateTokenWithExpiration(String email, long expirationDays) {
         Date date = Date.from(LocalDate.now().plusDays(expirationDays)
                 .atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .setSubject(email)
                 .setExpiration(date)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(HS512, jwtSecret)
                 .compact();
     }
 
@@ -57,7 +74,7 @@ public class JwtProvider {
                 .setSubject(email)
                 .setExpiration(date)
                 .claim("salt", generateRandomSalt())
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(HS512, jwtSecret)
                 .compact();
     }
 
@@ -72,7 +89,7 @@ public class JwtProvider {
                 .claim("refresh_salt", refreshSalt)
                 .claim("salt", generateRandomSalt())
                 .setExpiration(date)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(HS512, jwtSecret)
                 .compact();
     }
 

@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.controller;
 
+import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.request.NotificationRequestDto;
@@ -17,9 +18,12 @@ public class NotificationRest {
         this.notificationService = notificationService;
     }
 
+    @ApiOperation(value = "Отправить уведомление на мобильное приложение")
     @RequestMapping(method = POST)
     public ResponseEntity<?> sendNotification(
-            @RequestBody NotificationRequestDto requestDto) {
+            @ApiParam(value = "Параметры уведомления для отправки", required = true)
+            @RequestBody NotificationRequestDto requestDto
+    ) {
         return notificationService.send(requestDto);
     }
 

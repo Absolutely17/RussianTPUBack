@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.controller;
 
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.MailService;
@@ -23,13 +23,22 @@ public class MailRest {
         this.mailService = mailService;
     }
 
+    @ApiOperation(value = "Подтверждение почты пользователя")
     @RequestMapping(method = GET, path = "/confirmation")
-    public void confirmEmail(@RequestParam("token") String token, HttpServletResponse response) {
+    public void confirmEmail(
+            @ApiParam(value = "Токен подтверждения почты", required = true)
+            @RequestParam("token") String token,
+            HttpServletResponse response
+    ) {
         mailService.confirmRegistration(token, response);
     }
 
+    @ApiOperation(value = "Отправить подтверждающее письмо повторно")
     @RequestMapping(method = POST, path = "/send")
-    public void reSendEmail(@RequestParam("email") String email) throws BusinessException {
+    public void reSendEmail(
+            @ApiParam(value = "Почта пользователя, которому необходимо повторно отправить письмо", required = true)
+            @RequestParam("email") String email
+    ) throws BusinessException {
         mailService.reSendConfirmationEmail(email);
     }
 }

@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.controller;
 
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
@@ -26,13 +26,21 @@ public class UserRest {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "Изменение профиля пользователя")
     @RequestMapping(method = PUT, path = "/edit")
-    public void editUserInfo(@Valid @RequestBody BaseUserRequestDto requestDto) throws BusinessException {
+    public void editUserInfo(
+            @ApiParam(value = "Параметры пользователя для изменения", required = true)
+            @Valid @RequestBody BaseUserRequestDto requestDto
+    ) throws BusinessException {
         userService.editUser(requestDto);
     }
 
+    @ApiOperation(value = "Получение профиля пользователя")
     @RequestMapping(method = GET, path = "/profile")
-    public UserResponseDto getUserProfile(@PathParam(value = "email") String email) throws BusinessException {
+    public UserResponseDto getUserProfile(
+            @ApiParam(value = "Почта пользователя профиль которого нужно получить", required = true)
+            @PathParam(value = "email") String email
+    ) throws BusinessException {
         return userService.getUserProfile(email);
     }
 }

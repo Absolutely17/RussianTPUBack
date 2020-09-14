@@ -79,8 +79,10 @@ public class TokenRest {
         }
     }
 
+    @ApiOperation(value = "Создать токен для администратора в веб-приложении (админке)")
     @RequestMapping(method = POST, path = "/web-admin")
     public ResponseEntity<?> generateTokenForAdmin(
+            @ApiParam(value = "Данные авторизации администратора")
             @RequestBody AuthRequestDto requestDto
     ) throws BusinessException {
         return tokenService.generateTokenForAdmin(requestDto);

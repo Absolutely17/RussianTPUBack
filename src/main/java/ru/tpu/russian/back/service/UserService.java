@@ -203,7 +203,7 @@ public class UserService {
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
         if (cacheManager.getCache("user_profile") != null &&
                 cacheManager.getCache("user_profile").get(userToEdit.getEmail()) != null) {
-            cacheManager.getCache("user_profile").put(userToEdit.getEmail(), userToEdit);
+            cacheManager.getCache("user_profile").put(userToEdit.getEmail(), new UserResponseDto(userToEdit));
         }
         Map<String, Object> paramsToProcedure = putEditedUserFieldToMap(requestDto);
         userRepository.editUser(paramsToProcedure);

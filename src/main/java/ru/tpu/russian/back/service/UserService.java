@@ -2,7 +2,6 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -201,10 +200,6 @@ public class UserService {
     public void editUser(BaseUserRequestDto requestDto) throws BusinessException {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
-        if (cacheManager.getCache("user_profile") != null &&
-                cacheManager.getCache("user_profile").get(userToEdit.getEmail()) != null) {
-            cacheManager.getCache("user_profile").put(userToEdit.getEmail(), new UserResponseDto(userToEdit));
-        }
         Map<String, Object> paramsToProcedure = putEditedUserFieldToMap(requestDto);
         userRepository.editUser(paramsToProcedure);
     }
@@ -224,7 +219,6 @@ public class UserService {
         return paramsToProcedure;
     }
 
-    @Cacheable(value = "user_profile")
     public UserResponseDto getUserProfile(String email) throws BusinessException {
         log.info("Get user profile {}", email);
         return new UserResponseDto(userRepository.getUserByEmail(email).orElseThrow(

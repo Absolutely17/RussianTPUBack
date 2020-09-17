@@ -38,7 +38,7 @@ public class ArticleService {
         }
         if (articles == null || articles.isEmpty()) {
             log.error("Could not find articles. FromMenu {}, id {}", fromMenu, id);
-            throw new BusinessException("Exception.briefArticle.notFound", id);
+            throw new BusinessException("Exception.briefArticle.notFound");
         }
         log.info("Count brief articles {}", articles.size());
         return articles
@@ -62,7 +62,7 @@ public class ArticleService {
             return new ArticleResponse(article.get());
         } else {
             log.error("Could not find article with id {}", id);
-            throw new BusinessException("Exception.article.notFound", id);
+            throw new BusinessException("Exception.article.notFound");
         }
     }
 }

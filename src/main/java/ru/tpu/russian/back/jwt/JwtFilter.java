@@ -33,7 +33,6 @@ public class JwtFilter extends OncePerRequestFilter {
             throws IOException, ServletException {
         String token = jwtProvider.getTokenFromRequest(request);
         if (token != null && jwtProvider.validateToken(token)) {
-            log.debug("Token in request - {}", token);
             String userEmail = jwtProvider.getEmailFromToken(token);
             if (!isNullOrEmpty(userEmail)) {
                 log.debug("Email in token: {}", userEmail);

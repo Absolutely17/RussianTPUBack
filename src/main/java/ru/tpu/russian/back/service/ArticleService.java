@@ -1,6 +1,7 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.Article;
@@ -27,6 +28,7 @@ public class ArticleService {
         this.mediaService = mediaService;
     }
 
+    @Cacheable(value = "brief_articles", key = "#id")
     public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) throws BusinessException {
         List<Article> articles;
         if (fromMenu) {
@@ -55,6 +57,7 @@ public class ArticleService {
         return response;
     }
 
+    @Cacheable(value = "full_article")
     public ArticleResponse getArticle(String id) throws BusinessException {
         log.info("Get article. ID article = {}", id);
         Optional<Article> article = articleRepository.getById(id);

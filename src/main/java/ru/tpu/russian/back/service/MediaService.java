@@ -1,6 +1,7 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.entity.Media;
@@ -19,6 +20,7 @@ public class MediaService {
     }
 
     @Transactional
+    @Cacheable(value = "image")
     public byte[] getImage(String id) {
         Media image = mediaRepository.getById(id);
         if (image == null) {

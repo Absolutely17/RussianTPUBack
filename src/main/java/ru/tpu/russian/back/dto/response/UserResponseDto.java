@@ -37,6 +37,10 @@ public class UserResponseDto {
     @Nullable
     private String phoneNumber;
 
+    @ApiModelProperty(example = "8В7Б", value = "Номер учебной группы")
+    @Nullable
+    private String groupName;
+
     public UserResponseDto(User user) {
         email = user.getEmail();
         firstName = user.getFirstName();
@@ -45,5 +49,6 @@ public class UserResponseDto {
         gender = user.getGender();
         language = user.getLanguage();
         phoneNumber = user.getPhoneNumber();
+        groupName = user.getGroupName();
     }
 }

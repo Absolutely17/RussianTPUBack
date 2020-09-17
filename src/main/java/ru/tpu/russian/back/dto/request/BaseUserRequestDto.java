@@ -61,6 +61,11 @@ public class BaseUserRequestDto {
     @Nullable
     private ProviderType provider = ProviderType.valueOf("local");
 
+    @ApiModelProperty(example = "8В7Б", value = "Номер учебной группы")
+    @Nullable
+    @Size(min = 1, max = 10)
+    private String groupName;
+
     @Override
     public String toString() {
         return "BaseUserRequestDto{" +
@@ -71,6 +76,7 @@ public class BaseUserRequestDto {
                 ", gender='" + gender + '\'' +
                 ", language=" + language +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", group='" + groupName + '\'' +
                 '}';
     }
 }

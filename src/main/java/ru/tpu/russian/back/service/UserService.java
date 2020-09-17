@@ -1,6 +1,8 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,16 +36,20 @@ public class UserService {
 
     private final MailService mailService;
 
+    private final CacheManager cacheManager;
+
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtProvider jwtProvider,
-            MailService mailService
+            MailService mailService,
+            CacheManager cacheManager
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.mailService = mailService;
+        this.cacheManager = cacheManager;
     }
 
     public void register(BaseUserRequestDto registrationRequestDto) throws BusinessException {
@@ -83,7 +89,8 @@ public class UserService {
                 request.getLanguage(),
                 request.getPhoneNumber(),
                 request.getEmail(),
-                request.getProvider()
+                request.getProvider(),
+                request.getGroupName()
         );
     }
 
@@ -106,6 +113,7 @@ public class UserService {
         params.put("PhoneNumber", user.getPhoneNumber());
         params.put("Provider", user.getProvider().toString());
         params.put("verified", user.isConfirm());
+        params.put("groupName", user.getGroupName());
         return params;
     }
 
@@ -193,6 +201,10 @@ public class UserService {
     public void editUser(BaseUserRequestDto requestDto) throws BusinessException {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
+        if (cacheManager.getCache("user_profile") != null &&
+                cacheManager.getCache("user_profile").get(userToEdit.getEmail()) != null) {
+            cacheManager.getCache("user_profile").put(userToEdit.getEmail(), userToEdit);
+        }
         Map<String, Object> paramsToProcedure = putEditedUserFieldToMap(requestDto);
         userRepository.editUser(paramsToProcedure);
     }
@@ -208,9 +220,11 @@ public class UserService {
         paramsToProcedure.put("patronymic", requestDto.getMiddleName());
         paramsToProcedure.put("sex", requestDto.getGender());
         paramsToProcedure.put("phoneNum", requestDto.getPhoneNumber());
+        paramsToProcedure.put("groupName", requestDto.getGroupName());
         return paramsToProcedure;
     }
 
+    @Cacheable(value = "user_profile")
     public UserResponseDto getUserProfile(String email) throws BusinessException {
         log.info("Get user profile {}", email);
         return new UserResponseDto(userRepository.getUserByEmail(email).orElseThrow(

@@ -61,7 +61,8 @@ import static java.util.Objects.requireNonNull;
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Patronymic", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "PhoneNumber", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "Provider", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "verified", type = boolean.class)
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "verified", type = boolean.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "groupName", type = String.class)
                 }
         ),
         @NamedStoredProcedureQuery(
@@ -75,7 +76,8 @@ import static java.util.Objects.requireNonNull;
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "secondName", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "patronymic", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "sex", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "phoneNum", type = String.class)
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "phoneNum", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "groupName", type = String.class)
                 }
         ),
         @NamedStoredProcedureQuery(
@@ -93,6 +95,14 @@ import static java.util.Objects.requireNonNull;
                 parameters = {
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "token", type = String.class)
+                }
+        ),
+        @NamedStoredProcedureQuery(
+                name = "GetUserGroupID",
+                procedureName = "GetUserGroupID",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "internalGroupID", type = String.class)
                 }
         )
 })
@@ -150,11 +160,15 @@ public class User {
     @Column(name = "Подтвержден")
     private boolean isConfirm;
 
+    @Column(name = "Номер группы")
+    @Nullable
+    private String groupName;
+
     public User(
             String firstName, @Nullable String lastName,
             @Nullable String middleName, @Nullable String gender,
             Language language, @Nullable String phoneNumber,
-            String email, ProviderType provider
+            String email, ProviderType provider, @Nullable String groupName
     ) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -164,6 +178,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.email = requireNonNull(email, "Email must be filled");
         this.provider = provider;
+        this.groupName = groupName;
         role = "ROLE_USER";
     }
 

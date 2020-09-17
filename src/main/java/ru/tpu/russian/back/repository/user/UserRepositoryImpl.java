@@ -24,6 +24,8 @@ public class UserRepositoryImpl implements IUserRepository {
 
     private static final String PROCEDURE_ADD_RESET_PASSWORD_TOKEN = "AddResetPasswordRequest";
 
+    private static final String PROCEDURE_GET_GROUP_ID = "GetUserGroupID";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -54,7 +56,7 @@ public class UserRepositoryImpl implements IUserRepository {
         storedProcedureQuery.execute();
         Optional<User> optionalUser;
         try {
-            return Optional.of((User) storedProcedureQuery.getSingleResult());
+            return Optional.ofNullable((User) storedProcedureQuery.getSingleResult());
         } catch (NoResultException ex) {
             return Optional.empty();
         }
@@ -98,5 +100,18 @@ public class UserRepositoryImpl implements IUserRepository {
         storedProcedureQuery.setParameter("email", email);
         storedProcedureQuery.setParameter("token", token);
         storedProcedureQuery.execute();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<String> getGroupId(String email) {
+        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_GROUP_ID);
+        storedProcedureQuery.setParameter("email", email);
+        storedProcedureQuery.execute();
+        try {
+            return Optional.ofNullable((String) storedProcedureQuery.getOutputParameterValue("internalGroupID"));
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
     }
 }

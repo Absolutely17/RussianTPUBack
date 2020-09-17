@@ -4,5 +4,6 @@ public enum MenuType {
     LINK,
     FEED_LIST,
     LINKS_LIST,
-    ARTICLE
+    ARTICLE,
+    SCHEDULE
 }

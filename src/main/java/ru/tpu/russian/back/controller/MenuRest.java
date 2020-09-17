@@ -27,8 +27,10 @@ public class MenuRest {
     @RequestMapping(method = GET)
     public List<MenuResponseDto> getMenu(
             @ApiParam(value = "Язык пунктов меню", required = true)
-            @RequestParam String language
+            @RequestParam String language,
+            @ApiParam(value = "Электронная почта пользователя")
+            @RequestParam String email
     ) throws BusinessException {
-        return menuService.getAll(language);
+        return menuService.getAll(language, email);
     }
 }

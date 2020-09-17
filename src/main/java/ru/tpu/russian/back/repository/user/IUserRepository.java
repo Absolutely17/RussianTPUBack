@@ -19,4 +19,6 @@ public interface IUserRepository {
     int resetAndEditPassword(String email, String newPassword, String token);
 
     void addResetToken(String email, String token);
+
+    Optional<String> getGroupId(String email);
 }

@@ -27,6 +27,10 @@ public class SpringFoxConfig {
 
     public static final String TOKEN_REST = "TokenRest";
 
+    public static final String DOCUMENT_REST = "DocumentRest";
+
+    public static final String DICTS_REST = "DictsRest";
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -41,7 +45,9 @@ public class SpringFoxConfig {
                 .tags(new Tag(USER_REST, "Получение пользователей"))
                 .tags(new Tag(AUTH_REST, "Аутентификация/регистрация пользователя"))
                 .tags(new Tag(MAIL_REST, "Операции с почтой"))
-                .tags(new Tag(TOKEN_REST, "Токен пользователя"));
+                .tags(new Tag(TOKEN_REST, "Токен пользователя"))
+                .tags(new Tag(DOCUMENT_REST, "Документы пользователя"))
+                .tags(new Tag(DICTS_REST, "Получение словарей"));
     }
 
     private static ApiInfo apiInfo() {

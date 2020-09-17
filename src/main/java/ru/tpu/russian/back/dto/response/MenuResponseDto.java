@@ -31,6 +31,7 @@ public class MenuResponseDto {
 
     @Nullable
     @ApiModelProperty(value = "URL пункта меню, если TYPE = LINK")
+    @Setter
     private String url;
 
     @Nullable

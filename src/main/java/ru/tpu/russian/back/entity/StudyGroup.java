@@ -22,7 +22,7 @@ public class StudyGroup {
     @Column(name = "ID группы")
     private String idGroup;
 
-    @Column(name = "Название группы")
+    @Column(name = "Номер группы")
     private String groupName;
 
     @Column(name = "Идентификатор группы")

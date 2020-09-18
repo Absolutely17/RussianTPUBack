@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.service;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.entity.StudyGroup;
 import ru.tpu.russian.back.repository.dicts.IDictsRepository;
@@ -15,6 +16,7 @@ public class DictsService {
         this.dictsRepository = dictsRepository;
     }
 
+    @Cacheable(value = "study_groups")
     public List<StudyGroup> getAllStudyGroups() {
         return dictsRepository.getStudyGroups();
     }

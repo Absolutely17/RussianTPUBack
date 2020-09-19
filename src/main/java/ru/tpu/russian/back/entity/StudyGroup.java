@@ -16,7 +16,7 @@ import javax.persistence.*;
                 resultClasses = {StudyGroup.class}
         )
 })
-public class StudyGroup {
+public class StudyGroup implements Comparable<StudyGroup> {
 
     @Id
     @Column(name = "ID группы")
@@ -27,4 +27,9 @@ public class StudyGroup {
 
     @Column(name = "Идентификатор группы")
     private String internalGroupID;
+
+    @Override
+    public int compareTo(StudyGroup o) {
+        return groupName.compareTo(o.groupName);
+    }
 }

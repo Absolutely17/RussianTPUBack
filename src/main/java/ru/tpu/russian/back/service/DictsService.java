@@ -6,6 +6,7 @@ import ru.tpu.russian.back.entity.StudyGroup;
 import ru.tpu.russian.back.repository.dicts.IDictsRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DictsService {
@@ -18,6 +19,7 @@ public class DictsService {
 
     @Cacheable(value = "study_groups")
     public List<StudyGroup> getAllStudyGroups() {
-        return dictsRepository.getStudyGroups();
+        List<StudyGroup> groups = dictsRepository.getStudyGroups();
+        return groups.stream().sorted().collect(Collectors.toList());
     }
 }

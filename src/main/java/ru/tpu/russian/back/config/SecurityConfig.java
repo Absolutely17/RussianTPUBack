@@ -37,10 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Отключаем срабатывание фильтра на запросы аутентификации, тестовые запросы и запросы по токену
                 .antMatchers("/api/auth/**", "/api/token/**", "/api/email/confirmation",
                         "/", "/test/**", "/api/media/img/*", "/api/notification",
-                        "/api/dicts/group")
-                // Отключаем срабатывания фильтра на Swagger
-                .antMatchers("/swagger-ui.html", "/webjars/springfox-swagger-ui/**",
-                        "/v2/api-docs", "/swagger-resources/**", "/csrf");
+                        "/api/dicts/group");
     }
 
     @Override
@@ -52,6 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/swagger-ui.html", "/webjars/springfox-swagger-ui/**",
+                        "/v2/api-docs", "/swagger-resources/**", "/csrf").hasRole("ADMIN")
                 .and().apply(jwtConfigurer)
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);

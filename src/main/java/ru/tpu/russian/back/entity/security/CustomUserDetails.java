@@ -16,10 +16,10 @@ public class CustomUserDetails implements UserDetails {
 
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
-    public CustomUserDetails(String email, String password) {
+    public CustomUserDetails(String email, String password, String role) {
         this.email = email;
         this.password = password;
-        grantedAuthorities = singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        grantedAuthorities = singletonList(new SimpleGrantedAuthority(role));
     }
 
     @Override

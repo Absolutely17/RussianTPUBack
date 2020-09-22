@@ -226,9 +226,9 @@ public class UserService {
         return paramsToProcedure;
     }
 
-    public UserResponseDto getUserProfile(String email) throws BusinessException {
+    public UserProfileResponse getUserProfile(String email) throws BusinessException {
         log.info("Get user profile {}", email);
-        return new UserResponseDto(userRepository.getUserByEmail(email).orElseThrow(
+        return new UserProfileResponse(userRepository.getUserByEmail(email).orElseThrow(
                 () -> new BusinessException("Exception.login.user.notFound", email)));
     }
 

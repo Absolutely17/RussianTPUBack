@@ -9,6 +9,7 @@ import ru.tpu.russian.back.enums.Language;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponseDto {
 

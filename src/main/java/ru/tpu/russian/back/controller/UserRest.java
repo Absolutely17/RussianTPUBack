@@ -4,7 +4,7 @@ import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
-import ru.tpu.russian.back.dto.response.UserResponseDto;
+import ru.tpu.russian.back.dto.response.UserProfileResponse;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.UserService;
 
@@ -37,7 +37,7 @@ public class UserRest {
 
     @ApiOperation(value = "Получение профиля пользователя")
     @RequestMapping(method = GET, path = "/profile")
-    public UserResponseDto getUserProfile(
+    public UserProfileResponse getUserProfile(
             @ApiParam(value = "Почта пользователя профиль которого нужно получить", required = true)
             @PathParam(value = "email") String email
     ) throws BusinessException {

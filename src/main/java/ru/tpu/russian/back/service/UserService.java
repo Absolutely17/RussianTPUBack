@@ -1,9 +1,7 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.*;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.interceptor.SimpleKey;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -199,15 +197,11 @@ public class UserService {
         register(user);
     }
 
-    @CacheEvict(value = "menu_items", key = "#requestDto.language + #requestDto.email")
     public void editUser(BaseUserRequestDto requestDto) throws BusinessException {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
         Map<String, Object> paramsToProcedure = putEditedUserFieldToMap(requestDto);
-        Cache cache = cacheManager.getCache("menu_items");
-        if (cache != null) {
-            cache.evict(new SimpleKey(userToEdit.getLanguage().toString(), userToEdit.getEmail()));
-        }
+
         userRepository.editUser(paramsToProcedure);
     }
 

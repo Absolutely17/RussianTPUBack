@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-archivesBaseName = 'RussianTPU'
+archivesBaseName = 'PreTPU'
 group = 'ru.tpu.russian'
 sourceCompatibility = '1.8'
 

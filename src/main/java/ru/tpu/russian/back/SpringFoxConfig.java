@@ -51,6 +51,6 @@ public class SpringFoxConfig {
     }
 
     private static ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("RussianTPU API").version("1.0.0").build();
+        return new ApiInfoBuilder().title("PreTPU API").version("1.0.0").build();
     }
 }

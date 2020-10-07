@@ -11,6 +11,10 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String>, IUserRepository {
 
-    @Query(value = "select new ru.tpu.russian.back.entity.security.CustomUserDetails(u.email, u.password, u.role) from User u where u.email = :email")
+    @Query(value = "select new ru.tpu.russian.back.entity.security.CustomUserDetails(u.email, u.password, u.role) " +
+            " from User u where u.email = :email")
     Optional<CustomUserDetails> findByEmail(@Param("email") String email);
+
+    @Query(value = "select u.id from User u where u.email = :email")
+    String getUserIdByEmail(@Param("email") String email);
 }

@@ -5,15 +5,18 @@ import org.springframework.cache.CacheManager;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.request.*;
 import ru.tpu.russian.back.dto.response.*;
-import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.entity.*;
 import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.enums.ProviderType;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
+import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
+import javax.persistence.*;
 import java.util.*;
 
 import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
@@ -37,18 +40,25 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
+    private final MailingTokenRepository mailingTokenRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtProvider jwtProvider,
             MailService mailService,
-            CacheManager cacheManager
+            CacheManager cacheManager,
+            MailingTokenRepository mailingTokenRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.mailService = mailService;
         this.cacheManager = cacheManager;
+        this.mailingTokenRepository = mailingTokenRepository;
     }
 
     public void register(BaseUserRequestDto registrationRequestDto) throws BusinessException {
@@ -267,5 +277,20 @@ public class UserService {
         } else {
             throw new BusinessException("Exception.resetPassword.tokenExpired");
         }
+    }
+
+    public void saveFcmUserToken(NotificationTokenRequestDto requestDto) {
+        log.debug("Saving user FCM token, email {}", requestDto.getEmail());
+        String userId = userRepository.getUserIdByEmail(requestDto.getEmail());
+        MailingToken token = new MailingToken(userId, requestDto.getToken(), true);
+        mailingTokenRepository.save(token);
+    }
+
+    @Transactional
+    public void disableFcmUserToken(String email) {
+        log.debug("Disabling user FCM token availability, email {}", email);
+        String userId = userRepository.getUserIdByEmail(email);
+        MailingToken token = entityManager.find(MailingToken.class, userId);
+        token.setActive(false);
     }
 }

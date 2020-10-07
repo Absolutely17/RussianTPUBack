@@ -3,7 +3,7 @@ package ru.tpu.russian.back.controller;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.dto.request.NotificationRequestDto;
+import ru.tpu.russian.back.dto.request.*;
 import ru.tpu.russian.back.service.NotificationService;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -18,13 +18,21 @@ public class NotificationRest {
         this.notificationService = notificationService;
     }
 
-    @ApiOperation(value = "Отправить уведомление на мобильное приложение")
-    @RequestMapping(method = POST)
-    public ResponseEntity<?> sendNotification(
+    @ApiOperation(value = "Отправить уведомление на мобильное приложение опр. группе по языку")
+    @RequestMapping(method = POST, path = "/group")
+    public ResponseEntity<?> sendGroupNotification(
             @ApiParam(value = "Параметры уведомления для отправки", required = true)
-            @RequestBody NotificationRequestDto requestDto
+            @RequestBody NotificationRequestGroupDto requestDto
     ) {
-        return notificationService.send(requestDto);
+        return notificationService.sendOnGroup(requestDto);
     }
 
+    @ApiOperation(value = "Отправить уведомление на мобильное приложение опр. пользоваетелям")
+    @RequestMapping(method = POST, path = "/users")
+    public ResponseEntity<?> sendNotificationOnUsers(
+            @ApiParam(value = "Параметры уведомления для отправки", required = true)
+            @RequestBody NotificationRequestUsersDto requestDto
+    ) {
+        return notificationService.sendOnUser(requestDto);
+    }
 }

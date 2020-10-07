@@ -1,20 +1,16 @@
 package ru.tpu.russian.back.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import ru.tpu.russian.back.enums.Language;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.*;
 
-@AllArgsConstructor
 @Getter
 @Setter
-public class NotificationRequestDto {
-
-    @ApiModelProperty(required = true, example = "ru", value = "Язык, определяющий группу рассылки")
-    @NotNull
-    private Language language;
+@AllArgsConstructor
+@NoArgsConstructor
+public class NotificationBaseRequestDto {
 
     @ApiModelProperty(required = true, example = "Test title", value = "Заголовок уведомления")
     @NotNull
@@ -33,14 +29,14 @@ public class NotificationRequestDto {
     @NotNull
     private String token;
 
-    @JsonIgnore
-    private String topic;
+    @ApiModelProperty(required = true, example = "new", value = "Тема сообщения, для объединения повторных уведомлений")
+    @Nullable
+    private String topic = "news";
 
     @Override
     public String toString() {
-        return "NotificationRequestDto{" +
-                "language=" + language +
-                ", title='" + title + '\'' +
+        return "NotificationBaseRequestDto{" +
+                "title='" + title + '\'' +
                 ", message='" + message + '\'' +
                 ", email='" + email + '\'' +
                 '}';

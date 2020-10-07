@@ -163,4 +163,22 @@ public class AuthRest {
     ) throws BusinessException {
         userService.resetPassword(resetDto);
     }
+
+    @ApiOperation(value = "Сохранение FCM идентификатора пользователя")
+    @RequestMapping(method = POST, path = "/fcmToken/save")
+    public void saveFcmUserToken(
+            @ApiParam(value = "Токен пользователя", required = true)
+            @RequestBody NotificationTokenRequestDto requestDto
+    ) {
+        userService.saveFcmUserToken(requestDto);
+    }
+
+    @ApiOperation(value = "Отключение подписки пользователя на уведомления")
+    @RequestMapping(method = POST, path = "/fcmToken/disable")
+    public void disableFcmUserToken(
+            @ApiParam(value = "Адрес эл.почты пользователя", required = true)
+            @RequestParam("email") String email
+    ) {
+        userService.disableFcmUserToken(email);
+    }
 }

@@ -4,5 +4,7 @@ import java.util.Map;
 
 public interface INotificationRepository {
 
-    void createNotification(Map<String, Object> params);
+    void createGroupNotification(Map<String, Object> params);
+
+    void createUsersNotification(Map<String, Object> params);
 }

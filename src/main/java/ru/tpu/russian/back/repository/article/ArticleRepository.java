@@ -13,6 +13,6 @@ public interface ArticleRepository extends JpaRepository<Article, String>, IArti
     Optional<Article> getById(@Param("id") String id);
 
     @Modifying
-    @Query("update Article SET countView = :count")
-    void updateCountViews(@Param("count") Integer count);
+    @Query("update Article SET countView = (:count + 1)")
+    void updateCountViews(@Param("count") int count);
 }

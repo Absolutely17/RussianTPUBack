@@ -2,6 +2,7 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.Article;
 import ru.tpu.russian.back.exception.BusinessException;
@@ -55,12 +56,13 @@ public class ArticleService {
         return response;
     }
 
+    @Transactional
     public ArticleResponse getArticle(String id) throws BusinessException {
         log.info("Get article. ID article = {}", id);
         Optional<Article> article = articleRepository.getById(id);
         if (article.isPresent()) {
             Integer countViews = article.get().getCountView();
-            articleRepository.updateCountViews(countViews == null ? 0 : countViews);
+            articleRepository.updateCountViews(id, countViews == null ? 0 : countViews);
             return new ArticleResponse(article.get());
         } else {
             log.error("Could not find article with id {}", id);

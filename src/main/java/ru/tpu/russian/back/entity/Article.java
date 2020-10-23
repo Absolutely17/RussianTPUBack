@@ -56,6 +56,9 @@ public class Article {
     @Nullable
     private String articleImage;
 
+    @Column(name = "Количество просмотров")
+    private Integer countView;
+
     public String getCreateDate() {
         return formatter.format(createDate);
     }

@@ -59,6 +59,7 @@ public class ArticleService {
         log.info("Get article. ID article = {}", id);
         Optional<Article> article = articleRepository.getById(id);
         if (article.isPresent()) {
+            articleRepository.updateCountViews(article.get().getCountView());
             return new ArticleResponse(article.get());
         } else {
             log.error("Could not find article with id {}", id);

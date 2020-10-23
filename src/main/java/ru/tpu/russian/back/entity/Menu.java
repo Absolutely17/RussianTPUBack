@@ -21,7 +21,7 @@ import java.util.List;
 public class Menu {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID пункта меню")
     private String id;
 
     @Column(name = "Подчинённый")

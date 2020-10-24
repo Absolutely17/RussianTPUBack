@@ -3,7 +3,7 @@ package ru.tpu.russian.back.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.Nullable;
-import ru.tpu.russian.back.enums.*;
+import ru.tpu.russian.back.enums.ProviderType;
 
 import javax.validation.constraints.*;
 
@@ -47,9 +47,10 @@ public class BaseUserRequestDto {
     @Size(min = 1, max = 20)
     private String gender;
 
-    @ApiModelProperty(required = true, example = "Russian", value = "Язык пользователя")
+    @ApiModelProperty(required = true, example = "A5100BE7-BAA6-41D2-B1C3-27DBB1891130",
+            value = "ID языка пользователя")
     @NotNull
-    private Language language;
+    private String language;
 
     @ApiModelProperty(example = "88005553535", value = "Номер телефона")
     @Nullable

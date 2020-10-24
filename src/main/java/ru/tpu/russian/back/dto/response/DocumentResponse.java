@@ -2,7 +2,7 @@ package ru.tpu.russian.back.dto.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import ru.tpu.russian.back.entity.DocumentWithoutContent;
+import ru.tpu.russian.back.entity.document.DocumentWithoutContent;
 
 @Getter
 public class DocumentResponse {

@@ -6,9 +6,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.*;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.entity.User;
-import ru.tpu.russian.back.enums.Language;
+import ru.tpu.russian.back.entity.dict.Language;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
+import ru.tpu.russian.back.repository.dicts.IDictRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
 import javax.mail.internet.MimeMessage;
@@ -42,6 +43,8 @@ public class MailService {
 
     private final MessageSource messageSource;
 
+    private final IDictRepository dictRepository;
+
     @Value("${spring.mail.from}")
     private String mailFrom;
 
@@ -50,13 +53,15 @@ public class MailService {
             JwtProvider provider,
             VelocityMerger merger,
             UserRepository userRepository,
-            MessageSource messageSource
+            MessageSource messageSource,
+            IDictRepository dictRepository
     ) {
         this.sender = sender;
         jwtProvider = provider;
         this.merger = merger;
         this.userRepository = userRepository;
         this.messageSource = messageSource;
+        this.dictRepository = dictRepository;
     }
 
     public void confirmRegistration(String token, HttpServletResponse response) {
@@ -88,9 +93,15 @@ public class MailService {
         }
     }
 
-    public void sendMessage(TypeMessages type, String email, Language language) {
+    public void sendMessage(TypeMessages type, String email, String languageId) {
         log.debug("Starting to create message type {}.", type.toString());
-        Locale currentLocale = new Locale(language.toString());
+        Language lang = dictRepository.getLanguageById(languageId);
+        Locale currentLocale;
+        if (lang == null) {
+            currentLocale = new Locale("en");
+        } else {
+            currentLocale = new Locale(lang.getShortName());
+        }
         MimeMessage message;
         switch (type) {
             case CONFIRMATION_MESSAGE:

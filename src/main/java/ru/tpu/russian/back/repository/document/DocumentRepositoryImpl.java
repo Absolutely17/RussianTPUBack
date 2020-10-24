@@ -2,7 +2,7 @@ package ru.tpu.russian.back.repository.document;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.entity.*;
+import ru.tpu.russian.back.entity.document.*;
 
 import javax.persistence.*;
 import java.util.List;

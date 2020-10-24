@@ -2,13 +2,13 @@ package ru.tpu.russian.back.repository.dicts;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.entity.StudyGroup;
+import ru.tpu.russian.back.entity.dict.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Repository
-public class DictsRepositoryImpl implements IDictsRepository {
+public class DictRepositoryImpl implements IDictRepository {
 
     private static final String PROCEDURE_GET_GROUPS = "GetStudyGroups";
 
@@ -21,5 +21,17 @@ public class DictsRepositoryImpl implements IDictsRepository {
         StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_GROUPS);
         storedProcedureQuery.execute();
         return storedProcedureQuery.getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Language> getAllLanguage() {
+        return em.createQuery("select main from Language main").getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Language getLanguageById(String id) {
+        return em.find(Language.class, id);
     }
 }

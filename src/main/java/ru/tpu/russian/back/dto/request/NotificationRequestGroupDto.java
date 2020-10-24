@@ -3,7 +3,6 @@ package ru.tpu.russian.back.dto.request;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import ru.tpu.russian.back.enums.Language;
 
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +13,7 @@ public class NotificationRequestGroupDto extends NotificationBaseRequestDto {
 
     @ApiModelProperty(required = true, example = "ru", value = "Язык, определяющий группу рассылки")
     @NotNull
-    private Language language;
+    private String language;
 
     @JsonIgnore
     private String topic;

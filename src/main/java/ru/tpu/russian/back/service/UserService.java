@@ -116,7 +116,7 @@ public class UserService {
         params.put("FirstName", user.getFirstName());
         params.put("SecondName", user.getLastName());
         params.put("Sex", user.getGender());
-        params.put("Language", user.getLanguage().toString());
+        params.put("Language", user.getLanguage());
         params.put("Role", user.getRole());
         params.put("Patronymic", user.getMiddleName());
         params.put("PhoneNumber", user.getPhoneNumber());
@@ -221,7 +221,7 @@ public class UserService {
         paramsToProcedure.put("psw", requestDto.getNewPassword() != null ?
                 passwordEncoder.encode(requestDto.getNewPassword()) : null);
         paramsToProcedure.put("firstName", requestDto.getFirstName());
-        paramsToProcedure.put("lang", requestDto.getLanguage().toString());
+        paramsToProcedure.put("lang", requestDto.getLanguage());
         paramsToProcedure.put("secondName", requestDto.getLastName());
         paramsToProcedure.put("patronymic", requestDto.getMiddleName());
         paramsToProcedure.put("sex", requestDto.getGender());

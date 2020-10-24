@@ -1,7 +1,7 @@
-package ru.tpu.russian.back.controller.handler;
+package ru.tpu.russian.back.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
+import org.springframework.context.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,7 +32,13 @@ public class CustomExceptionHandler {
         BindingResult result = ex.getBindingResult();
         String errorMessages = result.getAllErrors()
                 .stream()
-                .map(error -> messageSource.getMessage(error, locale))
+                .map(error -> {
+                    try {
+                        return messageSource.getMessage(error, locale);
+                    } catch (NoSuchMessageException exception) {
+                        return messageSource.getMessage(error, new Locale("en"));
+                    }
+                })
                 .collect(joining("\n"));
         return new ResponseEntity<>(new ExceptionMessage(errorMessages), BAD_REQUEST);
     }
@@ -42,7 +48,12 @@ public class CustomExceptionHandler {
             BusinessException ex,
             Locale locale
     ) {
-        String errorMessage = messageSource.getMessage(ex.getMessage(), ex.getArgs(), locale);
+        String errorMessage;
+        try {
+            errorMessage = messageSource.getMessage(ex.getMessage(), ex.getArgs(), locale);
+        } catch (NoSuchMessageException exception) {
+            errorMessage = messageSource.getMessage(ex.getMessage(), ex.getArgs(), new Locale("en"));
+        }
         return new ResponseEntity<>(new ExceptionMessage(errorMessage), BAD_REQUEST);
     }
 
@@ -52,7 +63,16 @@ public class CustomExceptionHandler {
             Locale locale
     ) {
         log.error("Internal error in service", ex);
-        String errorMessage = messageSource.getMessage("Exception.service.internalProblem", null, locale);
+        String errorMessage;
+        try {
+            errorMessage = messageSource.getMessage("Exception.service.internalProblem", null, locale);
+        } catch (NoSuchMessageException exception) {
+            errorMessage = messageSource.getMessage(
+                    "Exception.service.internalProblem",
+                    null,
+                    new Locale("en")
+            );
+        }
         return new ResponseEntity<>(new ExceptionMessage(errorMessage), INTERNAL_SERVER_ERROR);
     }
 }

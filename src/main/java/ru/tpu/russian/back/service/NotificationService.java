@@ -57,7 +57,7 @@ public class NotificationService {
             );
         }
         log.info("Send notification on app.", request.toString());
-        request.setTopic(TOPIC_NAME + request.getLanguage().toString());
+        request.setTopic(TOPIC_NAME + request.getLanguage());
         try {
             Message message = getSingleMessageBuilder(request)
                     .setTopic(request.getTopic())

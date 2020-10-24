@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.repository.document;
 
-import ru.tpu.russian.back.entity.*;
+import ru.tpu.russian.back.entity.document.*;
 
 import java.util.List;
 

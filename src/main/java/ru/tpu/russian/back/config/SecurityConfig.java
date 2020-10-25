@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Отключаем срабатывание фильтра на запросы аутентификации, тестовые запросы и запросы по токену
                 .antMatchers("/api/auth/**", "/api/token/**", "/api/email/confirmation",
                         "/", "/test/**", "/api/media/img/*", "/api/notification",
-                        "/api/dicts/group");
+                        "/api/dict/**");
     }
 
     @Override

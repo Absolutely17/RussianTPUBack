@@ -1,10 +1,10 @@
 package ru.tpu.russian.back.dto.response;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import ru.tpu.russian.back.entity.document.DocumentWithoutContent;
+import lombok.*;
 
 @Getter
+@AllArgsConstructor
 public class DocumentResponse {
 
     @ApiModelProperty(example = "Оплата за обучение", value = "Название документа")
@@ -18,11 +18,4 @@ public class DocumentResponse {
 
     @ApiModelProperty(example = "oplata.docx", value = "Название файла")
     private String fileName;
-
-    public DocumentResponse(DocumentWithoutContent document) {
-        name = document.getName();
-        loadDate = document.getLoadDate();
-        fileName = document.getFileName();
-        url = document.getUrl();
-    }
 }

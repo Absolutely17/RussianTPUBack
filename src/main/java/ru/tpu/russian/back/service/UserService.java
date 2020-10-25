@@ -6,6 +6,7 @@ import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tpu.russian.back.dto.mapper.UserMapper;
 import ru.tpu.russian.back.dto.request.*;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.*;
@@ -13,6 +14,7 @@ import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.enums.ProviderType;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
+import ru.tpu.russian.back.repository.dicts.IDictRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
@@ -42,6 +44,8 @@ public class UserService {
 
     private final MailingTokenRepository mailingTokenRepository;
 
+    private final UserMapper userMapper;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -51,7 +55,9 @@ public class UserService {
             JwtProvider jwtProvider,
             MailService mailService,
             CacheManager cacheManager,
-            MailingTokenRepository mailingTokenRepository
+            MailingTokenRepository mailingTokenRepository,
+            IDictRepository dictRepository,
+            UserMapper userMapper
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -59,6 +65,7 @@ public class UserService {
         this.mailService = mailService;
         this.cacheManager = cacheManager;
         this.mailingTokenRepository = mailingTokenRepository;
+        this.userMapper = userMapper;
     }
 
     public void register(BaseUserRequestDto registrationRequestDto) throws BusinessException {
@@ -133,9 +140,9 @@ public class UserService {
         if (authRequest.isRememberMe()) {
             log.debug("Option rememberMe selected.");
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
-            return new AuthResponseDto(token, refreshToken, new UserResponseDto(user));
+            return new AuthResponseDto(token, refreshToken, userMapper.convertToResponse(user));
         }
-        return new AuthResponseDto(token, new UserResponseDto(user));
+        return new AuthResponseDto(token, userMapper.convertToResponse(user));
     }
 
     public User findByEmailAndPassword(String email, String password) throws BusinessException {
@@ -172,8 +179,12 @@ public class UserService {
         User user = findByEmail(userInfo.getEmail());
         if (user != null) {
             if (!user.getProvider().equals(valueOf(authRequest.getProvider()))) {
-                log.warn("It looks like you are trying to authenticate with the wrong service." +
-                        " You are trying to login with {}, but you need to login with {}", authRequest.getProvider(), user.getProvider());
+                log.warn(
+                        "It looks like you are trying to authenticate with the wrong service." +
+                                " You are trying to login with {}, but you need to login with {}",
+                        authRequest.getProvider(),
+                        user.getProvider()
+                );
                 if (ProviderType.local.equals(user.getProvider())) {
                     throw new BusinessException("Exception.login.conflict.providerAndLocal", authRequest.getProvider());
                 } else {
@@ -183,7 +194,7 @@ public class UserService {
             }
             String token = jwtProvider.generateAccessToken(user.getEmail());
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
-            AuthResponseDto response = new AuthResponseDto(token, refreshToken, new UserResponseDto(user));
+            AuthResponseDto response = new AuthResponseDto(token, refreshToken, userMapper.convertToResponse(user));
             return new ResponseEntity<>(
                     response, HttpStatus.OK
             );

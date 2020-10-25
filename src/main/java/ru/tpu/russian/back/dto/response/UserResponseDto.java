@@ -30,9 +30,6 @@ public class UserResponseDto {
     @Nullable
     private String gender;
 
-    @ApiModelProperty(example = "ru", value = "Язык пользователя")
-    private String language;
-
     @ApiModelProperty(example = "88005553535", value = "Номер телефона пользователя")
     @Nullable
     private String phoneNumber;
@@ -41,13 +38,19 @@ public class UserResponseDto {
     @Nullable
     private String groupName;
 
+    @ApiModelProperty(example = "uuid", value = "ID языка пользователя")
+    private String languageId;
+
+    @ApiModelProperty(example = "ru", value = "Наименование языка")
+    private String languageName;
+
     public UserResponseDto(User user) {
         email = user.getEmail();
         firstName = user.getFirstName();
         lastName = user.getLastName();
         middleName = user.getMiddleName();
         gender = user.getGender();
-        language = user.getLanguage();
+        languageId = user.getLanguage();
         phoneNumber = user.getPhoneNumber();
         groupName = user.getGroupName();
     }

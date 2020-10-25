@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.lang.Nullable;
-import ru.tpu.russian.back.entity.Menu;
 import ru.tpu.russian.back.enums.MenuType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
+@AllArgsConstructor
 public class MenuResponseDto {
 
     @ApiModelProperty(value = "ID пункта меню, генерируется БД")
@@ -47,20 +46,18 @@ public class MenuResponseDto {
     @Setter
     private List<MenuResponseDto> children;
 
-    public MenuResponseDto(Menu menu) {
-        id = menu.getId();
-        name = menu.getName();
-        level = menu.getLevel();
-        position = menu.getPosition();
-        type = menu.getType();
-        url = menu.getUrl();
-        idArticle = menu.getIdArticle();
-        if (!menu.getChildren().isEmpty()) {
-            children = menu.getChildren()
-                    .stream()
-                    .map(MenuResponseDto::new)
-                    .collect(Collectors.toList());
-        }
+    public MenuResponseDto(
+            String id, String name,
+            int level, int position,
+            MenuType type, @Nullable String url,
+            @Nullable String image
+    ) {
+        this.id = id;
+        this.name = name;
+        this.level = level;
+        this.position = position;
+        this.type = type;
+        this.url = url;
+        this.image = image;
     }
-
 }

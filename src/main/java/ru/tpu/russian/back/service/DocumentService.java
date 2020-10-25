@@ -2,6 +2,7 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.tpu.russian.back.dto.mapper.DocumentMapper;
 import ru.tpu.russian.back.dto.response.DocumentResponse;
 import ru.tpu.russian.back.entity.document.DocumentWithContent;
 import ru.tpu.russian.back.exception.BusinessException;
@@ -26,15 +27,20 @@ public class DocumentService {
 
     private final JwtProvider jwtProvider;
 
+    private final DocumentMapper documentMapper;
+
     public DocumentService(
             IDocumentRepository documentRepository,
-            JwtProvider jwtProvider
+            JwtProvider jwtProvider,
+            DocumentMapper documentMapper
     ) {
         this.documentRepository = documentRepository;
         this.jwtProvider = jwtProvider;
+        this.documentMapper = documentMapper;
     }
 
-    public List<DocumentResponse> getDocumentsWithoutContent(String email, HttpServletRequest request) throws BusinessException {
+    public List<DocumentResponse> getDocumentWithoutContent(String email, HttpServletRequest request)
+            throws BusinessException {
         log.info("Getting document by user {}", email);
         String token = jwtProvider.getTokenFromRequest(request);
         if (token != null && jwtProvider.validateToken(token)) {
@@ -42,7 +48,7 @@ public class DocumentService {
             if (email.equals(emailInToken)) {
                 return documentRepository.getDocumentWithoutContent(email)
                         .stream()
-                        .map(DocumentResponse::new)
+                        .map(documentMapper::convertToResponseWithoutContent)
                         .collect(toList());
             } else {
                 throw new BusinessException("Exception.login.token.notFoundOrInvalid");

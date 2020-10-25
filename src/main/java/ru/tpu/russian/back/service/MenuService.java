@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tpu.russian.back.dto.mapper.MenuMapper;
 import ru.tpu.russian.back.dto.response.MenuResponseDto;
 import ru.tpu.russian.back.entity.Menu;
 import ru.tpu.russian.back.exception.BusinessException;
@@ -29,17 +30,21 @@ public class MenuService {
 
     private final IUtilsRepository utilsRepository;
 
+    private final MenuMapper menuMapper;
+
     @Value("${service.url}")
     private String serviceUrl;
 
     public MenuService(
             MenuRepository menuRepository,
             UserRepository userRepository,
-            IUtilsRepository utilsRepository
+            IUtilsRepository utilsRepository,
+            MenuMapper menuMapper
     ) {
         this.menuRepository = menuRepository;
         this.userRepository = userRepository;
         this.utilsRepository = utilsRepository;
+        this.menuMapper = menuMapper;
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +66,7 @@ public class MenuService {
     }
 
     private MenuResponseDto convertToMenuResponse(Menu menuItem, String email) {
-        MenuResponseDto menuResponse = new MenuResponseDto(menuItem);
+        MenuResponseDto menuResponse = menuMapper.convertToResponse(menuItem);
         List<Menu> children = menuItem.getChildren();
         if (!children.isEmpty()) {
             menuResponse.setChildren(children

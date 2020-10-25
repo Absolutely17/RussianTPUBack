@@ -32,7 +32,7 @@ public class DocumentRest {
             @PathParam(value = "email") String email,
             HttpServletRequest request
     ) throws BusinessException {
-        return documentService.getDocumentsWithoutContent(email, request);
+        return documentService.getDocumentWithoutContent(email, request);
     }
 
     @ApiOperation(value = "Скачать документ")

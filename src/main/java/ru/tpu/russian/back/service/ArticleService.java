@@ -3,6 +3,7 @@ package ru.tpu.russian.back.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tpu.russian.back.dto.mapper.ArticleMapper;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.Article;
 import ru.tpu.russian.back.exception.BusinessException;
@@ -20,12 +21,16 @@ public class ArticleService {
 
     private final MediaService mediaService;
 
+    private final ArticleMapper articleMapper;
+
     public ArticleService(
             ArticleRepository articleRepository,
-            MediaService mediaService
+            MediaService mediaService,
+            ArticleMapper articleMapper
     ) {
         this.articleRepository = articleRepository;
         this.mediaService = mediaService;
+        this.articleMapper = articleMapper;
     }
 
     public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) throws BusinessException {
@@ -49,7 +54,7 @@ public class ArticleService {
     }
 
     private ArticleBriefResponse convertToBriefResponse(Article article) {
-        ArticleBriefResponse response = new ArticleBriefResponse(article);
+        ArticleBriefResponse response = articleMapper.convertBriefToResponse(article);
         if (article.getArticleImage() != null) {
             response.setArticleImage(mediaService.getImage(article.getArticleImage()));
         }
@@ -63,7 +68,7 @@ public class ArticleService {
         if (article.isPresent()) {
             Integer countViews = article.get().getCountView();
             articleRepository.updateCountViews(id, countViews == null ? 0 : countViews);
-            return new ArticleResponse(article.get());
+            return articleMapper.convertToResponse(article.get());
         } else {
             log.error("Could not find article with id {}", id);
             throw new BusinessException("Exception.article.notFound");

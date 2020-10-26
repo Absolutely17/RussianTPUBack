@@ -46,18 +46,13 @@ public class MenuResponseDto {
     @Setter
     private List<MenuResponseDto> children;
 
-    public MenuResponseDto(
-            String id, String name,
-            int level, int position,
-            MenuType type, @Nullable String url,
-            @Nullable String image
-    ) {
+    public MenuResponseDto(String id, String name, int level, int position, MenuType type, @Nullable String url, @Nullable String idArticle) {
         this.id = id;
         this.name = name;
         this.level = level;
         this.position = position;
         this.type = type;
         this.url = url;
-        this.image = image;
+        this.idArticle = idArticle;
     }
 }

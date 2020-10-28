@@ -80,7 +80,7 @@ public class UserService {
             mailService.sendMessage(
                     CONFIRMATION_MESSAGE,
                     registrationRequestDto.getEmail(),
-                    registrationRequestDto.getLanguage()
+                    registrationRequestDto.getLanguageId()
             );
         } catch (Exception ex) {
             log.warn("Register success. But some problem with sending confirm email.", ex);
@@ -102,7 +102,7 @@ public class UserService {
                 request.getLastName(),
                 request.getMiddleName(),
                 request.getGender(),
-                request.getLanguage(),
+                request.getLanguageId(),
                 request.getPhoneNumber(),
                 request.getEmail(),
                 request.getProvider(),
@@ -232,7 +232,7 @@ public class UserService {
         paramsToProcedure.put("psw", requestDto.getNewPassword() != null ?
                 passwordEncoder.encode(requestDto.getNewPassword()) : null);
         paramsToProcedure.put("firstName", requestDto.getFirstName());
-        paramsToProcedure.put("lang", requestDto.getLanguage());
+        paramsToProcedure.put("lang", requestDto.getLanguageId());
         paramsToProcedure.put("secondName", requestDto.getLastName());
         paramsToProcedure.put("patronymic", requestDto.getMiddleName());
         paramsToProcedure.put("sex", requestDto.getGender());

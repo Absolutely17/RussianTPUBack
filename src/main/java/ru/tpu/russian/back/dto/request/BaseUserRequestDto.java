@@ -50,7 +50,7 @@ public class BaseUserRequestDto {
     @ApiModelProperty(required = true, example = "A5100BE7-BAA6-41D2-B1C3-27DBB1891130",
             value = "ID языка пользователя")
     @NotNull
-    private String language;
+    private String languageId;
 
     @ApiModelProperty(example = "88005553535", value = "Номер телефона")
     @Nullable
@@ -75,7 +75,7 @@ public class BaseUserRequestDto {
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", gender='" + gender + '\'' +
-                ", language=" + language +
+                ", language=" + languageId +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", group='" + groupName + '\'' +
                 '}';

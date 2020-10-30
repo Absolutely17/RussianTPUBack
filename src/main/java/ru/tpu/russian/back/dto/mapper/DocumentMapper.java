@@ -11,8 +11,8 @@ public class DocumentMapper {
         return new DocumentResponse(
                 document.getName(),
                 document.getLoadDate(),
-                document.getFileName(),
-                document.getUrl()
+                document.getUrl(),
+                document.getFileName()
         );
     }
 }

@@ -1,7 +1,6 @@
 package ru.tpu.russian.back.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @Getter
@@ -9,13 +8,10 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthResponseDto {
 
-    @ApiModelProperty(example = "token")
     private String token;
 
-    @ApiModelProperty(example = "refresh token")
     private String refreshToken;
 
-    @ApiModelProperty(value = "Данные аутентифирующегося пользователя")
     private UserResponseDto user;
 
     public AuthResponseDto(String token, UserResponseDto user) {

@@ -1,8 +1,6 @@
 package ru.tpu.russian.back.controller;
 
-import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.response.MenuResponseDto;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.MenuService;
@@ -14,7 +12,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/api/menu")
-@Api(tags = {SpringFoxConfig.MENU_REST})
 public class MenuRest {
 
     private final MenuService menuService;
@@ -23,12 +20,9 @@ public class MenuRest {
         this.menuService = menuService;
     }
 
-    @ApiOperation(value = "Получение пунктов меню из БД")
     @RequestMapping(method = GET)
     public List<MenuResponseDto> getMenu(
-            @ApiParam(value = "Язык пунктов меню", required = true)
             @RequestParam String language,
-            @ApiParam(value = "Электронная почта пользователя")
             @RequestParam String email
     ) throws BusinessException {
         return menuService.getAll(language, email);

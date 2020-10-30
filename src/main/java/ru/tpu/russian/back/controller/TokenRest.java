@@ -1,9 +1,7 @@
 package ru.tpu.russian.back.controller;
 
-import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.SpringFoxConfig;
 import ru.tpu.russian.back.dto.request.AuthRequestDto;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
 import ru.tpu.russian.back.exception.*;
@@ -18,7 +16,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/api/token")
-@Api(tags = {SpringFoxConfig.TOKEN_REST})
 public class TokenRest {
 
     private final TokenService tokenService;
@@ -27,40 +24,12 @@ public class TokenRest {
         this.tokenService = tokenService;
     }
 
-    @ApiOperation(value = "Обновление токена пользователя")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 200,
-                    message = "Success",
-                    response = AuthResponseDto.class
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = "Failed to refresh token. The refresh token secret did not match"
-            ),
-            @ApiResponse(
-                    code = 401,
-                    message = "Token not found or damaged. Try to re-login"
-            )
-    })
     @RequestMapping(method = PUT)
     public AuthResponseDto refreshToken(
             HttpServletRequest servletRequest
     ) throws BusinessException {
         return tokenService.refreshToken(servletRequest);
     }
-
-    @ApiOperation(value = "Проверка аутентификации пользователя")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 200,
-                    message = "Authenticated"
-            ),
-            @ApiResponse(
-                    code = 401,
-                    message = "Not authenticated"
-            )
-    })
 
     @RequestMapping(method = GET, path = "/status")
     public ResponseEntity<?> getStatusAuthUser(
@@ -79,10 +48,8 @@ public class TokenRest {
         }
     }
 
-    @ApiOperation(value = "Создать токен для администратора в веб-приложении (админке)")
     @RequestMapping(method = POST, path = "/web-admin")
     public ResponseEntity<?> generateTokenForAdmin(
-            @ApiParam(value = "Данные авторизации администратора")
             @RequestBody AuthRequestDto requestDto
     ) throws BusinessException {
         return tokenService.generateTokenForAdmin(requestDto);

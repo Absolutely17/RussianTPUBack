@@ -8,7 +8,9 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponseDto {
+public class UserTableRow {
+
+    private String id;
 
     private String email;
 
@@ -33,4 +35,5 @@ public class UserResponseDto {
 
     private String languageName;
 
+    private boolean activeFcmToken;
 }

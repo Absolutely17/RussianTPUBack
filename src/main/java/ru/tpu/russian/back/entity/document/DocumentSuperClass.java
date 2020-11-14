@@ -13,7 +13,7 @@ import static ru.tpu.russian.back.service.DocumentService.DOCUMENT_API_URL;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public class Document {
+public class DocumentSuperClass {
 
     private static SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -26,9 +26,6 @@ public class Document {
 
     @Column(name = "FILE_NAME")
     private String fileName;
-
-    @Column(name = "ADMIN_ID")
-    private String adminId;
 
     @Column(name = "LOAD_DATE")
     private Date loadDate;

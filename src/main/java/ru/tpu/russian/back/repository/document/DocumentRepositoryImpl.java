@@ -20,8 +20,8 @@ public class DocumentRepositoryImpl implements IDocumentRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Document> getDocumentWithoutContent(String email) {
-        return em.createNativeQuery("exec " + GET_DOCUMENT_WITHOUT_CONTENT + " :email", Document.class)
+    public List<DocumentWithoutContent> getDocumentWithoutContent(String email) {
+        return em.createNativeQuery("exec " + GET_DOCUMENT_WITHOUT_CONTENT + " :email", DocumentWithoutContent.class)
                 .setParameter("email", email)
                 .getResultList();
     }

@@ -10,7 +10,7 @@ public interface IDocumentRepository {
     /**
      * Получить список документов для таблицы в моб. приложении, но без их контента
      */
-    List<Document> getDocumentWithoutContent(String email);
+    List<DocumentWithoutContent> getDocumentWithoutContent(String email);
 
     /**
      * Получить документ по ID вместе с его контентом

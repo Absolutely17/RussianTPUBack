@@ -40,7 +40,7 @@ public class UserRest {
     }
 
     @RequestMapping(method = GET, path = "/table")
-    public List<UserResponseDto> getUsersTable() {
+    public List<UserTableRow> getUsersTable() {
         return userService.getUsersTable();
     }
 

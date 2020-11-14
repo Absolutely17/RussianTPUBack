@@ -259,9 +259,9 @@ public class UserService {
         token.setActive(false);
     }
 
-    public List<UserResponseDto> getUsersTable() {
+    public List<UserTableRow> getUsersTable() {
         return userRepository.findAll().stream()
-                .map(userMapper::convertToResponse)
+                .map(userMapper::convertToTableRow)
                 .collect(Collectors.toList());
     }
 

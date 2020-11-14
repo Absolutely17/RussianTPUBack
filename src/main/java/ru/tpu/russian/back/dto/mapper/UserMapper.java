@@ -5,20 +5,24 @@ import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.repository.dicts.IDictRepository;
+import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 
 @Component
 public class UserMapper {
 
     private final IDictRepository dictRepository;
 
-    public UserMapper(IDictRepository dictRepository) {
+    private final MailingTokenRepository mailingTokenRepository;
+
+    public UserMapper(IDictRepository dictRepository,
+                      MailingTokenRepository mailingTokenRepository) {
         this.dictRepository = dictRepository;
+        this.mailingTokenRepository = mailingTokenRepository;
     }
 
     public UserResponseDto convertToResponse(User user) {
         String languageName = dictRepository.getLanguageById(user.getLanguage()).getShortName();
         return new UserResponseDto(
-                user.getId(),
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
@@ -28,6 +32,24 @@ public class UserMapper {
                 user.getGroupName(),
                 user.getLanguage(),
                 languageName
+        );
+    }
+
+    public UserTableRow convertToTableRow(User user) {
+        String languageName = dictRepository.getLanguageById(user.getLanguage()).getShortName();
+        boolean activeFcmToken = mailingTokenRepository.isActiveByUserId(user.getId());
+        return new UserTableRow(
+                user.getId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getMiddleName(),
+                user.getGender(),
+                user.getPhoneNumber(),
+                user.getGroupName(),
+                user.getLanguage(),
+                languageName,
+                activeFcmToken
         );
     }
 
@@ -48,7 +70,6 @@ public class UserMapper {
     public UserProfileResponse convertToProfile(User user) {
         String languageName = dictRepository.getLanguageById(user.getLanguage()).getShortName();
         return new UserProfileResponse(
-                user.getId(),
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),

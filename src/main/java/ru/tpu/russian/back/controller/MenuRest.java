@@ -1,13 +1,16 @@
 package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.tpu.russian.back.dto.SimpleNameObj;
+import ru.tpu.russian.back.dto.request.MenuUpdateRequest;
 import ru.tpu.russian.back.dto.response.MenuResponseDto;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.MenuService;
 
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -26,5 +29,15 @@ public class MenuRest {
             @RequestParam String email
     ) throws BusinessException {
         return menuService.getAll(language, email);
+    }
+
+    @RequestMapping(method = GET, path = "/dicts")
+    public Map<String, List<SimpleNameObj>> getDicts() {
+        return menuService.getDicts();
+    }
+
+    @RequestMapping(method = POST, path = "/save")
+    public void save(@RequestBody MenuUpdateRequest request) {
+        menuService.save(request);
     }
 }

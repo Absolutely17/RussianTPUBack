@@ -7,25 +7,8 @@ import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@NamedStoredProcedureQueries({
-        @NamedStoredProcedureQuery(
-                name = "GetArticlesBriefFromMenu",
-                procedureName = "GetArticlesBriefFromMenu",
-                resultClasses = {Article.class},
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "menu_id", type = String.class)
-                }),
-        @NamedStoredProcedureQuery(
-                name = "GetArticlesBrief",
-                procedureName = "GetArticlesBrief",
-                resultClasses = {Article.class},
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "str_id", type = String.class)
-                })
-})
-
 @Entity
-@Table(name = "Статья")
+@Table(name = "ARTICLE")
 @Getter
 @NoArgsConstructor
 public class Article {
@@ -33,31 +16,34 @@ public class Article {
     private static SimpleDateFormat formatter = new SimpleDateFormat("HH:mm dd.MM.yyyy");
 
     @Id
-    @Column(name = "ID статьи")
+    @Column(name = "ID")
     private String id;
 
-    @Column(name = "Название")
-    private String topic;
+    @Column(name = "NAME")
+    private String name;
 
-    @Column(name = "Текст")
+    @Column(name = "TEXT")
     private String text;
 
     @Nullable
-    @Column(name = "Краткая версия статьи")
+    @Column(name = "BRIEF_TEXT")
     private String briefText;
 
-    @Column(name = "Тематика")
-    private String subject;
+    @Column(name = "TOPIC")
+    private String topic;
 
-    @Column(name = "Время создания")
-    private Date createDate;
+    @Column(name = "LANGUAGE_ID")
+    private String language;
 
-    @Column(name = "Картинка статьи")
+    @Column(name = "IMAGE_ID")
     @Nullable
     private String articleImage;
 
-    @Column(name = "Количество просмотров")
+    @Column(name = "COUNT_VIEW")
     private Integer countView;
+
+    @Column(name = "LOAD_DATE")
+    private Date createDate;
 
     public String getCreateDate() {
         return formatter.format(createDate);

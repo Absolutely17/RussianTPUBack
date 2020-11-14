@@ -1,8 +1,8 @@
 package ru.tpu.russian.back.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.*;
 
 @Getter
@@ -19,12 +19,9 @@ public class NotificationBaseRequestDto {
 
     @NotNull
     @Email
-    private String email;
+    private String adminEmail;
 
-    @NotNull
-    private String token;
-
-    @Nullable
+    @JsonIgnore
     private String topic = "news";
 
     @Override
@@ -32,7 +29,7 @@ public class NotificationBaseRequestDto {
         return "NotificationBaseRequestDto{" +
                 "title='" + title + '\'' +
                 ", message='" + message + '\'' +
-                ", email='" + email + '\'' +
+                ", email='" + adminEmail + '\'' +
                 '}';
     }
 }

@@ -4,25 +4,33 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.mapper.MenuMapper;
+import ru.tpu.russian.back.dto.request.*;
 import ru.tpu.russian.back.dto.response.MenuResponseDto;
-import ru.tpu.russian.back.entity.Menu;
+import ru.tpu.russian.back.entity.menu.Menu;
 import ru.tpu.russian.back.exception.BusinessException;
+import ru.tpu.russian.back.repository.dicts.IDictRepository;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 import ru.tpu.russian.back.repository.utils.IUtilsRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Calendar.*;
+import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
-import static ru.tpu.russian.back.enums.MenuType.SCHEDULE;
 
 @Service
 @Slf4j
 public class MenuService {
 
+    private static final String SCHEDULE_TYPE = "SCHEDULE";
+
     private static final String SCHEDULE_URL_TPU = "https://rasp.tpu.ru";
+
+    private static final String DUMMY_ID = "dummyId";
 
     private final MenuRepository menuRepository;
 
@@ -32,6 +40,8 @@ public class MenuService {
 
     private final MenuMapper menuMapper;
 
+    private final IDictRepository dictRepository;
+
     @Value("${service.url}")
     private String serviceUrl;
 
@@ -39,12 +49,14 @@ public class MenuService {
             MenuRepository menuRepository,
             UserRepository userRepository,
             IUtilsRepository utilsRepository,
-            MenuMapper menuMapper
+            MenuMapper menuMapper,
+            IDictRepository dictRepository
     ) {
         this.menuRepository = menuRepository;
         this.userRepository = userRepository;
         this.utilsRepository = utilsRepository;
         this.menuMapper = menuMapper;
+        this.dictRepository = dictRepository;
     }
 
     @Transactional(readOnly = true)
@@ -77,7 +89,7 @@ public class MenuService {
         if (menuItem.getImage() != null) {
             menuResponse.setImage(serviceUrl + "media/img/" + menuItem.getImage());
         }
-        if (menuItem.getType() == SCHEDULE) {
+        if (SCHEDULE_TYPE.equals(menuItem.getType().getType())) {
             menuResponse.setUrl(generateScheduleURL(email));
         }
         return menuResponse;
@@ -101,5 +113,58 @@ public class MenuService {
         } else {
             return SCHEDULE_URL_TPU;
         }
+    }
+
+    public Map<String, List<SimpleNameObj>> getDicts() {
+        Map<String, List<SimpleNameObj>> dicts = new HashMap<>();
+        List<SimpleNameObj> languages = dictRepository.getAllLanguage()
+                .stream()
+                .map(it -> new SimpleNameObj(it.getId(), it.getFullName()))
+                .collect(Collectors.toList());
+        List<SimpleNameObj> types = menuRepository.getAllMenuType()
+                .stream()
+                .map(it -> new SimpleNameObj(it.getType(), it.getName()))
+                .collect(toList());
+        dicts.put("languages", languages);
+        dicts.put("types", types);
+        return dicts;
+    }
+
+    public void save(MenuUpdateRequest request) {
+        Map<String, String> idNewItems = new HashMap<>();
+        List<MenuCreateDto> addedItems = request.getAddedItems();
+        if (!addedItems.isEmpty()) {
+            addedItems.stream()
+                    .filter(it -> it.getParentId() == null || !it.getParentId().startsWith(DUMMY_ID))
+                    .forEach(it -> {
+                        idNewItems.put(it.getId(), addMenuItem(it, idNewItems));
+                    });
+            addedItems.stream()
+                    .filter(it -> it.getParentId() != null && it.getParentId().startsWith(DUMMY_ID))
+                    .forEach(it -> {
+                        idNewItems.put(it.getId(), addMenuItem(it, idNewItems));
+                    });
+        }
+        List<MenuCreateDto> editedItems = request.getEditedItems();
+        if (!editedItems.isEmpty()) {
+            editedItems.forEach(it -> editMenuItem(it, idNewItems));
+        }
+    }
+
+    private String addMenuItem(MenuCreateDto dto, Map<String, String> idNewItems) {
+        String id = randomUUID().toString();
+        dto.setId(id);
+        if (dto.getParentId() != null && dto.getParentId().startsWith(DUMMY_ID)) {
+            dto.setParentId(idNewItems.get(dto.getParentId()));
+        }
+        menuRepository.saveItem(dto);
+        return id;
+    }
+
+    private void editMenuItem(MenuCreateDto dto, Map<String, String> idNewItems) {
+        if (dto.getParentId() != null && dto.getParentId().startsWith(DUMMY_ID)) {
+            dto.setParentId(idNewItems.get(dto.getParentId()));
+        }
+        menuRepository.updateItem(dto);
     }
 }

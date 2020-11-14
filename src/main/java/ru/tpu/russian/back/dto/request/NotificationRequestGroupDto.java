@@ -1,9 +1,9 @@
 package ru.tpu.russian.back.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @Getter
@@ -13,6 +13,13 @@ public class NotificationRequestGroupDto extends NotificationBaseRequestDto {
     @NotNull
     private String language;
 
-    @JsonIgnore
-    private String topic;
+    @JsonCreator
+    public NotificationRequestGroupDto(
+            @NotNull String title, @NotNull String message,
+            @NotNull @Email String adminEmail, String topic,
+            @NotNull String language
+    ) {
+        super(title, message, adminEmail, topic);
+        this.language = language;
+    }
 }

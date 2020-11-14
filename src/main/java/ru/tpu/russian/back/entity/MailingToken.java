@@ -5,20 +5,20 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Токены рассылки")
+@Table(name = "USER_NOTIFICATION_TOKEN")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class MailingToken {
 
     @Id
-    @Column(name = "ID пользователя")
+    @Column(name = "USER_ID")
     private String userId;
 
-    @Column(name = "Токен")
+    @Column(name = "TOKEN")
     private String fcmToken;
 
-    @Column(name = "Активен")
+    @Column(name = "ACTIVE")
     private boolean isActive;
 
     public void setActive(boolean isActive) {

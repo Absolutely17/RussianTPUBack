@@ -5,27 +5,20 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Идентификатор учебной группы")
+@Table(name = "USER_GROUP")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@NamedStoredProcedureQueries({
-        @NamedStoredProcedureQuery(
-                name = "GetStudyGroups",
-                procedureName = "GetStudyGroups",
-                resultClasses = {StudyGroup.class}
-        )
-})
 public class StudyGroup implements Comparable<StudyGroup> {
 
     @Id
-    @Column(name = "ID группы")
+    @Column(name = "ID")
     private String idGroup;
 
-    @Column(name = "Номер группы")
+    @Column(name = "NAME")
     private String groupName;
 
-    @Column(name = "Идентификатор группы")
+    @Column(name = "GROUP_INTERNAL_ID")
     private String internalGroupID;
 
     @Override

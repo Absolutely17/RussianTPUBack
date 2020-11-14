@@ -1,10 +1,16 @@
 package ru.tpu.russian.back.repository.notification;
 
-import java.util.Map;
+import ru.tpu.russian.back.dto.request.*;
 
 public interface INotificationRepository {
 
-    void createGroupNotification(Map<String, Object> params);
+    /**
+     * Отправить групповое уведомление. Здесь сохраняем, дабы был лог
+     */
+    void createGroupNotification(NotificationRequestGroupDto request, String status);
 
-    void createUsersNotification(Map<String, Object> params);
+    /**
+     * Отправить уведомление конкретно выбранным пользователям. Здесь сохраняем, дабы был лог
+     */
+    void createUsersNotification(NotificationRequestUsersDto request, String status);
 }

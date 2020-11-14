@@ -20,10 +20,9 @@ public class UtilsRepositoryImpl implements IUtilsRepository {
     @Override
     @Nullable
     public Date getStudyStartDate() {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_UTIL_PARAMETER);
-        storedProcedureQuery.setParameter("key", "studyStartDate");
-        storedProcedureQuery.execute();
-        String startDate = (String) storedProcedureQuery.getOutputParameterValue("parameter");
+        String startDate = (String) em.createNativeQuery("exec " + PROCEDURE_GET_UTIL_PARAMETER + " :key")
+                .setParameter("key", "studyStartDate")
+                .getSingleResult();
         try {
             return new SimpleDateFormat("dd.MM.yyyy").parse(startDate);
         } catch (ParseException ex) {

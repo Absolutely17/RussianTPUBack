@@ -6,23 +6,24 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Медиа")
+@Table(name = "MEDIA")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Media {
 
     @Id
-    @Column(name = "Id медиа")
+    @Column(name = "ID")
     private String id;
 
-    @Column(name = "Данные")
+    @Column(name = "CONTENT")
     private byte[] data;
 
-    @Column(name = "Время создания")
+    @Column(name = "LOAD_DATE")
     private Date createDate;
 
-    @Column(name = "Дата последнего обращения")
+    @Column(name = "LAST_USE_DATE")
     private Date lastUseDate;
 
     public void setLastUseDate(Date newDate) {

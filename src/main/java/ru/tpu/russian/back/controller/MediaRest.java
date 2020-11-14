@@ -1,9 +1,12 @@
 package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.MediaService;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -21,5 +24,10 @@ public class MediaRest {
             @PathVariable String id
     ) {
         return mediaService.getImage(id);
+    }
+
+    @RequestMapping(method = POST, path = "/img/upload", consumes = {"multipart/form-data"}, produces = "text/plain")
+    public String uploadImage(@RequestParam("file") MultipartFile file) throws BusinessException {
+        return mediaService.uploadImage(file);
     }
 }

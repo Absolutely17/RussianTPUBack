@@ -6,6 +6,7 @@ import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.mapper.UserMapper;
 import ru.tpu.russian.back.dto.request.*;
 import ru.tpu.russian.back.dto.response.*;
@@ -20,6 +21,7 @@ import ru.tpu.russian.back.repository.user.UserRepository;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
 import static ru.tpu.russian.back.enums.ProviderType.valueOf;
@@ -31,6 +33,8 @@ import static ru.tpu.russian.back.service.MailService.TypeMessages.RESET_PASSWOR
 public class UserService {
 
     private static final int HTTP_STATUS_REG_NEED_FILL = 210;
+
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     private final UserRepository userRepository;
 
@@ -45,6 +49,8 @@ public class UserService {
     private final MailingTokenRepository mailingTokenRepository;
 
     private final UserMapper userMapper;
+
+    private final IDictRepository dictRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -66,16 +72,17 @@ public class UserService {
         this.cacheManager = cacheManager;
         this.mailingTokenRepository = mailingTokenRepository;
         this.userMapper = userMapper;
+        this.dictRepository = dictRepository;
     }
 
     public void register(BaseUserRequestDto registrationRequestDto) throws BusinessException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.debug("Check registration parameters on valid.");
         checkEmailOnExist(registrationRequestDto.getEmail());
-        User user = convertRegRequestToUser(registrationRequestDto);
+        User user = userMapper.convertToUserFromRegistrationRequest(registrationRequestDto);
         user.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
         log.debug("Saving new user in DB.");
-        register(user);
+        userRepository.saveUser(user);
         try {
             mailService.sendMessage(
                     CONFIRMATION_MESSAGE,
@@ -94,43 +101,6 @@ public class UserService {
             log.warn("This email address already taken.");
             throw new BusinessException("Exception.registration.email.exist", email);
         }
-    }
-
-    private static User convertRegRequestToUser(BaseUserRequestDto request) {
-        return new User(
-                request.getFirstName(),
-                request.getLastName(),
-                request.getMiddleName(),
-                request.getGender(),
-                request.getLanguageId(),
-                request.getPhoneNumber(),
-                request.getEmail(),
-                request.getProvider(),
-                request.getGroupName()
-        );
-    }
-
-    private void register(User user) {
-        log.info("Register new user.");
-        Map<String, Object> params = putUserFieldToRegMap(user);
-        userRepository.saveUser(params);
-    }
-
-    private static Map<String, Object> putUserFieldToRegMap(User user) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("Password", user.getPassword());
-        params.put("Email", user.getEmail());
-        params.put("FirstName", user.getFirstName());
-        params.put("SecondName", user.getLastName());
-        params.put("Sex", user.getGender());
-        params.put("Language", user.getLanguage());
-        params.put("Role", user.getRole());
-        params.put("Patronymic", user.getMiddleName());
-        params.put("PhoneNumber", user.getPhoneNumber());
-        params.put("Provider", user.getProvider().toString());
-        params.put("verified", user.isConfirm());
-        params.put("groupName", user.getGroupName());
-        return params;
     }
 
     public AuthResponseDto login(AuthRequestDto authRequest) throws BusinessException {
@@ -211,39 +181,23 @@ public class UserService {
         log.info("Register new user through service. User {}", registrationRequest.toString());
         log.debug("Convert to entity User.");
         checkEmailOnExist(registrationRequest.getEmail());
-        User user = convertRegRequestToUser(registrationRequest);
+        User user = userMapper.convertToUserFromRegistrationRequest(registrationRequest);
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setConfirm(true);
         log.debug("Saving new user in DB.");
-        register(user);
+        userRepository.saveUser(user);
     }
 
     public void editUser(BaseUserRequestDto requestDto) throws BusinessException {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
-        Map<String, Object> paramsToProcedure = putEditedUserFieldToMap(requestDto);
-
-        userRepository.editUser(paramsToProcedure);
-    }
-
-    private Map<String, Object> putEditedUserFieldToMap(BaseUserRequestDto requestDto) {
-        Map<String, Object> paramsToProcedure = new HashMap<>();
-        paramsToProcedure.put("email", requestDto.getEmail());
-        paramsToProcedure.put("psw", requestDto.getNewPassword() != null ?
-                passwordEncoder.encode(requestDto.getNewPassword()) : null);
-        paramsToProcedure.put("firstName", requestDto.getFirstName());
-        paramsToProcedure.put("lang", requestDto.getLanguageId());
-        paramsToProcedure.put("secondName", requestDto.getLastName());
-        paramsToProcedure.put("patronymic", requestDto.getMiddleName());
-        paramsToProcedure.put("sex", requestDto.getGender());
-        paramsToProcedure.put("phoneNum", requestDto.getPhoneNumber());
-        paramsToProcedure.put("groupName", requestDto.getGroupName());
-        return paramsToProcedure;
+        requestDto.setNewPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+        userRepository.editUser(requestDto);
     }
 
     public UserProfileResponse getUserProfile(String email) throws BusinessException {
         log.info("Get user profile {}", email);
-        return new UserProfileResponse(userRepository.getUserByEmail(email).orElseThrow(
+        return userMapper.convertToProfile(userRepository.getUserByEmail(email).orElseThrow(
                 () -> new BusinessException("Exception.login.user.notFound", email)));
     }
 
@@ -279,7 +233,7 @@ public class UserService {
         if (token != null && jwtProvider.validateToken(token)) {
             String email = jwtProvider.getEmailFromToken(token);
             log.info("Trying to reset and edit password on {}", email);
-            int success = userRepository.resetAndEditPassword(
+            int success = userRepository.editPassword(
                     email,
                     passwordEncoder.encode(resetDto.getPassword()),
                     sha1Hex(token)
@@ -303,5 +257,31 @@ public class UserService {
         String userId = userRepository.getUserIdByEmail(email);
         MailingToken token = entityManager.find(MailingToken.class, userId);
         token.setActive(false);
+    }
+
+    public List<UserResponseDto> getUsersTable() {
+        return userRepository.findAll().stream()
+                .map(userMapper::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, List<SimpleNameObj>> getDictsTable() {
+        Map<String, List<SimpleNameObj>> dicts = new HashMap<>();
+        List<SimpleNameObj> languages = dictRepository.getAllLanguage()
+                .stream()
+                .map(it -> new SimpleNameObj(it.getId(), it.getFullName()))
+                .collect(Collectors.toList());
+        dicts.put("languages", languages);
+        return dicts;
+    }
+
+    public AuthResponseDto webLogin(AuthRequestDto authRequest) throws BusinessException {
+        log.info("Login in web-admin with email {}", authRequest.getEmail());
+        User user = findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
+        if (!ROLE_ADMIN.equals(user.getRole())) {
+            throw new BusinessException("Недостаточно прав. Обратитесь к администратору.");
+        }
+        String token = jwtProvider.generateAccessToken(user.getEmail());
+        return new AuthResponseDto(token, userMapper.convertToResponse(user));
     }
 }

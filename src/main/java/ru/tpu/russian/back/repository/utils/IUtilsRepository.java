@@ -5,6 +5,9 @@ import java.util.Date;
 
 public interface IUtilsRepository {
 
+    /**
+     * Вытащить дату начала учебы в текущем учебном году
+     */
     @Nullable
     Date getStudyStartDate();
 }

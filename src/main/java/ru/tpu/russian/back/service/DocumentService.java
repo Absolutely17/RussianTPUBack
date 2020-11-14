@@ -2,12 +2,14 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.tpu.russian.back.dto.mapper.DocumentMapper;
+import ru.tpu.russian.back.dto.request.DocumentUploadDto;
 import ru.tpu.russian.back.dto.response.DocumentResponse;
 import ru.tpu.russian.back.entity.document.DocumentWithContent;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
-import ru.tpu.russian.back.repository.document.IDocumentRepository;
+import ru.tpu.russian.back.repository.document.DocumentRepository;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.*;
@@ -23,14 +25,14 @@ public class DocumentService {
 
     public static final String DOCUMENT_API_URL = "https://internationals.tpu.ru:8080/api/document/download?id=";
 
-    private final IDocumentRepository documentRepository;
+    private final DocumentRepository documentRepository;
 
     private final JwtProvider jwtProvider;
 
     private final DocumentMapper documentMapper;
 
     public DocumentService(
-            IDocumentRepository documentRepository,
+            DocumentRepository documentRepository,
             JwtProvider jwtProvider,
             DocumentMapper documentMapper
     ) {
@@ -73,5 +75,9 @@ public class DocumentService {
         } else {
             throw new BusinessException("Exception.document.notFound");
         }
+    }
+
+    public void uploadDocument(DocumentUploadDto dto, MultipartFile doc) throws IOException {
+        documentRepository.uploadDocument(dto, doc.getBytes());
     }
 }

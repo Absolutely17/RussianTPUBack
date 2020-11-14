@@ -3,7 +3,6 @@ package ru.tpu.russian.back.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.lang.Nullable;
-import ru.tpu.russian.back.enums.MenuType;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class MenuResponseDto {
 
     private int position;
 
-    private MenuType type;
+    private String type;
 
     @Nullable
     @Setter
@@ -36,7 +35,15 @@ public class MenuResponseDto {
     @Setter
     private List<MenuResponseDto> children;
 
-    public MenuResponseDto(String id, String name, int level, int position, MenuType type, @Nullable String url, @Nullable String idArticle) {
+    public MenuResponseDto(
+            String id,
+            String name,
+            int level,
+            int position,
+            String type,
+            @Nullable String url,
+            @Nullable String idArticle
+    ) {
         this.id = id;
         this.name = name;
         this.level = level;

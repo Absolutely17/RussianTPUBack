@@ -81,4 +81,9 @@ public class AuthRest {
     ) {
         userService.disableFcmUserToken(email);
     }
+
+    @RequestMapping(method = POST, path = "/web-admin/login")
+    public AuthResponseDto webLogin(@Valid @RequestBody AuthRequestDto requestDto) throws BusinessException {
+        return userService.webLogin(requestDto);
+    }
 }

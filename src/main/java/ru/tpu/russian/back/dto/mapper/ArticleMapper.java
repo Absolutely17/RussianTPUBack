@@ -12,7 +12,7 @@ public class ArticleMapper {
                 article.getId(),
                 article.getTopic(),
                 article.getBriefText(),
-                article.getSubject(),
+                article.getTopic(),
                 article.getCreateDate()
         );
     }
@@ -22,7 +22,20 @@ public class ArticleMapper {
                 article.getId(),
                 article.getTopic(),
                 article.getText(),
-                article.getSubject(),
+                article.getTopic(),
+                article.getCreateDate()
+        );
+    }
+
+    public ArticleRegistryResponse convertToRegistryTable(Article article) {
+        return new ArticleRegistryResponse(
+                article.getId(),
+                article.getTopic(),
+                article.getText(),
+                article.getBriefText(),
+                article.getTopic(),
+                article.getLanguage(),
+                article.getCountView(),
                 article.getCreateDate()
         );
     }

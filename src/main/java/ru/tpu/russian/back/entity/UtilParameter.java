@@ -3,15 +3,16 @@ package ru.tpu.russian.back.entity;
 import javax.persistence.*;
 
 @Entity
-@NamedStoredProcedureQuery(
-        name = "GetUtilParameter",
-        procedureName = "GetUtilParameter",
-        parameters = {
-                @StoredProcedureParameter(mode = ParameterMode.IN, name = "key", type = String.class),
-                @StoredProcedureParameter(mode = ParameterMode.OUT, name = "parameter", type = String.class)
-        })
+@Table(name = "UTIL")
 public class UtilParameter {
 
     @Id
+    @Column(name = "ID")
     private String id;
+
+    @Column(name = "VALUE")
+    private String value;
+
+    @Column(name = "NAME")
+    private String name;
 }

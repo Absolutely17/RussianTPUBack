@@ -1,20 +1,13 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.request.AuthRequestDto;
 import ru.tpu.russian.back.dto.response.AuthResponseDto;
-import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
-
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.OK;
-import static ru.tpu.russian.back.service.NotificationService.ROLE_ADMIN;
 
 @Slf4j
 @Service
@@ -66,22 +59,5 @@ public class TokenService {
         }
         log.warn("User not authenticated.");
         return false;
-    }
-
-    /**
-     * Сгенерировать токен для администратора в веб-приложении для запросов на сервис
-     */
-    public ResponseEntity<?> generateTokenForAdmin(AuthRequestDto requestDto) throws BusinessException {
-        User admin = userService.findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
-        if (ROLE_ADMIN.equals(admin.getRole())) {
-            log.debug("Generate token for admin.");
-            return new ResponseEntity<>(
-                    jwtProvider.generateTokenWithExpiration(admin.getEmail(), 1L),
-                    OK
-            );
-        }
-        return new ResponseEntity<>(
-                FORBIDDEN
-        );
     }
 }

@@ -8,158 +8,59 @@ import javax.persistence.*;
 
 import static java.util.Objects.requireNonNull;
 
-@NamedStoredProcedureQueries({
-        @NamedStoredProcedureQuery(
-                name = "GetRegistered",
-                procedureName = "GetRegistered",
-                resultClasses = {User.class},
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Reg", type = boolean.class)}
-        ),
-        @NamedStoredProcedureQuery(
-                name = "GetUserByLanguage",
-                procedureName = "GetUserByLanguage",
-                resultClasses = {User.class},
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Language", type = String.class)
-                }),
-        @NamedStoredProcedureQuery(
-                name = "EditUserRefreshSalt",
-                procedureName = "EditUserRefreshSalt",
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Salt", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class)
-                }
-        ),
-        @NamedStoredProcedureQuery(
-                name = "GetUserByEmail",
-                procedureName = "GetUserByEmail",
-                resultClasses = {User.class},
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class)
-                }
-        ),
-        @NamedStoredProcedureQuery(
-                name = "EditRegisteredStatus",
-                procedureName = "EditRegisteredStatus",
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "status", type = boolean.class)
-                }
-        ),
-        @NamedStoredProcedureQuery(
-                name = "AddUser",
-                procedureName = "AddUser",
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Password", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Email", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "FirstName", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "SecondName", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Sex", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Language", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Role", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Patronymic", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "PhoneNumber", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "Provider", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "verified", type = boolean.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "groupName", type = String.class)
-                }
-        ),
-        @NamedStoredProcedureQuery(
-                name = "EditUser",
-                procedureName = "EditUser",
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "psw", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "firstName", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "lang", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "secondName", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "patronymic", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "sex", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "phoneNum", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "groupName", type = String.class)
-                }
-        ),
-        @NamedStoredProcedureQuery(
-                name = "EditPasswordUser",
-                procedureName = "EditPasswordUser",
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "token", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "newPassword", type = String.class)
-                }
-        ),
-        @NamedStoredProcedureQuery(
-                name = "AddResetPasswordRequest",
-                procedureName = "AddResetPasswordRequest",
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "token", type = String.class)
-                }
-        ),
-        @NamedStoredProcedureQuery(
-                name = "GetUserGroupID",
-                procedureName = "GetUserGroupID",
-                parameters = {
-                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "email", type = String.class),
-                        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "internalGroupID", type = String.class)
-                }
-        )
-})
-
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "UserInfo")
+@Table(name = "USER_VIEW")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id Пользователя")
+    @Column(name = "ID")
     private String id;
 
-    @Column(name = "Пароль", length = 100)
+    @Column(name = "PASSWORD", length = 100)
     private String password;
 
-    @Column(name = "Имя", length = 50)
+    @Column(name = "FIRST_NAME", length = 50)
     private String firstName;
 
-    @Column(name = "Фамилия", length = 50)
+    @Column(name = "LAST_NAME", length = 50)
     @Nullable
     private String lastName;
 
-    @Column(name = "Отчество", length = 50)
+    @Column(name = "MIDDLE_NAME", length = 50)
     @Nullable
     private String middleName;
 
-    @Column(name = "Роль")
+    @Column(name = "ROLE")
     private String role;
 
-    @Column(name = "Пол", length = 20)
+    @Column(name = "SEX", length = 20)
     @Nullable
     private String gender;
 
-    @Column(name = "Язык")
+    @Column(name = "LANGUAGE_ID")
     private String language;
 
-    @Column(name = "Номер телефона", length = 20)
+    @Column(name = "PHONE_NUMBER", length = 20)
     @Nullable
     private String phoneNumber;
 
-    @Column(name = "Электронная почта", length = 100)
+    @Column(name = "EMAIL", length = 100)
     private String email;
 
-    @Column(name = "refresh salt")
+    @Column(name = "REFRESH_SALT")
     private String refreshSalt;
 
-    @Column(name = "Provider")
+    @Column(name = "REGISTRATION_PROVIDER")
     @Enumerated(EnumType.STRING)
     private ProviderType provider;
 
-    @Column(name = "Подтвержден")
+    @Column(name = "CONFIRMED")
     private boolean isConfirm;
 
-    @Column(name = "Номер группы")
+    @Column(name = "GROUP_ID")
     @Nullable
     private String groupName;
 

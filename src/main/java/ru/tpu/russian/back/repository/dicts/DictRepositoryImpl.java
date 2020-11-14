@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public class DictRepositoryImpl implements IDictRepository {
 
-    private static final String PROCEDURE_GET_GROUPS = "GetStudyGroups";
+    private static final String GET_GROUPS = "GetStudyGroups";
 
     @PersistenceContext
     private EntityManager em;
@@ -18,9 +18,7 @@ public class DictRepositoryImpl implements IDictRepository {
     @Override
     @Transactional(readOnly = true)
     public List<StudyGroup> getStudyGroups() {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_GROUPS);
-        storedProcedureQuery.execute();
-        return storedProcedureQuery.getResultList();
+        return em.createNativeQuery("exec " + GET_GROUPS, StudyGroup.class).getResultList();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ru.tpu.russian.back.config;
 
 import org.springframework.context.annotation.*;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.*;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,10 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web
                 .ignoring()
-                // Отключаем срабатывание фильтра на запросы аутентификации, тестовые запросы и запросы по токену
+                // Отключаем срабатывание фильтра на некоторые запросы
                 .antMatchers("/api/auth/**", "/api/token/**", "/api/email/confirmation",
-                        "/", "/test/**", "/api/media/img/*", "/api/notification",
-                        "/api/dict/**");
+                        "/", "/test/**", "/api/media/img/*", "/api/dict/**");
     }
 
     @Override
@@ -49,8 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/swagger-ui.html", "/webjars/springfox-swagger-ui/**",
-                        "/v2/api-docs", "/swagger-resources/**", "/csrf").hasRole("ADMIN")
+                .antMatchers("/api/notification/**", "/api/document/upload", "/api/user/table",
+                        "/api/media/img/upload", "/api/article/create", "/api/article/table").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/article/*").hasRole("ADMIN")
                 .and().apply(jwtConfigurer)
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);

@@ -1,35 +1,44 @@
 package ru.tpu.russian.back.repository.notification;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.tpu.russian.back.dto.request.*;
 
 import javax.persistence.*;
-import java.util.Map;
 
 @Repository
 public class NotificationRepositoryImpl implements INotificationRepository {
 
-    private static final String PROCEDURE_CREATE_GROUP_NOTIFICATION = "AddGroupNotification";
+    private static final String CREATE_GROUP_NOTIFICATION = "AddGroupNotification";
 
-    private static final String PROCEDURE_CREATE_USER_NOTIFICATION = "AddUsersNotification";
+    private static final String CREATE_USER_NOTIFICATION = "AddUsersNotification";
 
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public void createGroupNotification(Map<String, Object> params) {
-        StoredProcedureQuery procedure = em.createNamedStoredProcedureQuery(PROCEDURE_CREATE_GROUP_NOTIFICATION);
-        for (String key : params.keySet()) {
-            procedure.setParameter(key, params.get(key));
-        }
-        procedure.execute();
+    @Transactional
+    public void createGroupNotification(NotificationRequestGroupDto request, String status) {
+        em.createNativeQuery("exec " + CREATE_GROUP_NOTIFICATION +
+                " :title, :message, :status, :adminEmail, :language")
+                .setParameter("title", request.getTitle())
+                .setParameter("message", request.getMessage())
+                .setParameter("status", status)
+                .setParameter("adminEmail", request.getAdminEmail())
+                .setParameter("language", request.getLanguage())
+                .executeUpdate();
     }
 
     @Override
-    public void createUsersNotification(Map<String, Object> params) {
-        StoredProcedureQuery procedure = em.createNamedStoredProcedureQuery(PROCEDURE_CREATE_USER_NOTIFICATION);
-        for (String key : params.keySet()) {
-            procedure.setParameter(key, params.get(key));
-        }
-        procedure.execute();
+    @Transactional
+    public void createUsersNotification(NotificationRequestUsersDto request, String status) {
+        em.createNativeQuery("exec " + CREATE_USER_NOTIFICATION +
+                " :title, :message, :status, :adminEmail, :users")
+                .setParameter("title", request.getTitle())
+                .setParameter("message", request.getMessage())
+                .setParameter("status", status)
+                .setParameter("adminEmail", request.getAdminEmail())
+                .setParameter("users", request.toString())
+                .executeUpdate();
     }
 }

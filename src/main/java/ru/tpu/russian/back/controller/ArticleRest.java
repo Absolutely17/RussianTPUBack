@@ -1,13 +1,15 @@
 package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.tpu.russian.back.dto.SimpleNameObj;
+import ru.tpu.russian.back.dto.request.ArticleCreateRequest;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.ArticleService;
 
-import java.util.List;
+import java.util.*;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -35,4 +37,23 @@ public class ArticleRest {
         return articleService.getArticle(id);
     }
 
+    @RequestMapping(method = GET, path = "/table")
+    public List<ArticleRegistryResponse> getTable() {
+        return articleService.getTable();
+    }
+
+    @RequestMapping(method = GET, path = "/dicts")
+    public Map<String, List<SimpleNameObj>> getDicts() {
+        return articleService.getDictsForTable();
+    }
+
+    @RequestMapping(method = POST, path = "/create")
+    public String create(@RequestBody ArticleCreateRequest createDto) {
+        return articleService.create(createDto);
+    }
+
+    @RequestMapping(method = PUT, path = "/{id}")
+    public void update(@RequestBody ArticleCreateRequest updateDto, @PathVariable String id) {
+        articleService.update(updateDto, id);
+    }
 }

@@ -1,6 +1,5 @@
 package ru.tpu.russian.back.config;
 
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

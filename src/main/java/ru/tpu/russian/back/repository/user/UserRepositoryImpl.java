@@ -2,116 +2,121 @@ package ru.tpu.russian.back.repository.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
 import ru.tpu.russian.back.entity.User;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Optional;
 
 @Slf4j
 public class UserRepositoryImpl implements IUserRepository {
 
-    private static final String PROCEDURE_ADD_USER = "AddUser";
+    private static final String ADD_USER = "AddUser";
 
-    private static final String PROCEDURE_EDIT_REFRESH_SALT = "EditUserRefreshSalt";
+    private static final String EDIT_REFRESH_SALT = "EditUserRefreshSalt";
 
-    private static final String PROCEDURE_GET_USER_BY_EMAIL = "GetUserByEmail";
+    private static final String GET_USER_BY_EMAIL = "GetUserByEmail";
 
-    private static final String PROCEDURE_SET_REGISTERED_STATUS = "EditRegisteredStatus";
+    private static final String SET_REGISTERED_STATUS = "EditRegisteredStatus";
 
-    private static final String PROCEDURE_EDIT_USER = "EditUser";
+    private static final String EDIT_USER = "EditUser";
 
-    private static final String PROCEDURE_RESET_AND_EDIT_PASS = "EditPasswordUser";
+    private static final String RESET_AND_EDIT_PASS = "EditPasswordUser";
 
-    private static final String PROCEDURE_ADD_RESET_PASSWORD_TOKEN = "AddResetPasswordRequest";
+    private static final String ADD_RESET_PASSWORD_TOKEN = "AddResetPasswordRequest";
 
-    private static final String PROCEDURE_GET_GROUP_ID = "GetUserGroupID";
+    private static final String GET_GROUP_ID = "GetUserGroupID";
 
     @PersistenceContext
     private EntityManager em;
 
     @Override
     @Transactional
-    public void saveUser(Map<String, Object> params) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_ADD_USER);
-        for (String key : params.keySet()) {
-            storedProcedureQuery.setParameter(key, params.get(key));
-        }
-        storedProcedureQuery.execute();
+    public void saveUser(User user) {
+        em.createNativeQuery("exec " + ADD_USER + " :firstName, :middleName, :lastName" +
+                ", :role, :password, :sex, :languageId, :provider, :confirmed, :groupName, :email, :phoneNumber")
+                .setParameter("firstName", user.getFirstName())
+                .setParameter("middleName", user.getMiddleName())
+                .setParameter("lastName", user.getLastName())
+                .setParameter("role", user.getRole())
+                .setParameter("password", user.getPassword())
+                .setParameter("sex", user.getGender())
+                .setParameter("languageId", user.getLanguage())
+                .setParameter("provider", user.getProvider().toString())
+                .setParameter("confirmed", user.isConfirm())
+                .setParameter("groupName", user.getGroupName())
+                .setParameter("email", user.getEmail())
+                .setParameter("phoneNumber", user.getPhoneNumber())
+                .executeUpdate();
     }
 
     @Override
     @Transactional
     public void editRefreshSalt(String email, String salt) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_EDIT_REFRESH_SALT);
-        storedProcedureQuery.setParameter("Salt", salt);
-        storedProcedureQuery.setParameter("email", email);
-        storedProcedureQuery.execute();
+        em.createNativeQuery("exec " + EDIT_REFRESH_SALT + " :refreshSalt, :email")
+                .setParameter("refreshSalt", salt)
+                .setParameter("email", email)
+                .executeUpdate();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<User> getUserByEmail(String email) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_USER_BY_EMAIL);
-        storedProcedureQuery.setParameter("email", email);
-        storedProcedureQuery.execute();
-        Optional<User> optionalUser;
-        try {
-            return Optional.ofNullable((User) storedProcedureQuery.getSingleResult());
-        } catch (NoResultException ex) {
-            return Optional.empty();
-        }
+        return em.createNativeQuery("exec " + GET_USER_BY_EMAIL + " :email", User.class)
+                .setParameter("email", email)
+                .getResultStream().findFirst();
     }
 
     @Override
     @Transactional
     public int editRegisteredStatus(String email, boolean status) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_SET_REGISTERED_STATUS);
-        storedProcedureQuery.setParameter("email", email);
-        storedProcedureQuery.setParameter("status", status);
-        storedProcedureQuery.execute();
-        return storedProcedureQuery.getUpdateCount();
+        return em.createNativeQuery("exec " + SET_REGISTERED_STATUS + " :email, :status")
+                .setParameter("email", email)
+                .setParameter("status", status)
+                .executeUpdate();
     }
 
     @Override
     @Transactional
-    public void editUser(Map<String, Object> params) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_EDIT_USER);
-        for (String key : params.keySet()) {
-            storedProcedureQuery.setParameter(key, params.get(key));
-        }
-        storedProcedureQuery.execute();
+    public void editUser(BaseUserRequestDto requestDto) {
+        em.createNativeQuery("exec " + EDIT_USER + " :firstName, :middleName, :lastName" +
+                ", :password, :sex, :languageId, :groupName, :email, :phoneNumber")
+                .setParameter("firstName", requestDto.getFirstName())
+                .setParameter("middleName", requestDto.getMiddleName())
+                .setParameter("lastName", requestDto.getLastName())
+                .setParameter("password", requestDto.getNewPassword())
+                .setParameter("sex", requestDto.getGender())
+                .setParameter("languageId", requestDto.getLanguageId())
+                .setParameter("groupName", requestDto.getGroupName())
+                .setParameter("email", requestDto.getEmail())
+                .setParameter("phoneNumber", requestDto.getPhoneNumber())
+                .executeUpdate();
     }
 
     @Override
     @Transactional
-    public int resetAndEditPassword(String email, String newPassword, String token) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_RESET_AND_EDIT_PASS);
-        storedProcedureQuery.setParameter("email", email);
-        storedProcedureQuery.setParameter("newPassword", newPassword);
-        storedProcedureQuery.setParameter("token", token);
-        storedProcedureQuery.execute();
-        return storedProcedureQuery.getUpdateCount();
+    public int editPassword(String email, String newPassword, String token) {
+        return em.createNativeQuery("exec " + RESET_AND_EDIT_PASS + ":email, :newPassword, :token")
+                .setParameter("email", email)
+                .setParameter("newPassword", newPassword)
+                .setParameter("token", token)
+                .executeUpdate();
     }
 
     @Override
     @Transactional
     public void addResetToken(String email, String token) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_ADD_RESET_PASSWORD_TOKEN);
-        storedProcedureQuery.setParameter("email", email);
-        storedProcedureQuery.setParameter("token", token);
-        storedProcedureQuery.execute();
+        em.createNativeQuery("exec " + ADD_RESET_PASSWORD_TOKEN + ":email, :token")
+                .setParameter("email", email)
+                .setParameter("token", token)
+                .executeUpdate();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<String> getGroupId(String email) {
-        StoredProcedureQuery storedProcedureQuery = em.createNamedStoredProcedureQuery(PROCEDURE_GET_GROUP_ID);
-        storedProcedureQuery.setParameter("email", email);
-        storedProcedureQuery.execute();
-        try {
-            return Optional.ofNullable((String) storedProcedureQuery.getOutputParameterValue("internalGroupID"));
-        } catch (NoResultException ex) {
-            return Optional.empty();
-        }
+        return em.createNativeQuery("exec " + GET_GROUP_ID + " :email")
+                .setParameter("email", email)
+                .getResultStream().findFirst();
     }
 }

@@ -3,13 +3,17 @@ package ru.tpu.russian.back.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.mapper.ArticleMapper;
+import ru.tpu.russian.back.dto.request.ArticleCreateRequest;
 import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.entity.Article;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
+import ru.tpu.russian.back.repository.dicts.IDictRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -23,14 +27,18 @@ public class ArticleService {
 
     private final ArticleMapper articleMapper;
 
+    private final IDictRepository dictRepository;
+
     public ArticleService(
             ArticleRepository articleRepository,
             MediaService mediaService,
-            ArticleMapper articleMapper
+            ArticleMapper articleMapper,
+            IDictRepository dictRepository
     ) {
         this.articleRepository = articleRepository;
         this.mediaService = mediaService;
         this.articleMapper = articleMapper;
+        this.dictRepository = dictRepository;
     }
 
     public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) throws BusinessException {
@@ -73,5 +81,29 @@ public class ArticleService {
             log.error("Could not find article with id {}", id);
             throw new BusinessException("Exception.article.notFound");
         }
+    }
+
+    public List<ArticleRegistryResponse> getTable() {
+        return articleRepository.findAll().stream()
+                .map(articleMapper::convertToRegistryTable)
+                .collect(toList());
+    }
+
+    public Map<String, List<SimpleNameObj>> getDictsForTable() {
+        Map<String, List<SimpleNameObj>> dicts = new HashMap<>();
+        List<SimpleNameObj> languages = dictRepository.getAllLanguage()
+                .stream()
+                .map(it -> new SimpleNameObj(it.getId(), it.getFullName()))
+                .collect(Collectors.toList());
+        dicts.put("languages", languages);
+        return dicts;
+    }
+
+    public String create(ArticleCreateRequest createDto) {
+        return articleRepository.create(createDto);
+    }
+
+    public void update(ArticleCreateRequest updateDto, String id) {
+        articleRepository.update(updateDto, id);
     }
 }

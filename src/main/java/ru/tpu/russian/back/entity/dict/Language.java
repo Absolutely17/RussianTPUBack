@@ -5,22 +5,22 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Языки")
+@Table(name = "LANGUAGE")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Language {
 
-    @Column(name = "ID языка")
+    @Column(name = "ID")
     @Id
     private String id;
 
-    @Column(name = "Наименование")
+    @Column(name = "NAME")
     private String fullName;
 
-    @Column(name = "Сокращенное название языка")
+    @Column(name = "SHORT_NAME")
     private String shortName;
 
-    @Column(name = "Пиктограмма языка")
+    @Column(name = "ICON_ID")
     private String imageId;
 }

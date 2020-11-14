@@ -1,13 +1,15 @@
 package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
-import ru.tpu.russian.back.dto.response.UserProfileResponse;
+import ru.tpu.russian.back.dto.response.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.UserService;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
+import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -35,5 +37,15 @@ public class UserRest {
             @PathParam(value = "email") String email
     ) throws BusinessException {
         return userService.getUserProfile(email);
+    }
+
+    @RequestMapping(method = GET, path = "/table")
+    public List<UserResponseDto> getUsersTable() {
+        return userService.getUsersTable();
+    }
+
+    @RequestMapping(method = GET, path = "/dicts")
+    public Map<String, List<SimpleNameObj>> getDicts() {
+        return userService.getDictsTable();
     }
 }

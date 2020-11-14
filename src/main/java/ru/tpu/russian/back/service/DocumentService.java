@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.tpu.russian.back.dto.document.*;
-import ru.tpu.russian.back.dto.mapper.DocumentMapper;
 import ru.tpu.russian.back.entity.document.DocumentWithContent;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
+import ru.tpu.russian.back.mapper.DocumentMapper;
 import ru.tpu.russian.back.repository.document.DocumentRepository;
 
 import javax.servlet.ServletOutputStream;

@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto.mapper;
+package ru.tpu.russian.back.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.tpu.russian.back.dto.menu.MenuResponse;

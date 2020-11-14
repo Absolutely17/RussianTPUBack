@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.article.*;
-import ru.tpu.russian.back.dto.mapper.ArticleMapper;
 import ru.tpu.russian.back.entity.Article;
 import ru.tpu.russian.back.exception.BusinessException;
+import ru.tpu.russian.back.mapper.ArticleMapper;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
 import ru.tpu.russian.back.repository.dicts.IDictRepository;
 

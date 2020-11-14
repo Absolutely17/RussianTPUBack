@@ -191,7 +191,9 @@ public class UserService {
     public void editUser(BaseUserRequestDto requestDto) throws BusinessException {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
-        requestDto.setNewPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+        if (requestDto.getNewPassword() != null) {
+            requestDto.setNewPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+        }
         userRepository.editUser(requestDto);
     }
 

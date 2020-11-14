@@ -60,8 +60,8 @@ public class User {
     @Column(name = "CONFIRMED")
     private boolean isConfirm;
 
-    @Column(name = "GROUP_ID")
     @Nullable
+    @Column(name = "GROUP_NAME")
     private String groupName;
 
     public User(

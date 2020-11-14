@@ -2,6 +2,9 @@ package ru.tpu.russian.back.dto;
 
 import lombok.*;
 
+/**
+ * Общий объект для типа Наименование-Значение
+ */
 @Getter
 @AllArgsConstructor
 public class SimpleNameObj {

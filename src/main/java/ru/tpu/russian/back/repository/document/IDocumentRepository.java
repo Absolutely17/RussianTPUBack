@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.repository.document;
 
-import ru.tpu.russian.back.dto.request.DocumentUploadDto;
+import ru.tpu.russian.back.dto.document.DocumentUploadRequest;
 import ru.tpu.russian.back.entity.document.*;
 
 import java.util.List;
@@ -20,5 +20,5 @@ public interface IDocumentRepository {
     /**
      * Загрузить документ пользователю
      */
-    void uploadDocument(DocumentUploadDto dto, byte[] document);
+    void uploadDocument(DocumentUploadRequest dto, byte[] document);
 }

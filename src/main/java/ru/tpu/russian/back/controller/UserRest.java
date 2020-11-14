@@ -2,8 +2,7 @@ package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.SimpleNameObj;
-import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
-import ru.tpu.russian.back.dto.response.*;
+import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.UserService;
 
@@ -27,7 +26,7 @@ public class UserRest {
 
     @RequestMapping(method = PUT, path = "/edit")
     public void editUserInfo(
-            @Valid @RequestBody BaseUserRequestDto requestDto
+            @Valid @RequestBody BaseUserRequest requestDto
     ) throws BusinessException {
         userService.editUser(requestDto);
     }

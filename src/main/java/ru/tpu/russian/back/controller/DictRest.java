@@ -1,7 +1,7 @@
 package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.dto.response.LanguageResponse;
+import ru.tpu.russian.back.dto.language.LanguageResponse;
 import ru.tpu.russian.back.entity.dict.StudyGroup;
 import ru.tpu.russian.back.service.DictService;
 

@@ -3,9 +3,8 @@ package ru.tpu.russian.back.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.tpu.russian.back.dto.document.*;
 import ru.tpu.russian.back.dto.mapper.DocumentMapper;
-import ru.tpu.russian.back.dto.request.DocumentUploadDto;
-import ru.tpu.russian.back.dto.response.DocumentResponse;
 import ru.tpu.russian.back.entity.document.DocumentWithContent;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
@@ -77,7 +76,7 @@ public class DocumentService {
         }
     }
 
-    public void uploadDocument(DocumentUploadDto dto, MultipartFile doc) throws IOException {
+    public void uploadDocument(DocumentUploadRequest dto, MultipartFile doc) throws IOException {
         documentRepository.uploadDocument(dto, doc.getBytes());
     }
 }

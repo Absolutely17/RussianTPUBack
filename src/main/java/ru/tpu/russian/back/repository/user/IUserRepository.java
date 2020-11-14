@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.repository.user;
 
-import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
+import ru.tpu.russian.back.dto.user.BaseUserRequest;
 import ru.tpu.russian.back.entity.User;
 
 import java.util.Optional;
@@ -32,7 +32,7 @@ public interface IUserRepository {
     /**
      * Изменяем данные пользователя
      */
-    void editUser(BaseUserRequestDto requestDto);
+    void editUser(BaseUserRequest requestDto);
 
     /**
      * Сбрасываем и устанавливаем новый пароль

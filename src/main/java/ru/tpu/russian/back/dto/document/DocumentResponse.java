@@ -1,7 +1,10 @@
-package ru.tpu.russian.back.dto.response;
+package ru.tpu.russian.back.dto.document;
 
 import lombok.*;
 
+/**
+ * ДТО для отображения документов пользователю (без содержимого)
+ */
 @Getter
 @AllArgsConstructor
 public class DocumentResponse {

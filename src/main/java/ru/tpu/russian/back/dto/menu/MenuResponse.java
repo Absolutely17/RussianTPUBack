@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto.response;
+package ru.tpu.russian.back.dto.menu;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -6,10 +6,13 @@ import org.springframework.lang.Nullable;
 
 import java.util.List;
 
+/**
+ * Пункт меню в ответ на получение пунктов меню
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @AllArgsConstructor
-public class MenuResponseDto {
+public class MenuResponse {
 
     private String id;
 
@@ -33,9 +36,9 @@ public class MenuResponseDto {
     private String image;
 
     @Setter
-    private List<MenuResponseDto> children;
+    private List<MenuResponse> children;
 
-    public MenuResponseDto(
+    public MenuResponse(
             String id,
             String name,
             int level,

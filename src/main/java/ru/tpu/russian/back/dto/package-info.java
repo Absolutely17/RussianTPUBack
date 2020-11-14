@@ -1,5 +1,5 @@
 @NonNullApi
 @NonNullFields
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto;
 
 import org.springframework.lang.*;

@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.repository.menu;
 
-import ru.tpu.russian.back.dto.request.MenuCreateDto;
+import ru.tpu.russian.back.dto.menu.MenuItem;
 import ru.tpu.russian.back.entity.menu.*;
 
 import java.util.List;
@@ -20,10 +20,10 @@ public interface IMenuRepository {
     /**
      * Добавить новый пункт меню
      */
-    void saveItem(MenuCreateDto dto);
+    void saveItem(MenuItem dto);
 
     /**
      * Обновить пункт меню
      */
-    void updateItem(MenuCreateDto dto);
+    void updateItem(MenuItem dto);
 }

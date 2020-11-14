@@ -1,11 +1,14 @@
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto.auth;
 
 import lombok.*;
 import org.springframework.lang.Nullable;
 
+/**
+ * Запрос аутентификации с помощью стороннего сервиса
+ */
 @AllArgsConstructor
 @Getter
-public class AuthRequestWithServiceDto {
+public class AuthWithServiceRequest {
 
     private String provider;
 

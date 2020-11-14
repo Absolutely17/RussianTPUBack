@@ -2,8 +2,7 @@ package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.tpu.russian.back.dto.request.DocumentUploadDto;
-import ru.tpu.russian.back.dto.response.DocumentResponse;
+import ru.tpu.russian.back.dto.document.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.DocumentService;
 
@@ -44,7 +43,7 @@ public class DocumentRest {
 
     @RequestMapping(method = POST, path = "/upload", consumes = {"multipart/form-data"})
     public void uploadDocument(
-            @RequestPart("documentInfo") DocumentUploadDto dto,
+            @RequestPart("documentInfo") DocumentUploadRequest dto,
             @RequestPart("document") MultipartFile doc
     ) throws IOException {
         documentService.uploadDocument(dto, doc);

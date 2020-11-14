@@ -1,7 +1,7 @@
 package ru.tpu.russian.back.repository.menu;
 
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.dto.request.MenuCreateDto;
+import ru.tpu.russian.back.dto.menu.MenuItem;
 import ru.tpu.russian.back.entity.menu.*;
 
 import javax.persistence.*;
@@ -34,7 +34,7 @@ public class MenuRepositoryImpl implements IMenuRepository {
 
     @Override
     @Transactional
-    public void saveItem(MenuCreateDto dto) {
+    public void saveItem(MenuItem dto) {
         em.createNativeQuery("exec " + ADD_MENU_ITEM + " :id, :name," +
                 " :level, :position, :languageId, :type, :parentId, :url, :articleId, :img")
                 .setParameter("id", dto.getId())
@@ -52,7 +52,7 @@ public class MenuRepositoryImpl implements IMenuRepository {
 
     @Override
     @Transactional
-    public void updateItem(MenuCreateDto dto) {
+    public void updateItem(MenuItem dto) {
         em.createNativeQuery("exec " + EDIT_MENU_ITEM + " :id, :name," +
                 " :level, :position, :type, :parentId, :url, :articleId, :img")
                 .setParameter("id", dto.getId())

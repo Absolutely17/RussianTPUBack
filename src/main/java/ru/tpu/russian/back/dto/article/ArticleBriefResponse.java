@@ -1,29 +1,32 @@
-package ru.tpu.russian.back.dto.response;
+package ru.tpu.russian.back.dto.article;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
+/**
+ * Возвращаем краткую версию статьи
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 public class ArticleBriefResponse {
 
     private String id;
 
-    private String topic;
+    private String name;
 
     private String briefText;
 
-    private String subject;
+    private String topic;
 
     private String createDate;
 
     private byte[] articleImage;
 
-    public ArticleBriefResponse(String id, String topic, String briefText, String subject, String createDate) {
+    public ArticleBriefResponse(String id, String name, String briefText, String topic, String createDate) {
         this.id = id;
-        this.topic = topic;
+        this.name = name;
         this.briefText = briefText;
-        this.subject = subject;
+        this.topic = topic;
         this.createDate = createDate;
     }
 

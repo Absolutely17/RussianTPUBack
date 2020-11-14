@@ -2,7 +2,7 @@ package ru.tpu.russian.back.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.dto.response.AuthResponseDto;
+import ru.tpu.russian.back.dto.auth.AuthResponse;
 import ru.tpu.russian.back.exception.*;
 import ru.tpu.russian.back.service.TokenService;
 
@@ -25,7 +25,7 @@ public class TokenRest {
     }
 
     @RequestMapping(method = PUT)
-    public AuthResponseDto refreshToken(
+    public AuthResponse refreshToken(
             HttpServletRequest servletRequest
     ) throws BusinessException {
         return tokenService.refreshToken(servletRequest);

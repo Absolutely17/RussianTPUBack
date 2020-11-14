@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto.response;
+package ru.tpu.russian.back.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

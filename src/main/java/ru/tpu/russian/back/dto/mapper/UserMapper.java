@@ -1,8 +1,7 @@
 package ru.tpu.russian.back.dto.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
-import ru.tpu.russian.back.dto.response.*;
+import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.repository.dicts.IDictRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
@@ -20,9 +19,9 @@ public class UserMapper {
         this.mailingTokenRepository = mailingTokenRepository;
     }
 
-    public UserResponseDto convertToResponse(User user) {
+    public UserResponse convertToResponse(User user) {
         String languageName = dictRepository.getLanguageById(user.getLanguage()).getShortName();
-        return new UserResponseDto(
+        return new UserResponse(
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
@@ -53,7 +52,7 @@ public class UserMapper {
         );
     }
 
-    public User convertToUserFromRegistrationRequest(BaseUserRequestDto request) {
+    public User convertToUserFromRegistrationRequest(BaseUserRequest request) {
         return new User(
                 request.getFirstName(),
                 request.getLastName(),

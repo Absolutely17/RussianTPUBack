@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto.user;
 
 import lombok.*;
 import org.springframework.lang.Nullable;
@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseUserRequestDto {
+public class BaseUserRequest {
 
     @NotNull
     @Setter

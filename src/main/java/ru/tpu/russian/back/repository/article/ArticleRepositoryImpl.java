@@ -1,7 +1,7 @@
 package ru.tpu.russian.back.repository.article;
 
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.dto.request.ArticleCreateRequest;
+import ru.tpu.russian.back.dto.article.ArticleCreateRequest;
 import ru.tpu.russian.back.entity.Article;
 
 import javax.persistence.*;

@@ -4,8 +4,8 @@ import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.request.*;
-import ru.tpu.russian.back.entity.MailingToken;
+import ru.tpu.russian.back.dto.notification.*;
+import ru.tpu.russian.back.entity.notification.MailingToken;
 import ru.tpu.russian.back.exception.ExceptionMessage;
 import ru.tpu.russian.back.repository.notification.*;
 
@@ -42,7 +42,7 @@ public class NotificationService {
      * @param request данные для отправки уведомления
      * @return ответ, успешно или ошибки
      */
-    public ResponseEntity<?> sendOnGroup(NotificationRequestGroupDto request) {
+    public ResponseEntity<?> sendOnGroup(NotificationRequestGroup request) {
         log.info("Send notification on app.", request.toString());
         request.setTopic(TOPIC_NAME + "_" + request.getLanguage());
         try {
@@ -67,7 +67,7 @@ public class NotificationService {
         return FirebaseMessaging.getInstance().sendAsync(message).get();
     }
 
-    private Message.Builder getSingleMessageBuilder(NotificationBaseRequestDto request) {
+    private Message.Builder getSingleMessageBuilder(NotificationBaseRequest request) {
         AndroidConfig androidConfig = getAndroidConfig(request.getTopic());
         ApnsConfig apnsConfig = getApnsConfig(request.getTopic());
         return Message.builder()
@@ -101,7 +101,7 @@ public class NotificationService {
      * @param requestDto данные уведомления
      * @return ответ, успешно или ошибки
      */
-    public ResponseEntity<?> sendOnUser(NotificationRequestUsersDto requestDto) {
+    public ResponseEntity<?> sendOnUser(NotificationRequestUsers requestDto) {
         if (requestDto.getUsers().size() > MAX_USERS_ON_NOTIFICATION) {
             return new ResponseEntity<>(
                     new ExceptionMessage("Too many users have been selected for mailing."),
@@ -147,7 +147,7 @@ public class NotificationService {
         }
     }
 
-    private MulticastMessage.Builder getMulticastMessageBuilder(NotificationRequestUsersDto request) {
+    private MulticastMessage.Builder getMulticastMessageBuilder(NotificationRequestUsers request) {
         AndroidConfig androidConfig = getAndroidConfig(request.getTopic());
         ApnsConfig apnsConfig = getApnsConfig(request.getTopic());
         return MulticastMessage.builder()

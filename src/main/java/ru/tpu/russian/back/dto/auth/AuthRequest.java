@@ -1,12 +1,15 @@
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto.auth;
 
 import lombok.*;
 
 import javax.validation.constraints.*;
 
+/**
+ * Запрос аутентификации
+ */
 @Getter
 @AllArgsConstructor
-public class AuthRequestDto {
+public class AuthRequest {
 
     @NotNull
     @Email

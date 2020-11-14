@@ -1,7 +1,10 @@
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto.article;
 
 import lombok.*;
 
+/**
+ * ДТО создания статьи
+ */
 @Getter
 @AllArgsConstructor
 public class ArticleCreateRequest {

@@ -1,7 +1,7 @@
 package ru.tpu.russian.back.dto.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.tpu.russian.back.dto.response.DocumentResponse;
+import ru.tpu.russian.back.dto.document.DocumentResponse;
 import ru.tpu.russian.back.entity.document.DocumentWithoutContent;
 
 @Component

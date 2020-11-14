@@ -2,7 +2,7 @@ package ru.tpu.russian.back.repository.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.dto.request.BaseUserRequestDto;
+import ru.tpu.russian.back.dto.user.BaseUserRequest;
 import ru.tpu.russian.back.entity.User;
 
 import javax.persistence.*;
@@ -78,7 +78,7 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     @Transactional
-    public void editUser(BaseUserRequestDto requestDto) {
+    public void editUser(BaseUserRequest requestDto) {
         em.createNativeQuery("exec " + EDIT_USER + " :firstName, :middleName, :lastName" +
                 ", :password, :sex, :languageId, :groupName, :email, :phoneNumber")
                 .setParameter("firstName", requestDto.getFirstName())

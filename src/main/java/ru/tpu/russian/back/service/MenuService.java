@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.mapper.MenuMapper;
-import ru.tpu.russian.back.dto.request.*;
-import ru.tpu.russian.back.dto.response.MenuResponseDto;
+import ru.tpu.russian.back.dto.menu.*;
 import ru.tpu.russian.back.entity.menu.Menu;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.repository.dicts.IDictRepository;
@@ -60,12 +59,12 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuResponseDto> getAll(String language, String email) throws BusinessException {
+    public List<MenuResponse> getAll(String language, String email) throws BusinessException {
         log.info("Getting all menu items. Language = {}", language);
         return convertToDto(menuRepository.getAll(language), email);
     }
 
-    private List<MenuResponseDto> convertToDto(List<Menu> menuItems, String email) throws BusinessException {
+    private List<MenuResponse> convertToDto(List<Menu> menuItems, String email) throws BusinessException {
         if (menuItems.isEmpty()) {
             log.warn("Could not find menu items.");
             throw new BusinessException("Exception.menuItem.notFound");
@@ -77,8 +76,8 @@ public class MenuService {
                 .collect(toList());
     }
 
-    private MenuResponseDto convertToMenuResponse(Menu menuItem, String email) {
-        MenuResponseDto menuResponse = menuMapper.convertToResponse(menuItem);
+    private MenuResponse convertToMenuResponse(Menu menuItem, String email) {
+        MenuResponse menuResponse = menuMapper.convertToResponse(menuItem);
         List<Menu> children = menuItem.getChildren();
         if (!children.isEmpty()) {
             menuResponse.setChildren(children
@@ -132,7 +131,7 @@ public class MenuService {
 
     public void save(MenuUpdateRequest request) {
         Map<String, String> idNewItems = new HashMap<>();
-        List<MenuCreateDto> addedItems = request.getAddedItems();
+        List<MenuItem> addedItems = request.getAddedItems();
         if (!addedItems.isEmpty()) {
             addedItems.stream()
                     .filter(it -> it.getParentId() == null || !it.getParentId().startsWith(DUMMY_ID))
@@ -145,13 +144,13 @@ public class MenuService {
                         idNewItems.put(it.getId(), addMenuItem(it, idNewItems));
                     });
         }
-        List<MenuCreateDto> editedItems = request.getEditedItems();
+        List<MenuItem> editedItems = request.getEditedItems();
         if (!editedItems.isEmpty()) {
             editedItems.forEach(it -> editMenuItem(it, idNewItems));
         }
     }
 
-    private String addMenuItem(MenuCreateDto dto, Map<String, String> idNewItems) {
+    private String addMenuItem(MenuItem dto, Map<String, String> idNewItems) {
         String id = randomUUID().toString();
         dto.setId(id);
         if (dto.getParentId() != null && dto.getParentId().startsWith(DUMMY_ID)) {
@@ -161,7 +160,7 @@ public class MenuService {
         return id;
     }
 
-    private void editMenuItem(MenuCreateDto dto, Map<String, String> idNewItems) {
+    private void editMenuItem(MenuItem dto, Map<String, String> idNewItems) {
         if (dto.getParentId() != null && dto.getParentId().startsWith(DUMMY_ID)) {
             dto.setParentId(idNewItems.get(dto.getParentId()));
         }

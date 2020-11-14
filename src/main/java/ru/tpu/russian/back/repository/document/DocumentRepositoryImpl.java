@@ -2,7 +2,7 @@ package ru.tpu.russian.back.repository.document;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.dto.request.DocumentUploadDto;
+import ru.tpu.russian.back.dto.document.DocumentUploadRequest;
 import ru.tpu.russian.back.entity.document.*;
 
 import javax.persistence.*;
@@ -37,7 +37,7 @@ public class DocumentRepositoryImpl implements IDocumentRepository {
 
     @Override
     @Transactional
-    public void uploadDocument(DocumentUploadDto dto, byte[] document) {
+    public void uploadDocument(DocumentUploadRequest dto, byte[] document) {
         em.createNativeQuery("exec AddDocument :fileName, :documentName," +
                 ":content, :userEmail, :adminEmail")
                 .setParameter("fileName", dto.getFileName())

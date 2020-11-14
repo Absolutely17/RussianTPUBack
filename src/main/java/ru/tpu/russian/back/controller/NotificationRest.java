@@ -2,7 +2,7 @@ package ru.tpu.russian.back.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.dto.request.*;
+import ru.tpu.russian.back.dto.notification.*;
 import ru.tpu.russian.back.service.NotificationService;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -19,14 +19,14 @@ public class NotificationRest {
 
     @RequestMapping(method = POST, path = "/group")
     public ResponseEntity<?> sendGroupNotification(
-            @RequestBody NotificationRequestGroupDto requestDto
+            @RequestBody NotificationRequestGroup requestDto
     ) {
         return notificationService.sendOnGroup(requestDto);
     }
 
     @RequestMapping(method = POST, path = "/users")
     public ResponseEntity<?> sendNotificationOnUsers(
-            @RequestBody NotificationRequestUsersDto requestDto
+            @RequestBody NotificationRequestUsers requestDto
     ) {
         return notificationService.sendOnUser(requestDto);
     }

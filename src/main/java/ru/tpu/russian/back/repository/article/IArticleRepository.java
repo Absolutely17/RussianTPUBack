@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.repository.article;
 
-import ru.tpu.russian.back.dto.request.ArticleCreateRequest;
+import ru.tpu.russian.back.dto.article.ArticleCreateRequest;
 import ru.tpu.russian.back.entity.Article;
 
 import java.util.List;

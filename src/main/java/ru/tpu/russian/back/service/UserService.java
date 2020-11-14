@@ -7,10 +7,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
+import ru.tpu.russian.back.dto.auth.*;
 import ru.tpu.russian.back.dto.mapper.UserMapper;
-import ru.tpu.russian.back.dto.request.*;
-import ru.tpu.russian.back.dto.response.*;
-import ru.tpu.russian.back.entity.*;
+import ru.tpu.russian.back.dto.notification.NotificationTokenRequest;
+import ru.tpu.russian.back.dto.user.*;
+import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.entity.notification.MailingToken;
 import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.enums.ProviderType;
 import ru.tpu.russian.back.exception.BusinessException;
@@ -75,7 +77,7 @@ public class UserService {
         this.dictRepository = dictRepository;
     }
 
-    public void register(BaseUserRequestDto registrationRequestDto) throws BusinessException {
+    public void register(BaseUserRequest registrationRequestDto) throws BusinessException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.debug("Check registration parameters on valid.");
         checkEmailOnExist(registrationRequestDto.getEmail());
@@ -103,16 +105,16 @@ public class UserService {
         }
     }
 
-    public AuthResponseDto login(AuthRequestDto authRequest) throws BusinessException {
+    public AuthResponse login(AuthRequest authRequest) throws BusinessException {
         log.info("Login in system with email {}", authRequest.getEmail());
         User user = findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
         String token = jwtProvider.generateAccessToken(user.getEmail());
         if (authRequest.isRememberMe()) {
             log.debug("Option rememberMe selected.");
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
-            return new AuthResponseDto(token, refreshToken, userMapper.convertToResponse(user));
+            return new AuthResponse(token, refreshToken, userMapper.convertToResponse(user));
         }
-        return new AuthResponseDto(token, userMapper.convertToResponse(user));
+        return new AuthResponse(token, userMapper.convertToResponse(user));
     }
 
     public User findByEmailAndPassword(String email, String password) throws BusinessException {
@@ -138,7 +140,7 @@ public class UserService {
         return user.orElse(null);
     }
 
-    public ResponseEntity<?> loginWithService(AuthRequestWithServiceDto authRequest) throws BusinessException {
+    public ResponseEntity<?> loginWithService(AuthWithServiceRequest authRequest) throws BusinessException {
         log.info("Login in system with service {}", authRequest.getProvider());
         OAuthUserInfo userInfo = OAuthServiceUserInfoFactory.getOAuthUserInfo(
                 authRequest.getProvider(),
@@ -164,7 +166,7 @@ public class UserService {
             }
             String token = jwtProvider.generateAccessToken(user.getEmail());
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
-            AuthResponseDto response = new AuthResponseDto(token, refreshToken, userMapper.convertToResponse(user));
+            AuthResponse response = new AuthResponse(token, refreshToken, userMapper.convertToResponse(user));
             return new ResponseEntity<>(
                     response, HttpStatus.OK
             );
@@ -177,7 +179,7 @@ public class UserService {
             }
     }
 
-    public void registerWithService(BaseUserRequestDto registrationRequest) throws BusinessException {
+    public void registerWithService(BaseUserRequest registrationRequest) throws BusinessException {
         log.info("Register new user through service. User {}", registrationRequest.toString());
         log.debug("Convert to entity User.");
         checkEmailOnExist(registrationRequest.getEmail());
@@ -188,7 +190,7 @@ public class UserService {
         userRepository.saveUser(user);
     }
 
-    public void editUser(BaseUserRequestDto requestDto) throws BusinessException {
+    public void editUser(BaseUserRequest requestDto) throws BusinessException {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
         if (requestDto.getNewPassword() != null) {
@@ -229,7 +231,7 @@ public class UserService {
      *
      * @param resetDto новые данные
      */
-    public void resetPassword(ResetPasswordDto resetDto) throws BusinessException {
+    public void resetPassword(ResetPasswordRequest resetDto) throws BusinessException {
         log.info("Starting to reset password. Token {}", resetDto.getToken());
         String token = resetDto.getToken();
         if (token != null && jwtProvider.validateToken(token)) {
@@ -246,7 +248,7 @@ public class UserService {
         }
     }
 
-    public void saveFcmUserToken(NotificationTokenRequestDto requestDto) {
+    public void saveFcmUserToken(NotificationTokenRequest requestDto) {
         log.debug("Saving user FCM token, email {}", requestDto.getEmail());
         String userId = userRepository.getUserIdByEmail(requestDto.getEmail());
         MailingToken token = new MailingToken(userId, requestDto.getToken(), true);
@@ -277,13 +279,13 @@ public class UserService {
         return dicts;
     }
 
-    public AuthResponseDto webLogin(AuthRequestDto authRequest) throws BusinessException {
+    public AuthResponse webLogin(AuthRequest authRequest) throws BusinessException {
         log.info("Login in web-admin with email {}", authRequest.getEmail());
         User user = findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
         if (!ROLE_ADMIN.equals(user.getRole())) {
             throw new BusinessException("Недостаточно прав. Обратитесь к администратору.");
         }
         String token = jwtProvider.generateAccessToken(user.getEmail());
-        return new AuthResponseDto(token, userMapper.convertToResponse(user));
+        return new AuthResponse(token, userMapper.convertToResponse(user));
     }
 }

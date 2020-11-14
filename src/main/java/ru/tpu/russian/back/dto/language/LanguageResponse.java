@@ -1,7 +1,10 @@
-package ru.tpu.russian.back.dto.response;
+package ru.tpu.russian.back.dto.language;
 
 import lombok.*;
 
+/**
+ * ДТО языка системы
+ */
 @Getter
 @Setter
 @AllArgsConstructor

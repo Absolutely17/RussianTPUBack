@@ -1,15 +1,18 @@
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.constraints.*;
 
+/**
+ * Базовое ДТО для уведомлений
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationBaseRequestDto {
+public class NotificationBaseRequest {
 
     @NotNull
     private String title;

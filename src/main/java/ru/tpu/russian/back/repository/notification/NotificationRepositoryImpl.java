@@ -2,7 +2,7 @@ package ru.tpu.russian.back.repository.notification;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.dto.request.*;
+import ru.tpu.russian.back.dto.notification.*;
 
 import javax.persistence.*;
 
@@ -18,7 +18,7 @@ public class NotificationRepositoryImpl implements INotificationRepository {
 
     @Override
     @Transactional
-    public void createGroupNotification(NotificationRequestGroupDto request, String status) {
+    public void createGroupNotification(NotificationRequestGroup request, String status) {
         em.createNativeQuery("exec " + CREATE_GROUP_NOTIFICATION +
                 " :title, :message, :status, :adminEmail, :language")
                 .setParameter("title", request.getTitle())
@@ -31,7 +31,7 @@ public class NotificationRepositoryImpl implements INotificationRepository {
 
     @Override
     @Transactional
-    public void createUsersNotification(NotificationRequestUsersDto request, String status) {
+    public void createUsersNotification(NotificationRequestUsers request, String status) {
         em.createNativeQuery("exec " + CREATE_USER_NOTIFICATION +
                 " :title, :message, :status, :adminEmail, :users")
                 .setParameter("title", request.getTitle())

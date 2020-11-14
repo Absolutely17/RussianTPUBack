@@ -1,13 +1,16 @@
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto.user;
 
 import lombok.*;
 
 import javax.validation.constraints.*;
 
+/**
+ * Заявка на сброс пароля
+ */
 @Getter
 @AllArgsConstructor
 @Setter
-public class ResetPasswordDto {
+public class ResetPasswordRequest {
 
     @NotNull
     private String token;

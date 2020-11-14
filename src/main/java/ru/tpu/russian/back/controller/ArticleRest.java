@@ -2,8 +2,7 @@ package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.SimpleNameObj;
-import ru.tpu.russian.back.dto.request.ArticleCreateRequest;
-import ru.tpu.russian.back.dto.response.*;
+import ru.tpu.russian.back.dto.article.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.ArticleService;
 

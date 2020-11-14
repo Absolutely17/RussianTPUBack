@@ -2,7 +2,7 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.response.AuthResponseDto;
+import ru.tpu.russian.back.dto.auth.AuthResponse;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
@@ -25,7 +25,7 @@ public class TokenService {
         this.userService = userService;
     }
 
-    public AuthResponseDto refreshToken(HttpServletRequest servletRequest) throws BusinessException {
+    public AuthResponse refreshToken(HttpServletRequest servletRequest) throws BusinessException {
         log.info("Refresh access token");
         String token = jwtProvider.getTokenFromRequest(servletRequest);
         if (token != null && jwtProvider.validateToken(token)) {
@@ -36,7 +36,7 @@ public class TokenService {
                     .getRefreshSalt();
             if (refreshSaltInDB.equals(refreshSaltInToken)) {
                 log.info("Salt matched. Generating new tokens and new salt. Email {}", email);
-                return new AuthResponseDto(
+                return new AuthResponse(
                         jwtProvider.generateAccessToken(email),
                         jwtProvider.generateRefreshToken(email)
                 );

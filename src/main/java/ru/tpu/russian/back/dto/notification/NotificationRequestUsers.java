@@ -1,14 +1,17 @@
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto.notification;
 
 import lombok.*;
 
 import java.util.List;
 
+/**
+ * Уведомление определенно выбранным пользователям
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationRequestUsersDto extends NotificationBaseRequestDto {
+public class NotificationRequestUsers extends NotificationBaseRequest {
 
     private List<String> users;
 

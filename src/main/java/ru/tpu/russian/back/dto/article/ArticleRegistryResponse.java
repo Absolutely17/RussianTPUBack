@@ -1,9 +1,9 @@
-package ru.tpu.russian.back.dto.response;
+package ru.tpu.russian.back.dto.article;
 
 import lombok.*;
 
 /**
- * ДТО для админки
+ * ДТО статьи для админки
  */
 @Getter
 @AllArgsConstructor

@@ -2,8 +2,7 @@ package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.SimpleNameObj;
-import ru.tpu.russian.back.dto.request.MenuUpdateRequest;
-import ru.tpu.russian.back.dto.response.MenuResponseDto;
+import ru.tpu.russian.back.dto.menu.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.MenuService;
 
@@ -24,7 +23,7 @@ public class MenuRest {
     }
 
     @RequestMapping(method = GET)
-    public List<MenuResponseDto> getMenu(
+    public List<MenuResponse> getMenu(
             @RequestParam String language,
             @RequestParam String email
     ) throws BusinessException {

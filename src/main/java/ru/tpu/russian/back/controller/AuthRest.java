@@ -2,8 +2,9 @@ package ru.tpu.russian.back.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.dto.request.*;
-import ru.tpu.russian.back.dto.response.AuthResponseDto;
+import ru.tpu.russian.back.dto.auth.*;
+import ru.tpu.russian.back.dto.notification.NotificationTokenRequest;
+import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.UserService;
 
@@ -24,15 +25,14 @@ public class AuthRest {
 
     @RequestMapping(method = POST, path = "/local/registration")
     public void register(
-            @Valid @RequestBody BaseUserRequestDto registrationRequestDto
+            @Valid @RequestBody BaseUserRequest registrationRequestDto
     ) throws BusinessException {
         userService.register(registrationRequestDto);
     }
 
-
     @RequestMapping(method = POST, path = "/local/login")
-    public AuthResponseDto login(
-            @Valid @RequestBody AuthRequestDto authRequest
+    public AuthResponse login(
+            @Valid @RequestBody AuthRequest authRequest
     ) throws BusinessException {
 
         return userService.login(authRequest);
@@ -41,7 +41,7 @@ public class AuthRest {
 
     @RequestMapping(method = POST, path = "/provider/login")
     public ResponseEntity<?> loginWithService(
-            @RequestBody AuthRequestWithServiceDto authServiceRequest
+            @RequestBody AuthWithServiceRequest authServiceRequest
     ) throws BusinessException {
         return userService.loginWithService(authServiceRequest);
     }
@@ -49,7 +49,7 @@ public class AuthRest {
 
     @RequestMapping(method = POST, path = "/provider/registration")
     public void registerNewUserWithService(
-            @Valid @RequestBody BaseUserRequestDto registrationRequest
+            @Valid @RequestBody BaseUserRequest registrationRequest
     ) throws BusinessException {
         userService.registerWithService(registrationRequest);
     }
@@ -63,14 +63,14 @@ public class AuthRest {
 
     @RequestMapping(method = POST, path = "/password/reset")
     public void resetPassword(
-            @Valid @RequestBody ResetPasswordDto resetDto
+            @Valid @RequestBody ResetPasswordRequest resetDto
     ) throws BusinessException {
         userService.resetPassword(resetDto);
     }
 
     @RequestMapping(method = POST, path = "/fcmToken/save")
     public void saveFcmUserToken(
-            @RequestBody NotificationTokenRequestDto requestDto
+            @RequestBody NotificationTokenRequest requestDto
     ) {
         userService.saveFcmUserToken(requestDto);
     }
@@ -83,7 +83,7 @@ public class AuthRest {
     }
 
     @RequestMapping(method = POST, path = "/web-admin/login")
-    public AuthResponseDto webLogin(@Valid @RequestBody AuthRequestDto requestDto) throws BusinessException {
+    public AuthResponse webLogin(@Valid @RequestBody AuthRequest requestDto) throws BusinessException {
         return userService.webLogin(requestDto);
     }
 }

@@ -1,12 +1,15 @@
-package ru.tpu.russian.back.dto.request;
+package ru.tpu.russian.back.dto.menu;
 
 import lombok.*;
 import org.springframework.lang.Nullable;
 
+/**
+ * Общая ДТО для пункта меню. Используется для админки.
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuCreateDto {
+public class MenuItem {
 
     @Setter
     private String id;

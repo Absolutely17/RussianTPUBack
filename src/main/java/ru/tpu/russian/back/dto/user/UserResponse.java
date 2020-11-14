@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto.response;
+package ru.tpu.russian.back.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -8,7 +8,7 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponseDto {
+public class UserResponse {
 
     private String email;
 

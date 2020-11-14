@@ -2,7 +2,7 @@ package ru.tpu.russian.back.service;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.response.LanguageResponse;
+import ru.tpu.russian.back.dto.language.LanguageResponse;
 import ru.tpu.russian.back.entity.dict.*;
 import ru.tpu.russian.back.repository.dicts.IDictRepository;
 

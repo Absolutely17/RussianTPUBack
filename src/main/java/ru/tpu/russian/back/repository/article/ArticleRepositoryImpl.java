@@ -23,16 +23,8 @@ public class ArticleRepositoryImpl implements IArticleRepository {
     @Override
     @Transactional(readOnly = true)
     public List<Article> getBriefArticlesFromMenu(String menuItemId) {
-        return em.createNativeQuery("exec " + GET_BRIEF_ARTICLES_FROM_MENU + " :menuItemId")
+        return em.createNativeQuery("exec " + GET_BRIEF_ARTICLES_FROM_MENU + " :menuItemId", Article.class)
                 .setParameter("menuItemId", menuItemId)
-                .getResultList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Article> getBriefArticles(String id) {
-        return em.createNativeQuery("exec " + GET_BRIEF_ARTICLES + " :pageId")
-                .setParameter("pageId", id)
                 .getResultList();
     }
 

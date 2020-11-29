@@ -10,12 +10,7 @@ public interface IArticleRepository {
     /**
      * Получаем список статей по ID пункта меню
      */
-    List<Article> getBriefArticlesFromMenu(String idMenuItem);
-
-    /**
-     * Получаем список статей по ID страницы
-     */
-    List<Article> getBriefArticles(String id);
+    List<Article> getBriefArticlesFromMenu(String menuItemId);
 
     /**
      * Создаем статью

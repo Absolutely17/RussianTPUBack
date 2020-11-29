@@ -6,19 +6,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.menu.*;
-import ru.tpu.russian.back.entity.menu.Menu;
+import ru.tpu.russian.back.entity.Article;
+import ru.tpu.russian.back.entity.menu.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.mapper.MenuMapper;
+import ru.tpu.russian.back.repository.article.ArticleRepository;
 import ru.tpu.russian.back.repository.dicts.IDictRepository;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 import ru.tpu.russian.back.repository.utils.IUtilsRepository;
 
+import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Calendar.*;
-import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -31,7 +33,13 @@ public class MenuService {
 
     private static final String DUMMY_ID = "dummyId";
 
+    private static final String MENU_TYPE_FEED_LIST = "FEED_LIST";
+
+    public static final String MENU_TYPE_ARTICLE = "ARTICLE";
+
     private final MenuRepository menuRepository;
+
+    private final ArticleRepository articleRepository;
 
     private final UserRepository userRepository;
 
@@ -41,6 +49,9 @@ public class MenuService {
 
     private final IDictRepository dictRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Value("${service.url}")
     private String serviceUrl;
 
@@ -49,49 +60,50 @@ public class MenuService {
             UserRepository userRepository,
             IUtilsRepository utilsRepository,
             MenuMapper menuMapper,
-            IDictRepository dictRepository
+            IDictRepository dictRepository,
+            ArticleRepository articleRepository
     ) {
         this.menuRepository = menuRepository;
         this.userRepository = userRepository;
         this.utilsRepository = utilsRepository;
         this.menuMapper = menuMapper;
         this.dictRepository = dictRepository;
+        this.articleRepository = articleRepository;
     }
 
     @Transactional(readOnly = true)
-    public List<MenuResponse> getAll(String language, String email) throws BusinessException {
+    public List<MenuResponseAndroid> getAll(String language, String email) throws BusinessException {
         log.info("Getting all menu items. Language = {}", language);
-        return convertToDto(menuRepository.getAll(language), email);
+        return convertToDto(menuRepository.getAllByLevelAndLanguageOrderByPosition(1, language), email);
     }
 
-    private List<MenuResponse> convertToDto(List<Menu> menuItems, String email) throws BusinessException {
+    private List<MenuResponseAndroid> convertToDto(List<Menu> menuItems, String email) throws BusinessException {
         if (menuItems.isEmpty()) {
             log.warn("Could not find menu items.");
             throw new BusinessException("Exception.menuItem.notFound");
         }
         log.info("From DB received {} menu items", menuItems.size());
-        menuItems.removeIf(menuItem -> menuItem.getLevel() != 1);
         return menuItems.stream()
                 .map(it -> convertToMenuResponse(it, email))
                 .collect(toList());
     }
 
-    private MenuResponse convertToMenuResponse(Menu menuItem, String email) {
-        MenuResponse menuResponse = menuMapper.convertToResponse(menuItem);
+    private MenuResponseAndroid convertToMenuResponse(Menu menuItem, String email) {
+        MenuResponseAndroid menuResponseAndroid = menuMapper.convertToResponseForAndroid(menuItem);
         List<Menu> children = menuItem.getChildren();
         if (!children.isEmpty()) {
-            menuResponse.setChildren(children
+            menuResponseAndroid.setChildren(children
                     .stream()
                     .map(it -> convertToMenuResponse(it, email))
                     .collect(toList()));
         }
-        if (menuItem.getImage() != null) {
-            menuResponse.setImage(serviceUrl + "media/img/" + menuItem.getImage());
+        if (menuItem.getImageId() != null) {
+            menuResponseAndroid.setImage(serviceUrl + "media/img/" + menuItem.getImageId());
         }
-        if (SCHEDULE_TYPE.equals(menuItem.getType().getType())) {
-            menuResponse.setUrl(generateScheduleURL(email));
+        if (SCHEDULE_TYPE.equals(menuItem.getType().getType()) && email != null) {
+            menuResponseAndroid.setUrl(generateScheduleURL(email));
         }
-        return menuResponse;
+        return menuResponseAndroid;
     }
 
     private String generateScheduleURL(String email) {
@@ -114,6 +126,14 @@ public class MenuService {
         }
     }
 
+    @Transactional
+    public List<MenuResponseTableRow> getMenuTable(String language) {
+        List<Menu> menuFromDB = menuRepository.getAllByLevelAndLanguageOrderByPosition(1, language);
+        return menuFromDB.stream()
+                .map(menuMapper::convertToResponseForTable)
+                .collect(toList());
+    }
+
     public Map<String, List<SimpleNameObj>> getDicts() {
         Map<String, List<SimpleNameObj>> dicts = new HashMap<>();
         List<SimpleNameObj> languages = dictRepository.getAllLanguage()
@@ -129,8 +149,9 @@ public class MenuService {
         return dicts;
     }
 
-    public void save(MenuUpdateRequest request) {
-        Map<String, String> idNewItems = new HashMap<>();
+    @Transactional
+    public void saveOrUpdate(MenuUpdateRequest request) {
+        Map<String, Menu> idNewItems = new HashMap<>();
         List<MenuItem> addedItems = request.getAddedItems();
         if (!addedItems.isEmpty()) {
             addedItems.stream()
@@ -138,6 +159,7 @@ public class MenuService {
                     .forEach(it -> {
                         idNewItems.put(it.getId(), addMenuItem(it, idNewItems));
                     });
+            entityManager.flush();
             addedItems.stream()
                     .filter(it -> it.getParentId() != null && it.getParentId().startsWith(DUMMY_ID))
                     .forEach(it -> {
@@ -148,22 +170,69 @@ public class MenuService {
         if (!editedItems.isEmpty()) {
             editedItems.forEach(it -> editMenuItem(it, idNewItems));
         }
+        List<String> deletedItems = request.getDeletedItems();
+        if (!deletedItems.isEmpty()) {
+            deletedItems.forEach(it -> entityManager.remove(menuRepository.getOne(it)));
+        }
     }
 
-    private String addMenuItem(MenuItem dto, Map<String, String> idNewItems) {
-        String id = randomUUID().toString();
-        dto.setId(id);
-        if (dto.getParentId() != null && dto.getParentId().startsWith(DUMMY_ID)) {
-            dto.setParentId(idNewItems.get(dto.getParentId()));
-        }
-        menuRepository.saveItem(dto);
-        return id;
+    /**
+     * Добавляем новый пункт иеню
+     *
+     * @param dto        информация о пункте меню
+     * @param idNewItems IDs новых добавленных
+     * @return ID добавленного пункта
+     */
+    private Menu addMenuItem(MenuItem dto, Map<String, Menu> idNewItems) {
+        Menu menu = new Menu();
+        menu.setId(UUID.randomUUID().toString());
+        editingMenuItem(dto, idNewItems, menu);
+        menuRepository.save(menu);
+        return menu;
     }
 
-    private void editMenuItem(MenuItem dto, Map<String, String> idNewItems) {
-        if (dto.getParentId() != null && dto.getParentId().startsWith(DUMMY_ID)) {
-            dto.setParentId(idNewItems.get(dto.getParentId()));
+    /**
+     * Меняем пункт меню
+     *
+     * @param dto        информация о пункте меню
+     * @param idNewItems IDs новых добавленных пунктов
+     */
+    private void editMenuItem(MenuItem dto, Map<String, Menu> idNewItems) {
+        Menu menu = menuRepository.getOne(dto.getId());
+        menu.getLinkedArticles().clear();
+        menu.setArticle(null);
+        editingMenuItem(dto, idNewItems, menu);
+        menuRepository.save(menu);
+    }
+
+    private void editingMenuItem(MenuItem dto, Map<String, Menu> idNewItems, Menu menu) {
+        menu.setName(dto.getName());
+        menu.setLevel(dto.getLevel());
+        menu.setPosition(dto.getPosition());
+        menu.setType(menuRepository.getMenuType(dto.getType()));
+        menu.setLanguage(dto.getLanguageId());
+        menu.setUrl(dto.getUrl());
+        menu.setImageId(dto.getImage());
+        List<String> linkedArticleIds = dto.getLinkedArticles();
+        if (linkedArticleIds != null && !linkedArticleIds.isEmpty()) {
+            if (MENU_TYPE_ARTICLE.equals(dto.getType()) && linkedArticleIds.size() == 1) {
+                menu.setArticle(articleRepository.getById(linkedArticleIds.get(0)).orElse(null));
+            } else if (MENU_TYPE_FEED_LIST.equals(dto.getType())) {
+                List<Article> linkedArticles = entityManager.createNativeQuery("select * from ARTICLE" +
+                        " where ID in (:ids)", Article.class)
+                        .setParameter("ids", linkedArticleIds)
+                        .getResultList();
+                menu.getLinkedArticles().addAll(
+                        linkedArticles.stream()
+                                .map(it -> new MenuItemArticleLink(menu, it))
+                                .collect(Collectors.toSet())
+                );
+            }
         }
-        menuRepository.updateItem(dto);
+        if (dto.getParentId() != null && dto.getParentId().startsWith(DUMMY_ID)) {
+            menu.setParent(idNewItems.get(dto.getParentId()));
+        } else if (dto.getParentId() != null) {
+            menu.setParent(menuRepository.getOne(dto.getParentId()));
+        }
     }
 }

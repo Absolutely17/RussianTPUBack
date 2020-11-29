@@ -6,13 +6,10 @@ import org.springframework.lang.Nullable;
 
 import java.util.List;
 
-/**
- * Пункт меню в ответ на получение пунктов меню
- */
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@Getter
 @AllArgsConstructor
-public class MenuResponse {
+@Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class MenuResponseTableRow {
 
     private String id;
 
@@ -29,23 +26,20 @@ public class MenuResponse {
     private String url;
 
     @Nullable
-    private String idArticle;
+    @Setter
+    private List<String> linkedArticles;
 
     @Nullable
-    @Setter
-    private String image;
+    private String imageId;
 
     @Setter
-    private List<MenuResponse> children;
+    private List<MenuResponseTableRow> children;
 
-    public MenuResponse(
-            String id,
-            String name,
-            int level,
-            int position,
-            String type,
-            @Nullable String url,
-            @Nullable String idArticle
+    public MenuResponseTableRow(
+            String id, String name,
+            int level, int position,
+            String type, @Nullable String url,
+            @Nullable String imageId
     ) {
         this.id = id;
         this.name = name;
@@ -53,6 +47,6 @@ public class MenuResponse {
         this.position = position;
         this.type = type;
         this.url = url;
-        this.idArticle = idArticle;
+        this.imageId = imageId;
     }
 }

@@ -15,4 +15,6 @@ public class MenuUpdateRequest {
     private List<MenuItem> addedItems;
 
     private List<MenuItem> editedItems;
+
+    private List<String> deletedItems;
 }

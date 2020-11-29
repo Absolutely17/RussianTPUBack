@@ -53,7 +53,7 @@ public class ArticleRepositoryImpl implements IArticleRepository {
     @Override
     @Transactional
     public void update(ArticleCreateRequest updateDto, String id) {
-        em.createNativeQuery("exec " + UPDATE_ARTICLE + ":id, :name, :text, :topic," +
+        em.createNativeQuery("exec " + UPDATE_ARTICLE + " :id, :name, :text, :topic," +
                 " :languageId, :briefText, :imageId")
                 .setParameter("id", id)
                 .setParameter("name", updateDto.getName())

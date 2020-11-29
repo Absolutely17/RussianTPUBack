@@ -2,14 +2,16 @@ package ru.tpu.russian.back.entity.menu;
 
 import lombok.*;
 import org.springframework.lang.Nullable;
+import ru.tpu.russian.back.entity.Article;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
-@Table(name = "MENU_VIEW")
+@Table(name = "MENU_ITEM")
 public class Menu {
 
     @Id
@@ -36,21 +38,24 @@ public class Menu {
     @Nullable
     private String url;
 
-    @Column(name = "ARTICLE_ID")
-    @Nullable
-    private String idArticle;
+    @OneToOne
+    @JoinColumn(name = "ARTICLE_ID")
+    private Article article;
 
     @Nullable
     @ManyToOne
-    @JoinColumn(name = "PARENT_ID", updatable = false, insertable = false)
+    @JoinColumn(name = "PARENT_ID")
     private Menu parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     @OrderBy("position ASC")
     private List<Menu> children;
 
     @Column(name = "IMAGE_ID")
     @Nullable
-    private String image;
+    private String imageId;
+
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MenuItemArticleLink> linkedArticles = new HashSet<>();
 }
 

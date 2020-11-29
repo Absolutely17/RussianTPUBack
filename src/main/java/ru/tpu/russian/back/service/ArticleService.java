@@ -40,17 +40,11 @@ public class ArticleService {
         this.dictRepository = dictRepository;
     }
 
-    public List<ArticleBriefResponse> getArticlesBrief(String id, boolean fromMenu) throws BusinessException {
-        List<Article> articles;
-        if (fromMenu) {
-            log.info("Get brief articles from menu. ID menu item = {}", id);
-            articles = articleRepository.getBriefArticlesFromMenu(id);
-        } else {
-            log.info("Get brief articles from page. ID page = {}", id);
-            articles = articleRepository.getBriefArticles(id);
-        }
+    public List<ArticleBriefResponse> getArticlesBrief(String id) throws BusinessException {
+        log.info("Get brief articles from menu. ID menu item = {}", id);
+        List<Article> articles = articleRepository.getBriefArticlesFromMenu(id);
         if (articles == null || articles.isEmpty()) {
-            log.error("Could not find articles. FromMenu {}, id {}", fromMenu, id);
+            log.error("Could not find articles. Menu item ID {}", id);
             throw new BusinessException("Exception.briefArticle.notFound");
         }
         log.info("Count brief articles {}", articles.size());
@@ -82,10 +76,14 @@ public class ArticleService {
         }
     }
 
-    public List<ArticleRegistryResponse> getTable() {
+    public List<ArticleTableRow> getTable() {
         return articleRepository.findAll().stream()
-                .map(articleMapper::convertToRegistryTable)
+                .map(articleMapper::convertToTableRow)
                 .collect(toList());
+    }
+
+    public ArticleCreateRequest getArticleById(String id) {
+        return articleRepository.findById(id).map(articleMapper::convertToFullArticle).orElse(null);
     }
 
     public Map<String, List<SimpleNameObj>> getDictsForTable() {

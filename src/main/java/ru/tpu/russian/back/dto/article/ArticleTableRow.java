@@ -7,15 +7,11 @@ import lombok.*;
  */
 @Getter
 @AllArgsConstructor
-public class ArticleRegistryResponse {
+public class ArticleTableRow {
 
     private String id;
 
     private String name;
-
-    private String text;
-
-    private String briefText;
 
     private String topic;
 

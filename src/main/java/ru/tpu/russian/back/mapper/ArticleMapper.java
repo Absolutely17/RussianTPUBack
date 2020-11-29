@@ -10,7 +10,7 @@ public class ArticleMapper {
     public ArticleBriefResponse convertBriefToResponse(Article article) {
         return new ArticleBriefResponse(
                 article.getId(),
-                article.getTopic(),
+                article.getName(),
                 article.getBriefText(),
                 article.getTopic(),
                 article.getCreateDate()
@@ -20,23 +20,31 @@ public class ArticleMapper {
     public ArticleResponse convertToResponse(Article article) {
         return new ArticleResponse(
                 article.getId(),
-                article.getTopic(),
+                article.getName(),
                 article.getText(),
                 article.getTopic(),
                 article.getCreateDate()
         );
     }
 
-    public ArticleRegistryResponse convertToRegistryTable(Article article) {
-        return new ArticleRegistryResponse(
+    public ArticleTableRow convertToTableRow(Article article) {
+        return new ArticleTableRow(
                 article.getId(),
-                article.getTopic(),
-                article.getText(),
-                article.getBriefText(),
+                article.getName(),
                 article.getTopic(),
                 article.getLanguage(),
                 article.getCountView(),
                 article.getCreateDate()
+        );
+    }
+
+    public ArticleCreateRequest convertToFullArticle(Article article) {
+        return new ArticleCreateRequest(article.getName(),
+                article.getTopic(),
+                article.getText(),
+                article.getBriefText(),
+                article.getLanguage(),
+                article.getArticleImage()
         );
     }
 }

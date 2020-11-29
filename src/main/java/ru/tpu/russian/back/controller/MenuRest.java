@@ -6,6 +6,7 @@ import ru.tpu.russian.back.dto.menu.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.MenuService;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -23,11 +24,18 @@ public class MenuRest {
     }
 
     @RequestMapping(method = GET)
-    public List<MenuResponse> getMenu(
+    public List<MenuResponseAndroid> getMenu(
             @RequestParam String language,
-            @RequestParam String email
+            @RequestParam @Nullable String email
     ) throws BusinessException {
         return menuService.getAll(language, email);
+    }
+
+    @RequestMapping(method = GET, path = "/table")
+    public List<MenuResponseTableRow> getMenuTable(
+            @RequestParam String language
+    ) {
+        return menuService.getMenuTable(language);
     }
 
     @RequestMapping(method = GET, path = "/dicts")
@@ -37,6 +45,6 @@ public class MenuRest {
 
     @RequestMapping(method = POST, path = "/save")
     public void save(@RequestBody MenuUpdateRequest request) {
-        menuService.save(request);
+        menuService.saveOrUpdate(request);
     }
 }

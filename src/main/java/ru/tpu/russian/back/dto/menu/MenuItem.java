@@ -3,6 +3,8 @@ package ru.tpu.russian.back.dto.menu;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
+
 /**
  * Общая ДТО для пункта меню. Используется для админки.
  */
@@ -30,7 +32,7 @@ public class MenuItem {
 
     private String url;
 
-    private String articleId;
+    private List<String> linkedArticles;
 
-    private String imageId;
+    private String image;
 }

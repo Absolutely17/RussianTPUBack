@@ -23,10 +23,9 @@ public class ArticleRest {
 
     @RequestMapping(method = GET, path = "/list/{id}")
     public List<ArticleBriefResponse> getArticlesBriefFromMenuItem(
-            @PathVariable String id,
-            @RequestParam(value = "fromMenu", defaultValue = "false") boolean fromMenu
+            @PathVariable String id
     ) throws BusinessException {
-        return articleService.getArticlesBrief(id, fromMenu);
+        return articleService.getArticlesBrief(id);
     }
 
     @RequestMapping(method = GET, path = "/{id}")
@@ -37,8 +36,13 @@ public class ArticleRest {
     }
 
     @RequestMapping(method = GET, path = "/table")
-    public List<ArticleRegistryResponse> getTable() {
+    public List<ArticleTableRow> getTable() {
         return articleService.getTable();
+    }
+
+    @RequestMapping(method = GET, path = "/table/{id}")
+    public ArticleCreateRequest getArticleById(@PathVariable String id) {
+        return articleService.getArticleById(id);
     }
 
     @RequestMapping(method = GET, path = "/dicts")

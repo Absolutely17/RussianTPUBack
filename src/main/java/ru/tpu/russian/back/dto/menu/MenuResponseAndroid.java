@@ -14,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 public class MenuResponseAndroid {
 
+    private String id;
+
     private String name;
 
     private int level;
@@ -40,6 +42,7 @@ public class MenuResponseAndroid {
     private List<MenuResponseAndroid> children;
 
     public MenuResponseAndroid(
+            String id,
             String name,
             int level,
             int position,
@@ -48,6 +51,7 @@ public class MenuResponseAndroid {
             @Nullable String idArticle,
             @Nullable String imageId
     ) {
+        this.id = id;
         this.name = name;
         this.level = level;
         this.position = position;

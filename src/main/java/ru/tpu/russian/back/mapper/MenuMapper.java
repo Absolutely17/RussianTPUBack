@@ -13,6 +13,7 @@ public class MenuMapper {
 
     public MenuResponseAndroid convertToResponseForAndroid(Menu menu) {
         return new MenuResponseAndroid(
+                menu.getId(),
                 menu.getName(),
                 menu.getLevel(),
                 menu.getPosition(),

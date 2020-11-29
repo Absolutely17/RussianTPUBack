@@ -115,8 +115,8 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     @Transactional(readOnly = true)
     public Optional<String> getGroupId(String email) {
-        return em.createNativeQuery("exec " + GET_GROUP_ID + " :email")
+        return Optional.ofNullable((String) em.createNativeQuery("exec " + GET_GROUP_ID + " :email")
                 .setParameter("email", email)
-                .getResultStream().findFirst();
+                .getSingleResult());
     }
 }

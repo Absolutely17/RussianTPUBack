@@ -233,6 +233,8 @@ public class MenuService {
             menu.setParent(idNewItems.get(dto.getParentId()));
         } else if (dto.getParentId() != null) {
             menu.setParent(menuRepository.getOne(dto.getParentId()));
+        } else {
+            menu.setParent(null);
         }
     }
 }

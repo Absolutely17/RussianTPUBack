@@ -51,7 +51,6 @@ public class JwtProvider {
                 .setExpiration(date.toDate())
                 .signWith(HS512, jwtSecret)
                 .compact();
-        log.info("Saving reset token in DB.");
         userRepository.addResetToken(email, sha1Hex(token));
         return token;
     }
@@ -67,7 +66,6 @@ public class JwtProvider {
     }
 
     public String generateAccessToken(String email) {
-        log.info("Starting generate access token, email {}, expiration time {}d", email, expAccessToken);
         Date date = Date.from(LocalDate.now().plusDays(expAccessToken)
                 .atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
@@ -79,7 +77,6 @@ public class JwtProvider {
     }
 
     public String generateRefreshToken(String email) {
-        log.info("Starting generate refresh token, email {}, expiration time {}d", email, expRefreshToken);
         Date date = Date.from(LocalDate.now().plusDays(expRefreshToken)
                 .atStartOfDay(ZoneId.systemDefault()).toInstant());
         String refreshSalt = generateRandomSalt();
@@ -122,7 +119,6 @@ public class JwtProvider {
 
     @Nullable
     public String getTokenFromRequest(HttpServletRequest servletRequest) {
-        log.debug("Getting token from request...");
         String bearer = servletRequest.getHeader(AUTHORIZATION);
         if (hasText(bearer) && bearer.startsWith("Bearer")) {
             return bearer.substring(7);
@@ -134,7 +130,6 @@ public class JwtProvider {
 
     @Nullable
     public String getEmailFromToken(String token) {
-        log.debug("Getting email from token...");
         try {
             Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
             return claims.getSubject();
@@ -145,7 +140,6 @@ public class JwtProvider {
     }
 
     public String getSaltFromRefreshToken(String token) {
-        log.debug("Getting salt from token...");
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return (String) claims.get("refresh_salt");
     }

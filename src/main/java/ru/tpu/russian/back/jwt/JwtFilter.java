@@ -35,11 +35,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token != null && jwtProvider.validateToken(token)) {
             String userEmail = jwtProvider.getEmailFromToken(token);
             if (!isNullOrEmpty(userEmail)) {
-                log.debug("Email in token: {}", userEmail);
-                log.debug("Try to find user in DB.");
                 CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(userEmail);
                 if (customUserDetails != null) {
-                    log.info("User founded. Auth success.");
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                             customUserDetails,
                             null,

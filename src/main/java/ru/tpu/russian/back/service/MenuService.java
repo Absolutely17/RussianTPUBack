@@ -13,8 +13,8 @@ import ru.tpu.russian.back.mapper.MenuMapper;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
 import ru.tpu.russian.back.repository.dicts.IDictRepository;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
+import ru.tpu.russian.back.repository.systemConfig.ISystemConfigRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
-import ru.tpu.russian.back.repository.utils.IUtilsRepository;
 
 import javax.persistence.*;
 import java.util.*;
@@ -43,7 +43,7 @@ public class MenuService {
 
     private final UserRepository userRepository;
 
-    private final IUtilsRepository utilsRepository;
+    private final ISystemConfigRepository utilsRepository;
 
     private final MenuMapper menuMapper;
 
@@ -58,7 +58,7 @@ public class MenuService {
     public MenuService(
             MenuRepository menuRepository,
             UserRepository userRepository,
-            IUtilsRepository utilsRepository,
+            ISystemConfigRepository utilsRepository,
             MenuMapper menuMapper,
             IDictRepository dictRepository,
             ArticleRepository articleRepository

@@ -3,7 +3,7 @@ package ru.tpu.russian.back.dto.article;
 import lombok.*;
 
 /**
- * ДТО создания статьи
+ * ДТО создания статьи и ответа для админки отдельной статьи
  */
 @Getter
 @AllArgsConstructor

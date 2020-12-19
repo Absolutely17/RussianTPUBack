@@ -28,7 +28,6 @@ public class VelocityMerger {
     }
 
     public String merge(Map<String, Object> model, String language, MailService.TypeMessages type) throws IOException {
-
         Template template;
         switch (type) {
             case CONFIRMATION_MESSAGE:

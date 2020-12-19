@@ -20,7 +20,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService customUserDetailsService;
 
-    public JwtFilter(
+    JwtFilter(
             JwtProvider jwtProvider,
             CustomUserDetailsService customUserDetailsService
     ) {

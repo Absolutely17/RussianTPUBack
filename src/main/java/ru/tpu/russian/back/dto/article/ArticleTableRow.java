@@ -3,7 +3,7 @@ package ru.tpu.russian.back.dto.article;
 import lombok.*;
 
 /**
- * ДТО статьи для админки
+ * ДТО статьи для админки таблицы
  */
 @Getter
 @AllArgsConstructor

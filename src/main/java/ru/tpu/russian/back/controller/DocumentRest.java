@@ -41,7 +41,10 @@ public class DocumentRest {
         documentService.downloadDocument(id, response);
     }
 
-    @RequestMapping(method = POST, path = "/upload", consumes = {"multipart/form-data"})
+    /**
+     * Загрузка документа пользователю из админки
+     */
+    @RequestMapping(method = POST, path = "/admin/upload", consumes = {"multipart/form-data"})
     public void uploadDocument(
             @RequestPart("documentInfo") DocumentUploadRequest dto,
             @RequestPart("document") MultipartFile doc

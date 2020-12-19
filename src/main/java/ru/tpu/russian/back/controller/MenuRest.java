@@ -31,19 +31,22 @@ public class MenuRest {
         return menuService.getAll(language, email);
     }
 
-    @RequestMapping(method = GET, path = "/table")
+    /**
+     * РЕСТы для админки по обработке меню
+     */
+    @RequestMapping(method = GET, path = "/admin/table")
     public List<MenuResponseTableRow> getMenuTable(
             @RequestParam String language
     ) {
         return menuService.getMenuTable(language);
     }
 
-    @RequestMapping(method = GET, path = "/dicts")
+    @RequestMapping(method = GET, path = "/admin/dicts")
     public Map<String, List<SimpleNameObj>> getDicts() {
         return menuService.getDicts();
     }
 
-    @RequestMapping(method = POST, path = "/save")
+    @RequestMapping(method = POST, path = "/admin/save")
     public void save(@RequestBody MenuUpdateRequest request) {
         menuService.saveOrUpdate(request);
     }

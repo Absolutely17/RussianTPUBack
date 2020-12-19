@@ -38,12 +38,15 @@ public class UserRest {
         return userService.getUserProfile(email);
     }
 
-    @RequestMapping(method = GET, path = "/table")
+    /**
+     * РЕСТы для админки по отображени пользователей
+     */
+    @RequestMapping(method = GET, path = "/admin/table")
     public List<UserTableRow> getUsersTable() {
         return userService.getUsersTable();
     }
 
-    @RequestMapping(method = GET, path = "/dicts")
+    @RequestMapping(method = GET, path = "/admin/dicts")
     public Map<String, List<SimpleNameObj>> getDicts() {
         return userService.getDictsTable();
     }

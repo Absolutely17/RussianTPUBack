@@ -82,7 +82,10 @@ public class AuthRest {
         userService.disableFcmUserToken(email);
     }
 
-    @RequestMapping(method = POST, path = "/web-admin/login")
+    /**
+     * РЕСТ для авторизация админа в админке
+     */
+    @RequestMapping(method = POST, path = "/admin/login")
     public AuthResponse webLogin(@Valid @RequestBody AuthRequest requestDto) throws BusinessException {
         return userService.webLogin(requestDto);
     }

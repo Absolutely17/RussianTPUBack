@@ -17,14 +17,14 @@ public class NotificationRest {
         this.notificationService = notificationService;
     }
 
-    @RequestMapping(method = POST, path = "/group")
+    @RequestMapping(method = POST, path = "/admin/group")
     public ResponseEntity<?> sendGroupNotification(
             @RequestBody NotificationRequestGroup requestDto
     ) {
         return notificationService.sendOnGroup(requestDto);
     }
 
-    @RequestMapping(method = POST, path = "/users")
+    @RequestMapping(method = POST, path = "/admin/users")
     public ResponseEntity<?> sendNotificationOnUsers(
             @RequestBody NotificationRequestUsers requestDto
     ) {

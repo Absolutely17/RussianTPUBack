@@ -26,7 +26,14 @@ public class MediaRest {
         return mediaService.getImage(id);
     }
 
-    @RequestMapping(method = POST, path = "/img/upload", consumes = {"multipart/form-data"}, produces = "text/plain")
+    /**
+     * Загрузка изображения через админку
+     */
+    @RequestMapping(
+            method = POST, path = "/admin/img/upload",
+            consumes = {"multipart/form-data"},
+            produces = "text/plain"
+    )
     public String uploadImage(@RequestParam("file") MultipartFile file) throws BusinessException {
         return mediaService.uploadImage(file);
     }

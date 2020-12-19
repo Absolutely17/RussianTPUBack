@@ -23,12 +23,12 @@ public class SystemConfigRest {
         this.systemConfigService = systemConfigService;
     }
 
-    @RequestMapping(method = GET, path = "/table")
+    @RequestMapping(method = GET, path = "/admin/table")
     public List<SystemParameterResponse> getTableParameters() {
         return systemConfigService.getTable();
     }
 
-    @RequestMapping(method = PUT)
+    @RequestMapping(method = PUT, path = "/admin")
     public void updateParameters(@RequestBody List<SystemParameterResponse> params) {
         systemConfigService.update(params);
     }

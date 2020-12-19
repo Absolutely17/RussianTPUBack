@@ -33,27 +33,30 @@ public class ArticleRest {
         return articleService.getArticle(id);
     }
 
-    @RequestMapping(method = GET, path = "/table")
+    /**
+     * РЕСТы для админки
+     */
+    @RequestMapping(method = GET, path = "/admin/table")
     public List<ArticleTableRow> getTable() {
         return articleService.getTable();
     }
 
-    @RequestMapping(method = GET, path = "/table/{id}")
+    @RequestMapping(method = GET, path = "/admin/table/{id}")
     public ArticleCreateRequest getArticleById(@PathVariable String id) {
         return articleService.getArticleById(id);
     }
 
-    @RequestMapping(method = GET, path = "/dicts")
+    @RequestMapping(method = GET, path = "/admin/dicts")
     public Map<String, List<SimpleNameObj>> getDicts() {
         return articleService.getDictsForTable();
     }
 
-    @RequestMapping(method = POST, path = "/create")
+    @RequestMapping(method = POST, path = "/admin/create")
     public String create(@RequestBody ArticleCreateRequest createDto) {
         return articleService.create(createDto);
     }
 
-    @RequestMapping(method = PUT, path = "/{id}")
+    @RequestMapping(method = PUT, path = "/admin/{id}")
     public void update(@RequestBody ArticleCreateRequest updateDto, @PathVariable String id) {
         articleService.update(updateDto, id);
     }

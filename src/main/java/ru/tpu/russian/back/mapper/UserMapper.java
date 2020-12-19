@@ -3,24 +3,24 @@ package ru.tpu.russian.back.mapper;
 import org.springframework.stereotype.Component;
 import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.entity.User;
-import ru.tpu.russian.back.repository.dicts.IDictRepository;
+import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 
 @Component
 public class UserMapper {
 
-    private final IDictRepository dictRepository;
+    private final LanguageRepository languageRepository;
 
     private final MailingTokenRepository mailingTokenRepository;
 
-    public UserMapper(IDictRepository dictRepository,
+    public UserMapper(LanguageRepository languageRepository,
                       MailingTokenRepository mailingTokenRepository) {
-        this.dictRepository = dictRepository;
+        this.languageRepository = languageRepository;
         this.mailingTokenRepository = mailingTokenRepository;
     }
 
     public UserResponse convertToResponse(User user) {
-        String languageName = dictRepository.getLanguageById(user.getLanguage()).getShortName();
+        String languageName = languageRepository.getById(user.getLanguage()).getShortName();
         return new UserResponse(
                 user.getEmail(),
                 user.getFirstName(),
@@ -35,7 +35,7 @@ public class UserMapper {
     }
 
     public UserTableRow convertToTableRow(User user) {
-        String languageName = dictRepository.getLanguageById(user.getLanguage()).getShortName();
+        String languageName = languageRepository.getById(user.getLanguage()).getShortName();
         boolean activeFcmToken = mailingTokenRepository.isActiveByUserId(user.getId());
         return new UserTableRow(
                 user.getId(),
@@ -67,7 +67,7 @@ public class UserMapper {
     }
 
     public UserProfileResponse convertToProfile(User user) {
-        String languageName = dictRepository.getLanguageById(user.getLanguage()).getShortName();
+        String languageName = languageRepository.getById(user.getLanguage()).getShortName();
         return new UserProfileResponse(
                 user.getEmail(),
                 user.getFirstName(),

@@ -6,10 +6,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.*;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.entity.User;
-import ru.tpu.russian.back.entity.dict.Language;
+import ru.tpu.russian.back.entity.language.Language;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
-import ru.tpu.russian.back.repository.dicts.IDictRepository;
+import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
 import javax.mail.internet.MimeMessage;
@@ -43,7 +43,7 @@ public class MailService {
 
     private final MessageSource messageSource;
 
-    private final IDictRepository dictRepository;
+    private final LanguageRepository languageRepository;
 
     @Value("${spring.mail.from}")
     private String mailFrom;
@@ -54,14 +54,14 @@ public class MailService {
             VelocityMerger merger,
             UserRepository userRepository,
             MessageSource messageSource,
-            IDictRepository dictRepository
+            LanguageRepository languageRepository
     ) {
         this.sender = sender;
         jwtProvider = provider;
         this.merger = merger;
         this.userRepository = userRepository;
         this.messageSource = messageSource;
-        this.dictRepository = dictRepository;
+        this.languageRepository = languageRepository;
     }
 
     public void confirmRegistration(String token, HttpServletResponse response) {
@@ -95,7 +95,7 @@ public class MailService {
 
     public void sendMessage(TypeMessages type, String email, String languageId) {
         log.debug("Starting to create message type {}.", type.toString());
-        Language lang = dictRepository.getLanguageById(languageId);
+        Language lang = languageRepository.getById(languageId);
         Locale currentLocale;
         if (lang == null) {
             currentLocale = new Locale("en");

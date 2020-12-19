@@ -11,7 +11,7 @@ import ru.tpu.russian.back.entity.menu.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.mapper.MenuMapper;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
-import ru.tpu.russian.back.repository.dicts.IDictRepository;
+import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.menu.MenuRepository;
 import ru.tpu.russian.back.repository.systemConfig.ISystemConfigRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
@@ -47,7 +47,7 @@ public class MenuService {
 
     private final MenuMapper menuMapper;
 
-    private final IDictRepository dictRepository;
+    private final LanguageRepository languageRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -60,14 +60,14 @@ public class MenuService {
             UserRepository userRepository,
             ISystemConfigRepository utilsRepository,
             MenuMapper menuMapper,
-            IDictRepository dictRepository,
+            LanguageRepository languageRepository,
             ArticleRepository articleRepository
     ) {
         this.menuRepository = menuRepository;
         this.userRepository = userRepository;
         this.utilsRepository = utilsRepository;
         this.menuMapper = menuMapper;
-        this.dictRepository = dictRepository;
+        this.languageRepository = languageRepository;
         this.articleRepository = articleRepository;
     }
 
@@ -136,9 +136,9 @@ public class MenuService {
 
     public Map<String, List<SimpleNameObj>> getDicts() {
         Map<String, List<SimpleNameObj>> dicts = new HashMap<>();
-        List<SimpleNameObj> languages = dictRepository.getAllLanguage()
+        List<SimpleNameObj> languages = languageRepository.findAll()
                 .stream()
-                .map(it -> new SimpleNameObj(it.getId(), it.getFullName()))
+                .map(it -> new SimpleNameObj(it.getId(), it.getName()))
                 .collect(Collectors.toList());
         List<SimpleNameObj> types = menuRepository.getAllMenuType()
                 .stream()

@@ -1,7 +1,6 @@
 package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.tpu.russian.back.dto.language.LanguageResponse;
 import ru.tpu.russian.back.entity.dict.StudyGroup;
 import ru.tpu.russian.back.service.DictService;
 
@@ -23,10 +22,5 @@ public class DictRest {
     @RequestMapping(method = GET, path = "/group")
     public List<StudyGroup> getAllGroups() {
         return dictService.getAllStudyGroups();
-    }
-
-    @RequestMapping(method = GET, path = "/language")
-    public List<LanguageResponse> getAllLanguage() {
-        return dictService.getAllLanguage();
     }
 }

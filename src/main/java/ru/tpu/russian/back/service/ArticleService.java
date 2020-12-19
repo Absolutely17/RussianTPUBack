@@ -9,7 +9,7 @@ import ru.tpu.russian.back.entity.Article;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.mapper.ArticleMapper;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
-import ru.tpu.russian.back.repository.dicts.IDictRepository;
+import ru.tpu.russian.back.repository.language.LanguageRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,20 +26,25 @@ public class ArticleService {
 
     private final ArticleMapper articleMapper;
 
-    private final IDictRepository dictRepository;
+    private final LanguageRepository languageRepository;
 
     public ArticleService(
             ArticleRepository articleRepository,
             MediaService mediaService,
             ArticleMapper articleMapper,
-            IDictRepository dictRepository
+            LanguageRepository languageRepository
     ) {
         this.articleRepository = articleRepository;
         this.mediaService = mediaService;
         this.articleMapper = articleMapper;
-        this.dictRepository = dictRepository;
+        this.languageRepository = languageRepository;
     }
 
+    /**
+     * Достаем все крактие версии статей
+     *
+     * @param id ID пункта меню
+     */
     public List<ArticleBriefResponse> getArticlesBrief(String id) throws BusinessException {
         log.info("Get brief articles from menu. ID menu item = {}", id);
         List<Article> articles = articleRepository.getBriefArticlesFromMenu(id);
@@ -62,6 +67,11 @@ public class ArticleService {
         return response;
     }
 
+    /**
+     * Достать полную версию статьи
+     *
+     * @param id ID статьи
+     */
     @Transactional
     public ArticleResponse getArticle(String id) throws BusinessException {
         log.info("Get article. ID article = {}", id);
@@ -76,21 +86,27 @@ public class ArticleService {
         }
     }
 
+    /**
+     * Получить таблицу со статьями
+     */
     public List<ArticleTableRow> getTable() {
         return articleRepository.findAll().stream()
                 .map(articleMapper::convertToTableRow)
                 .collect(toList());
     }
 
+    /**
+     * Получить определенную статью для админки
+     */
     public ArticleCreateRequest getArticleById(String id) {
         return articleRepository.findById(id).map(articleMapper::convertToFullArticle).orElse(null);
     }
 
     public Map<String, List<SimpleNameObj>> getDictsForTable() {
         Map<String, List<SimpleNameObj>> dicts = new HashMap<>();
-        List<SimpleNameObj> languages = dictRepository.getAllLanguage()
+        List<SimpleNameObj> languages = languageRepository.findAll()
                 .stream()
-                .map(it -> new SimpleNameObj(it.getId(), it.getFullName()))
+                .map(it -> new SimpleNameObj(it.getId(), it.getName()))
                 .collect(Collectors.toList());
         dicts.put("languages", languages);
         return dicts;

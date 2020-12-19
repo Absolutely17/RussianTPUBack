@@ -9,13 +9,12 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LanguageResponse {
-
-    private String id;
-
-    private String fullName;
-
-    private String shortName;
+public class LanguageResponse extends LanguageBaseResponse {
 
     private byte[] image;
+
+    public LanguageResponse(String id, String shortName, String fullName, byte[] image) {
+        super(id, shortName, fullName);
+        this.image = image;
+    }
 }

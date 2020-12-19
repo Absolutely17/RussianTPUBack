@@ -17,7 +17,7 @@ import ru.tpu.russian.back.enums.ProviderType;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.mapper.UserMapper;
-import ru.tpu.russian.back.repository.dicts.IDictRepository;
+import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
@@ -52,7 +52,7 @@ public class UserService {
 
     private final UserMapper userMapper;
 
-    private final IDictRepository dictRepository;
+    private final LanguageRepository languageRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -64,7 +64,7 @@ public class UserService {
             MailService mailService,
             CacheManager cacheManager,
             MailingTokenRepository mailingTokenRepository,
-            IDictRepository dictRepository,
+            LanguageRepository languageRepository,
             UserMapper userMapper
     ) {
         this.userRepository = userRepository;
@@ -74,7 +74,7 @@ public class UserService {
         this.cacheManager = cacheManager;
         this.mailingTokenRepository = mailingTokenRepository;
         this.userMapper = userMapper;
-        this.dictRepository = dictRepository;
+        this.languageRepository = languageRepository;
     }
 
     public void register(BaseUserRequest registrationRequestDto) throws BusinessException {
@@ -271,9 +271,9 @@ public class UserService {
 
     public Map<String, List<SimpleNameObj>> getDictsTable() {
         Map<String, List<SimpleNameObj>> dicts = new HashMap<>();
-        List<SimpleNameObj> languages = dictRepository.getAllLanguage()
+        List<SimpleNameObj> languages = languageRepository.findAll()
                 .stream()
-                .map(it -> new SimpleNameObj(it.getId(), it.getFullName()))
+                .map(it -> new SimpleNameObj(it.getId(), it.getName()))
                 .collect(Collectors.toList());
         dicts.put("languages", languages);
         return dicts;

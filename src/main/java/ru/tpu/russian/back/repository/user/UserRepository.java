@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, String>, IUserReposi
 
     @Query(value = "select u.id from User u where u.email = :email")
     String getUserIdByEmail(@Param("email") String email);
+
+    Long countByLanguage(String language);
 }

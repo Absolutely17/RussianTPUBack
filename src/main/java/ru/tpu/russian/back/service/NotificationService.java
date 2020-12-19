@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.notification.*;
 import ru.tpu.russian.back.entity.notification.MailingToken;
 import ru.tpu.russian.back.exception.ExceptionMessage;
-import ru.tpu.russian.back.repository.dicts.IDictRepository;
+import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.*;
 
 import java.time.Duration;
@@ -29,16 +29,16 @@ public class NotificationService {
 
     private final MailingTokenRepository mailingTokenRepository;
 
-    private final IDictRepository dictRepository;
+    private final LanguageRepository languageRepository;
 
     public NotificationService(
             INotificationRepository notificationRepository,
             MailingTokenRepository mailingTokenRepository,
-            IDictRepository dictRepository
+            LanguageRepository languageRepository
     ) {
         this.notificationRepository = notificationRepository;
         this.mailingTokenRepository = mailingTokenRepository;
-        this.dictRepository = dictRepository;
+        this.languageRepository = languageRepository;
     }
 
     /**
@@ -49,7 +49,7 @@ public class NotificationService {
      */
     public ResponseEntity<?> sendOnGroup(NotificationRequestGroup request) {
         log.info("Send notification on app.", request.toString());
-        String shortNameLang = dictRepository.getLanguageById(request.getLanguage()).getShortName();
+        String shortNameLang = languageRepository.getById(request.getLanguage()).getShortName();
         request.setTopic(TOPIC_NAME + "_" + shortNameLang);
         try {
             Message message = getSingleMessageBuilder(request)

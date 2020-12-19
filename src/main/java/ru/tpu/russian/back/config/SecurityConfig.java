@@ -1,7 +1,6 @@
 package ru.tpu.russian.back.config;
 
 import org.springframework.context.annotation.*;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.*;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,7 +12,7 @@ import ru.tpu.russian.back.jwt.*;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final int STRENGTH_BCRYPT = 15;
+    private static final int STRENGTH_BCRYPT = 10;
 
     public SecurityConfig(JwtConfigurer jwtConfigurer,
                           JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
@@ -48,10 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/**/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/notification/**", "/api/document/upload", "/api/user/table",
-                        "/api/media/img/upload", "/api/article/create", "/api/article/table").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/article/*").hasRole("ADMIN")
                 .and().apply(jwtConfigurer)
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);

@@ -129,6 +129,16 @@ public class JwtProvider {
     }
 
     @Nullable
+    public String unwrapTokenFromHeaderStr(String headerStr) {
+        if (hasText(headerStr) && headerStr.startsWith("Bearer")) {
+            return headerStr.substring(7);
+        } else {
+            log.error("Could not find a token in the header.");
+            return null;
+        }
+    }
+
+    @Nullable
     public String getEmailFromToken(String token) {
         try {
             Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();

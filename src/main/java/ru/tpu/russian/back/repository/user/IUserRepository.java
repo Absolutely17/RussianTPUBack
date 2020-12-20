@@ -45,7 +45,7 @@ public interface IUserRepository {
     void addResetToken(String email, String token);
 
     /**
-     * Получаем ID группы (не общеизвестный, к примеру, 8В7Б, а его обозначение внутри системы ТПУ - 35089
+     * Получаем ID группы (не общеизвестный, к примеру, 8В7Б, а 35089(обозначение внутри системы ТПУ)
      */
     Optional<String> getGroupId(String email);
 }

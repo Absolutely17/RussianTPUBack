@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 public class NotificationService {
 
-    private static final int MAX_USERS_ON_NOTIFICATION = 50;
+    private static final int MAX_USERS_ON_NOTIFICATION = 100;
 
     private static final String TOPIC_NAME = "news";
 

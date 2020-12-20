@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.security.CustomUserDetails;
 
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String>, IUserRepository {
@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, String>, IUserReposi
     String getUserIdByEmail(@Param("email") String email);
 
     Long countByLanguage(String language);
+
+    @Query("SELECT u.id FROM User u LEFT JOIN StudyGroup gr ON gr.id = :groupId WHERE u.groupName = gr.name")
+    List<String> getUsersByGroupId(@Param("groupId") String groupId);
 }

@@ -13,16 +13,16 @@ public class StudyGroup implements Comparable<StudyGroup> {
 
     @Id
     @Column(name = "ID")
-    private String idGroup;
+    private String id;
 
     @Column(name = "NAME")
-    private String groupName;
+    private String name;
 
     @Column(name = "GROUP_INTERNAL_ID")
-    private String internalGroupID;
+    private String internalID;
 
     @Override
     public int compareTo(StudyGroup o) {
-        return groupName.compareTo(o.groupName);
+        return name.compareTo(o.name);
     }
 }

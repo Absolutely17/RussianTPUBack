@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.user.*;
@@ -10,8 +11,7 @@ import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.*;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -49,5 +49,13 @@ public class UserRest {
     @RequestMapping(method = GET, path = "/admin/dicts")
     public Map<String, List<SimpleNameObj>> getDicts() {
         return userService.getDictsTable();
+    }
+
+    @RequestMapping(method = POST, path = "/admin/calendarEvent")
+    public void createCalendarEvent(
+            @RequestBody CalendarEventCreateRequest request,
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token
+    ) {
+        userService.createCalendarEvent(request, token);
     }
 }

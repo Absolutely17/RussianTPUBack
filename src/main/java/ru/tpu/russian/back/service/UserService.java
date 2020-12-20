@@ -8,12 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.auth.*;
-import ru.tpu.russian.back.dto.notification.NotificationTokenRequest;
+import ru.tpu.russian.back.dto.notification.*;
 import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.entity.*;
+import ru.tpu.russian.back.entity.dict.StudyGroup;
 import ru.tpu.russian.back.entity.notification.MailingToken;
 import ru.tpu.russian.back.entity.security.*;
-import ru.tpu.russian.back.enums.ProviderType;
+import ru.tpu.russian.back.enums.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.mapper.UserMapper;
@@ -38,6 +39,10 @@ public class UserService {
 
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
 
+    private static final String TITLE_NOTIFICATION_CALENDAR_EVENT = "Вам назначено новое событие!";
+
+    private static final String MESSAGE_NOTIFICATION_CALENDAR_EVENT = "%s\r\n%s\r\nЗагляните в календарь...";
+
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -54,6 +59,8 @@ public class UserService {
 
     private final LanguageRepository languageRepository;
 
+    private final NotificationService notificationService;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -65,7 +72,8 @@ public class UserService {
             CacheManager cacheManager,
             MailingTokenRepository mailingTokenRepository,
             LanguageRepository languageRepository,
-            UserMapper userMapper
+            UserMapper userMapper,
+            NotificationService notificationService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -75,6 +83,7 @@ public class UserService {
         this.mailingTokenRepository = mailingTokenRepository;
         this.userMapper = userMapper;
         this.languageRepository = languageRepository;
+        this.notificationService = notificationService;
     }
 
     public void register(BaseUserRequest registrationRequestDto) throws BusinessException {
@@ -174,9 +183,9 @@ public class UserService {
             log.info("This user does not exist in the database. Need register.");
             return ResponseEntity.status(HTTP_STATUS_REG_NEED_FILL)
                     .headers(new HttpHeaders())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(userInfo);
-            }
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(userInfo);
+        }
     }
 
     public void registerWithService(BaseUserRequest registrationRequest) throws BusinessException {
@@ -287,5 +296,58 @@ public class UserService {
         }
         String token = jwtProvider.generateAccessToken(user.getEmail());
         return new AuthResponse(token, userMapper.convertToResponse(user));
+    }
+
+    @Transactional
+    public void createCalendarEvent(CalendarEventCreateRequest request, String token) {
+        CalendarEvent event = userMapper.convertToCalendarEventFromRequest(request);
+        switch (event.getTargetEnum()) {
+            case STUDY_GROUP:
+                event.addNewTargets(request.getGroups()
+                        .stream()
+                        .map(it -> new CalendarEventTargets(event, entityManager.getReference(StudyGroup.class, it)))
+                        .collect(Collectors.toSet()));
+                break;
+            case SELECTED_USERS:
+                event.addNewTargets(request.getSelectedUsers()
+                        .stream()
+                        .map(it -> new CalendarEventTargets(event, entityManager.getReference(User.class, it)))
+                        .collect(Collectors.toSet()));
+                break;
+            case ALL:
+                break;
+        }
+        if (request.isSendNotification()) {
+            sendNotificationAboutCreatedEvent(request, token);
+        }
+        entityManager.persist(event);
+    }
+
+    private void sendNotificationAboutCreatedEvent(CalendarEventCreateRequest request, String token) {
+        NotificationRequestUsers requestNotification = new NotificationRequestUsers();
+        requestNotification.setTitle(TITLE_NOTIFICATION_CALENDAR_EVENT);
+        requestNotification.setMessage(String.format(
+                MESSAGE_NOTIFICATION_CALENDAR_EVENT,
+                request.getTitle(), request.getDescription()
+        ));
+        requestNotification.setAdminEmail(jwtProvider.getEmailFromToken(jwtProvider.unwrapTokenFromHeaderStr(token)));
+
+        List<String> userIds = new ArrayList<>();
+        if (request.getGroupTarget().equals(CalendarEventGroupTarget.SELECTED_USERS)
+                && !request.getSelectedUsers().isEmpty()) {
+            userIds = request.getSelectedUsers();
+        } else if (request.getGroupTarget().equals(CalendarEventGroupTarget.STUDY_GROUP)
+                && !request.getGroups().isEmpty()) {
+            userIds = request.getGroups()
+                    .stream()
+                    .map(userRepository::getUsersByGroupId)
+                    .collect(Collectors.toList())
+                    .stream()
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+        }
+        requestNotification.setUsers(userIds);
+
+        notificationService.sendOnUser(requestNotification);
     }
 }

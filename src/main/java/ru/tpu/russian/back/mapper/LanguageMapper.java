@@ -17,8 +17,8 @@ public class LanguageMapper {
     public LanguageResponse convertToResponseForAndroid(Language language) {
         return new LanguageResponse(
                 language.getId(),
-                language.getName(),
                 language.getShortName(),
+                language.getName(),
                 mediaService.getImage(language.getImageId())
         );
     }

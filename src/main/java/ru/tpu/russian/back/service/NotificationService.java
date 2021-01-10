@@ -4,11 +4,14 @@ import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.dto.notification.*;
+import ru.tpu.russian.back.dto.notification.NotificationBaseRequest;
+import ru.tpu.russian.back.dto.notification.NotificationRequestGroup;
+import ru.tpu.russian.back.dto.notification.NotificationRequestUsers;
 import ru.tpu.russian.back.entity.notification.MailingToken;
 import ru.tpu.russian.back.exception.ExceptionMessage;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
-import ru.tpu.russian.back.repository.notification.*;
+import ru.tpu.russian.back.repository.notification.INotificationRepository;
+import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 
 import java.time.Duration;
 import java.util.List;
@@ -49,7 +52,7 @@ public class NotificationService {
      */
     public ResponseEntity<?> sendOnGroup(NotificationRequestGroup request) {
         log.info("Send notification on app.", request.toString());
-        String shortNameLang = languageRepository.getById(request.getLanguage()).getShortName();
+        String shortNameLang = languageRepository.getById(request.getTargetParameter()).getShortName();
         request.setTopic(TOPIC_NAME + "_" + shortNameLang);
         try {
             Message message = getSingleMessageBuilder(request)

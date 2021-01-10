@@ -1,8 +1,10 @@
 package ru.tpu.russian.back.repository.user;
 
 import ru.tpu.russian.back.dto.user.BaseUserRequest;
+import ru.tpu.russian.back.entity.CalendarEvent;
 import ru.tpu.russian.back.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IUserRepository {
@@ -48,4 +50,9 @@ public interface IUserRepository {
      * Получаем ID группы (не общеизвестный, к примеру, 8В7Б, а 35089(обозначение внутри системы ТПУ)
      */
     Optional<String> getGroupId(String email);
+
+    /**
+     * Получить события, отображаемые в календаре для пользователя
+     */
+    List<CalendarEvent> getCalendarEventsByEmail(String email);
 }

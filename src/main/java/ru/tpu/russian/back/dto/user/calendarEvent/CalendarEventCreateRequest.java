@@ -1,6 +1,8 @@
-package ru.tpu.russian.back.dto.user;
+package ru.tpu.russian.back.dto.user.calendarEvent;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import ru.tpu.russian.back.enums.CalendarEventGroupTarget;
 
 import java.util.List;

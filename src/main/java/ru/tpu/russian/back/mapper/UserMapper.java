@@ -1,8 +1,14 @@
 package ru.tpu.russian.back.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.entity.*;
+import ru.tpu.russian.back.dto.user.BaseUserRequest;
+import ru.tpu.russian.back.dto.user.UserProfileResponse;
+import ru.tpu.russian.back.dto.user.UserResponse;
+import ru.tpu.russian.back.dto.user.UserTableRow;
+import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventCreateRequest;
+import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventResponse;
+import ru.tpu.russian.back.entity.CalendarEvent;
+import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 
@@ -45,7 +51,7 @@ public class UserMapper {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getMiddleName(),
-                user.getGender(),
+                user.getGender() == null ? null : user.getGender().getValue(),
                 user.getPhoneNumber(),
                 user.getGroupName(),
                 user.getLanguage(),
@@ -92,6 +98,16 @@ public class UserMapper {
                 request.getDate(),
                 request.getGroupTarget(),
                 request.isSendNotification()
+        );
+    }
+
+    public CalendarEventResponse convertCalendarEventToResponse(CalendarEvent event) {
+        return new CalendarEventResponse(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getTimestamp(),
+                event.getTargetEnum()
         );
     }
 }

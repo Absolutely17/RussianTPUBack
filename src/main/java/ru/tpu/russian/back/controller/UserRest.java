@@ -3,13 +3,18 @@ package ru.tpu.russian.back.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.SimpleNameObj;
-import ru.tpu.russian.back.dto.user.*;
+import ru.tpu.russian.back.dto.user.BaseUserRequest;
+import ru.tpu.russian.back.dto.user.UserProfileResponse;
+import ru.tpu.russian.back.dto.user.UserTableRow;
+import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventCreateRequest;
+import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventResponse;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.UserService;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -38,8 +43,15 @@ public class UserRest {
         return userService.getUserProfile(email);
     }
 
+    @RequestMapping(method = GET, path = "/calendarEvents")
+    public List<CalendarEventResponse> getCalendarEventsForUser(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token
+    ) {
+        return userService.getCalendarEvents(token);
+    }
+
     /**
-     * РЕСТы для админки по отображени пользователей
+     * РЕСТы для админки по отображению пользователей
      */
     @RequestMapping(method = GET, path = "/admin/table")
     public List<UserTableRow> getUsersTable() {

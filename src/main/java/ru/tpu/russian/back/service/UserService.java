@@ -1,20 +1,38 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
-import ru.tpu.russian.back.dto.auth.*;
-import ru.tpu.russian.back.dto.notification.*;
-import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.entity.*;
+import ru.tpu.russian.back.dto.auth.AuthRequest;
+import ru.tpu.russian.back.dto.auth.AuthResponse;
+import ru.tpu.russian.back.dto.auth.AuthWithServiceRequest;
+import ru.tpu.russian.back.dto.notification.NotificationBaseRequest;
+import ru.tpu.russian.back.dto.notification.NotificationRequestGroup;
+import ru.tpu.russian.back.dto.notification.NotificationRequestUsers;
+import ru.tpu.russian.back.dto.notification.NotificationTokenRequest;
+import ru.tpu.russian.back.dto.user.BaseUserRequest;
+import ru.tpu.russian.back.dto.user.ResetPasswordRequest;
+import ru.tpu.russian.back.dto.user.UserProfileResponse;
+import ru.tpu.russian.back.dto.user.UserTableRow;
+import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventCreateRequest;
+import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventResponse;
+import ru.tpu.russian.back.entity.CalendarEvent;
+import ru.tpu.russian.back.entity.CalendarEventTargets;
+import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.dict.StudyGroup;
 import ru.tpu.russian.back.entity.notification.MailingToken;
-import ru.tpu.russian.back.entity.security.*;
-import ru.tpu.russian.back.enums.*;
+import ru.tpu.russian.back.entity.security.OAuthServiceUserInfoFactory;
+import ru.tpu.russian.back.entity.security.OAuthUserInfo;
+import ru.tpu.russian.back.enums.CalendarEventGroupTarget;
+import ru.tpu.russian.back.enums.ProviderType;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.mapper.UserMapper;
@@ -22,8 +40,12 @@ import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
@@ -60,6 +82,9 @@ public class UserService {
     private final LanguageRepository languageRepository;
 
     private final NotificationService notificationService;
+
+    @Value("${firebase.group-all-users}")
+    private String groupAllUsers;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -216,8 +241,6 @@ public class UserService {
 
     /**
      * Данный рест отправляет письмо на почту пользователя с ссылкой на сброс пароля
-     *
-     * @param email
      */
     public void resetPasswordRequest(String email) throws BusinessException {
         log.info("Send request to reset password {}", email);
@@ -324,30 +347,64 @@ public class UserService {
     }
 
     private void sendNotificationAboutCreatedEvent(CalendarEventCreateRequest request, String token) {
-        NotificationRequestUsers requestNotification = new NotificationRequestUsers();
+        NotificationBaseRequest requestNotification = createNotificationRequestFromTarget(
+                request.getGroupTarget(),
+                request,
+                token
+        );
+        if (requestNotification instanceof NotificationRequestUsers) {
+            notificationService.sendOnUser((NotificationRequestUsers) requestNotification);
+        } else {
+            notificationService.sendOnGroup((NotificationRequestGroup) requestNotification);
+        }
+    }
+
+    private NotificationBaseRequest createNotificationRequestFromTarget(
+            CalendarEventGroupTarget target,
+            CalendarEventCreateRequest request,
+            String token
+    ) {
+        NotificationBaseRequest requestNotification;
+        switch (target) {
+            case ALL:
+                requestNotification = new NotificationRequestGroup(groupAllUsers);
+                break;
+            case STUDY_GROUP:
+                requestNotification = new NotificationRequestUsers();
+                ((NotificationRequestUsers) requestNotification).setUsers(request.getGroups()
+                        .stream()
+                        .map(userRepository::getUsersByGroupId)
+                        .collect(Collectors.toList())
+                        .stream()
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList()));
+                break;
+            case SELECTED_USERS:
+                requestNotification = new NotificationRequestUsers();
+                ((NotificationRequestUsers) requestNotification).setUsers(request.getSelectedUsers());
+                break;
+            default:
+                throw new IllegalArgumentException("Wrong target calendar event value " + target.toString());
+        }
         requestNotification.setTitle(TITLE_NOTIFICATION_CALENDAR_EVENT);
         requestNotification.setMessage(String.format(
                 MESSAGE_NOTIFICATION_CALENDAR_EVENT,
                 request.getTitle(), request.getDescription()
         ));
         requestNotification.setAdminEmail(jwtProvider.getEmailFromToken(jwtProvider.unwrapTokenFromHeaderStr(token)));
+        return requestNotification;
+    }
 
-        List<String> userIds = new ArrayList<>();
-        if (request.getGroupTarget().equals(CalendarEventGroupTarget.SELECTED_USERS)
-                && !request.getSelectedUsers().isEmpty()) {
-            userIds = request.getSelectedUsers();
-        } else if (request.getGroupTarget().equals(CalendarEventGroupTarget.STUDY_GROUP)
-                && !request.getGroups().isEmpty()) {
-            userIds = request.getGroups()
+    public List<CalendarEventResponse> getCalendarEvents(String token) {
+        String email = jwtProvider.getEmailFromToken(jwtProvider.unwrapTokenFromHeaderStr(token));
+        if (email != null) {
+            return userRepository.getCalendarEventsByEmail(email)
                     .stream()
-                    .map(userRepository::getUsersByGroupId)
-                    .collect(Collectors.toList())
-                    .stream()
-                    .flatMap(List::stream)
+                    .map(userMapper::convertCalendarEventToResponse)
                     .collect(Collectors.toList());
+        } else {
+            // todo exception
         }
-        requestNotification.setUsers(userIds);
-
-        notificationService.sendOnUser(requestNotification);
+        return null;
     }
 }

@@ -1,8 +1,10 @@
 package ru.tpu.russian.back.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 import ru.tpu.russian.back.enums.ProviderType;
+import ru.tpu.russian.back.enums.UserGender;
 
 import javax.persistence.*;
 
@@ -38,7 +40,8 @@ public class User {
 
     @Column(name = "SEX", length = 20)
     @Nullable
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private UserGender gender;
 
     @Column(name = "LANGUAGE_ID")
     private String language;
@@ -66,7 +69,7 @@ public class User {
 
     public User(
             String firstName, @Nullable String lastName,
-            @Nullable String middleName, @Nullable String gender,
+            @Nullable String middleName, @Nullable UserGender gender,
             String language, @Nullable String phoneNumber,
             String email, ProviderType provider, @Nullable String groupName
     ) {

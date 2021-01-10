@@ -1,9 +1,12 @@
 package ru.tpu.russian.back.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 /**
  * Уведомление группе пользователей по языку
@@ -14,15 +17,15 @@ import javax.validation.constraints.*;
 public class NotificationRequestGroup extends NotificationBaseRequest {
 
     @NotNull
-    private String language;
+    private String targetParameter;
 
     @JsonCreator
     public NotificationRequestGroup(
             @NotNull String title, @NotNull String message,
             @NotNull @Email String adminEmail, String topic,
-            @NotNull String language
+            @NotNull String targetParameter
     ) {
         super(title, message, adminEmail, topic);
-        this.language = language;
+        this.targetParameter = targetParameter;
     }
 }

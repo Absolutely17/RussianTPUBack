@@ -1,10 +1,17 @@
 package ru.tpu.russian.back.dto.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 import ru.tpu.russian.back.enums.ProviderType;
+import ru.tpu.russian.back.enums.UserGender;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Getter
 @AllArgsConstructor
@@ -38,8 +45,8 @@ public class BaseUserRequest {
     private String middleName;
 
     @Nullable
-    @Size(min = 1, max = 20)
-    private String gender;
+    @Pattern(regexp = "Male|Female")
+    private UserGender gender;
 
     @NotNull
     private String languageId;

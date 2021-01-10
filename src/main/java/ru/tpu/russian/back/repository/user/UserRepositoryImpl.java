@@ -3,9 +3,12 @@ package ru.tpu.russian.back.repository.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.user.BaseUserRequest;
+import ru.tpu.russian.back.entity.CalendarEvent;
 import ru.tpu.russian.back.entity.User;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -26,6 +29,8 @@ public class UserRepositoryImpl implements IUserRepository {
     private static final String ADD_RESET_PASSWORD_TOKEN = "AddResetPasswordRequest";
 
     private static final String GET_GROUP_ID = "GetUserGroupID";
+
+    private static final String GET_CALENDAR_EVENTS_BY_EMAIL = "GetCalendarEventsByEmail";
 
     @PersistenceContext
     private EntityManager em;
@@ -118,5 +123,13 @@ public class UserRepositoryImpl implements IUserRepository {
         return Optional.ofNullable((String) em.createNativeQuery("exec " + GET_GROUP_ID + " :email")
                 .setParameter("email", email)
                 .getSingleResult());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CalendarEvent> getCalendarEventsByEmail(String email) {
+        return em.createNativeQuery("exec " + GET_CALENDAR_EVENTS_BY_EMAIL + " :email", CalendarEvent.class)
+                .setParameter("email", email)
+                .getResultList();
     }
 }

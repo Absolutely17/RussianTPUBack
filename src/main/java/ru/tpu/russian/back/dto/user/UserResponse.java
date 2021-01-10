@@ -1,8 +1,11 @@
 package ru.tpu.russian.back.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
+import ru.tpu.russian.back.enums.UserGender;
 
 @Getter
 @AllArgsConstructor
@@ -21,7 +24,7 @@ public class UserResponse {
     private String middleName;
 
     @Nullable
-    private String gender;
+    private UserGender gender;
 
     @Nullable
     private String phoneNumber;

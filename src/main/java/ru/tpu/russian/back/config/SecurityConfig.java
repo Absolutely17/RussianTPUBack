@@ -1,12 +1,16 @@
 package ru.tpu.russian.back.config;
 
-import org.springframework.context.annotation.*;
-import org.springframework.security.config.annotation.web.builders.*;
-import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.tpu.russian.back.jwt.*;
+import ru.tpu.russian.back.jwt.JwtAuthenticationEntryPoint;
+import ru.tpu.russian.back.jwt.JwtConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -36,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoring()
                 // Отключаем срабатывание фильтра на некоторые запросы
                 .antMatchers("/api/auth/**", "/api/token/**", "/api/email/confirmation",
-                        "/", "/test/**", "/api/media/img/*", "/api/dict/**", "/api/language");
+                        "/", "/test/**", "/api/media/img/*", "/api/studyGroup", "/api/language");
     }
 
     @Override

@@ -1,14 +1,20 @@
 package ru.tpu.russian.back.entity.dict;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
 @Table(name = "USER_GROUP")
 @Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class StudyGroup implements Comparable<StudyGroup> {
 
     @Id
@@ -20,6 +26,10 @@ public class StudyGroup implements Comparable<StudyGroup> {
 
     @Column(name = "GROUP_INTERNAL_ID")
     private String internalID;
+
+    public StudyGroup() {
+        id = UUID.randomUUID().toString();
+    }
 
     @Override
     public int compareTo(StudyGroup o) {

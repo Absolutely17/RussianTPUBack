@@ -1,12 +1,10 @@
-package ru.tpu.russian.back.entity;
+package ru.tpu.russian.back.entity.calendarEvent;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.tpu.russian.back.enums.CalendarEventGroupTarget;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "CALENDAR_EVENT")
@@ -23,6 +21,10 @@ public class CalendarEvent {
 
     @Column(name = "DESCRIPTION")
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "DETAILED_MESSAGE_ID")
+    private CalendarEventDetailedMessage detailedMessage;
 
     @Column(name = "TIMESTAMP")
     private String timestamp;

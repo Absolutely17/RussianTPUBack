@@ -2,37 +2,21 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
-import ru.tpu.russian.back.dto.auth.AuthRequest;
-import ru.tpu.russian.back.dto.auth.AuthResponse;
-import ru.tpu.russian.back.dto.auth.AuthWithServiceRequest;
-import ru.tpu.russian.back.dto.notification.NotificationBaseRequest;
-import ru.tpu.russian.back.dto.notification.NotificationRequestGroup;
-import ru.tpu.russian.back.dto.notification.NotificationRequestUsers;
-import ru.tpu.russian.back.dto.notification.NotificationTokenRequest;
-import ru.tpu.russian.back.dto.user.BaseUserRequest;
-import ru.tpu.russian.back.dto.user.ResetPasswordRequest;
-import ru.tpu.russian.back.dto.user.UserProfileResponse;
-import ru.tpu.russian.back.dto.user.UserTableRow;
-import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventCreateRequest;
-import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventResponse;
-import ru.tpu.russian.back.entity.CalendarEvent;
-import ru.tpu.russian.back.entity.CalendarEventTargets;
+import ru.tpu.russian.back.dto.auth.*;
+import ru.tpu.russian.back.dto.notification.*;
+import ru.tpu.russian.back.dto.user.*;
+import ru.tpu.russian.back.dto.user.calendarEvent.*;
 import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.entity.calendarEvent.*;
 import ru.tpu.russian.back.entity.dict.StudyGroup;
 import ru.tpu.russian.back.entity.notification.MailingToken;
-import ru.tpu.russian.back.entity.security.OAuthServiceUserInfoFactory;
-import ru.tpu.russian.back.entity.security.OAuthUserInfo;
-import ru.tpu.russian.back.enums.CalendarEventGroupTarget;
-import ru.tpu.russian.back.enums.ProviderType;
+import ru.tpu.russian.back.entity.security.*;
+import ru.tpu.russian.back.enums.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.mapper.UserMapper;
@@ -40,12 +24,8 @@ import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.persistence.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
@@ -73,8 +53,6 @@ public class UserService {
 
     private final MailService mailService;
 
-    private final CacheManager cacheManager;
-
     private final MailingTokenRepository mailingTokenRepository;
 
     private final UserMapper userMapper;
@@ -94,7 +72,6 @@ public class UserService {
             PasswordEncoder passwordEncoder,
             JwtProvider jwtProvider,
             MailService mailService,
-            CacheManager cacheManager,
             MailingTokenRepository mailingTokenRepository,
             LanguageRepository languageRepository,
             UserMapper userMapper,
@@ -104,7 +81,6 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.mailService = mailService;
-        this.cacheManager = cacheManager;
         this.mailingTokenRepository = mailingTokenRepository;
         this.userMapper = userMapper;
         this.languageRepository = languageRepository;
@@ -336,8 +312,6 @@ public class UserService {
                         .stream()
                         .map(it -> new CalendarEventTargets(event, entityManager.getReference(User.class, it)))
                         .collect(Collectors.toSet()));
-                break;
-            case ALL:
                 break;
         }
         if (request.isSendNotification()) {

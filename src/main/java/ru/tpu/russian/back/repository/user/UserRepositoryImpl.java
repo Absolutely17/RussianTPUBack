@@ -3,13 +3,11 @@ package ru.tpu.russian.back.repository.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.user.BaseUserRequest;
-import ru.tpu.russian.back.entity.CalendarEvent;
 import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.*;
+import java.util.*;
 
 @Slf4j
 public class UserRepositoryImpl implements IUserRepository {

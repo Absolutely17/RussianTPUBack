@@ -1,6 +1,7 @@
-package ru.tpu.russian.back.entity;
+package ru.tpu.russian.back.entity.calendarEvent;
 
 import lombok.NoArgsConstructor;
+import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.dict.StudyGroup;
 
 import javax.persistence.*;

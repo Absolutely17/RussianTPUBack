@@ -1,11 +1,10 @@
 package ru.tpu.russian.back.repository.user;
 
 import ru.tpu.russian.back.dto.user.BaseUserRequest;
-import ru.tpu.russian.back.entity.CalendarEvent;
 import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public interface IUserRepository {
 

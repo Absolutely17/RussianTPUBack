@@ -1,14 +1,11 @@
 package ru.tpu.russian.back.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.tpu.russian.back.dto.user.BaseUserRequest;
-import ru.tpu.russian.back.dto.user.UserProfileResponse;
-import ru.tpu.russian.back.dto.user.UserResponse;
-import ru.tpu.russian.back.dto.user.UserTableRow;
-import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventCreateRequest;
-import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventResponse;
-import ru.tpu.russian.back.entity.CalendarEvent;
+import ru.tpu.russian.back.dto.user.*;
+import ru.tpu.russian.back.dto.user.calendarEvent.*;
 import ru.tpu.russian.back.entity.User;
+import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
+import ru.tpu.russian.back.enums.UserGender;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 
@@ -65,7 +62,7 @@ public class UserMapper {
                 request.getFirstName(),
                 request.getLastName(),
                 request.getMiddleName(),
-                request.getGender(),
+                request.getGender() != null ? UserGender.valueOf(request.getGender()) : null,
                 request.getLanguageId(),
                 request.getPhoneNumber(),
                 request.getEmail(),

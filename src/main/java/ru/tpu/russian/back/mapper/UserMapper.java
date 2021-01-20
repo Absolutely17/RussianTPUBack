@@ -41,7 +41,7 @@ public class UserMapper {
 
     public UserTableRow convertToTableRow(User user) {
         String languageName = languageRepository.getById(user.getLanguage()).getShortName();
-        boolean activeFcmToken = mailingTokenRepository.isActiveByUserId(user.getId());
+        Boolean activeFcmToken = mailingTokenRepository.isActiveByUserId(user.getId());
         return new UserTableRow(
                 user.getId(),
                 user.getEmail(),
@@ -53,7 +53,7 @@ public class UserMapper {
                 user.getGroupName(),
                 user.getLanguage(),
                 languageName,
-                activeFcmToken
+                activeFcmToken != null && activeFcmToken
         );
     }
 

@@ -11,5 +11,5 @@ public interface MailingTokenRepository extends JpaRepository<MailingToken, Stri
     MailingToken getByUserId(String id);
 
     @Query("select isActive from MailingToken where userId = :userId")
-    boolean isActiveByUserId(@Param("userId") String userid);
+    Boolean isActiveByUserId(@Param("userId") String userid);
 }

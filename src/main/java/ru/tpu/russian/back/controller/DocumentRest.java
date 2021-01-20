@@ -25,6 +25,9 @@ public class DocumentRest {
         this.documentService = documentService;
     }
 
+    /**
+     * Получаем список всех прикрепленных документов к пользователю
+     */
     @RequestMapping(method = GET)
     public List<DocumentResponse> getDocumentsWithoutContent(
             @PathParam(value = "email") String email,
@@ -33,8 +36,11 @@ public class DocumentRest {
         return documentService.getDocumentWithoutContent(email, request);
     }
 
+    /**
+     * Скачаем определенный выбранный документ
+     */
     @RequestMapping(method = GET, path = "/download")
-    public void getDocumentWithContent(
+    public void downloadDocument(
             @PathParam(value = "id") String id,
             HttpServletResponse response
     ) throws BusinessException {

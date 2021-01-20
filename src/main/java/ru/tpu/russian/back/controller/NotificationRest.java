@@ -17,6 +17,9 @@ public class NotificationRest {
         this.notificationService = notificationService;
     }
 
+    /**
+     * Отправить уведомление группе по указанному параметру (может быть как язык, так и просто название группы отправки)
+     */
     @RequestMapping(method = POST, path = "/admin/group")
     public ResponseEntity<?> sendGroupNotification(
             @RequestBody NotificationRequestGroup requestDto
@@ -24,6 +27,9 @@ public class NotificationRest {
         return notificationService.sendOnGroup(requestDto);
     }
 
+    /**
+     * Отправить уведомление выбранным пользователям
+     */
     @RequestMapping(method = POST, path = "/admin/users")
     public ResponseEntity<?> sendNotificationOnUsers(
             @RequestBody NotificationRequestUsers requestDto

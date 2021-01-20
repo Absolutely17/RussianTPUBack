@@ -73,13 +73,13 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponseAndroid> getAll(String language, String email) throws BusinessException {
-        log.info("Getting all menu items. Language = {}", language);
-        return convertToDto(menuRepository.getAllByLevelAndLanguageOrderByPosition(1, language), email);
+        log.debug("Getting all menu items. Language = {}", language);
+        return mappingToDto(menuRepository.getAllByLevelAndLanguageOrderByPosition(1, language), email);
     }
 
-    private List<MenuResponseAndroid> convertToDto(List<Menu> menuItems, String email) throws BusinessException {
+    private List<MenuResponseAndroid> mappingToDto(List<Menu> menuItems, String email) throws BusinessException {
         if (menuItems.isEmpty()) {
-            log.warn("Could not find menu items.");
+            log.error("Could not find menu items.");
             throw new BusinessException("Exception.menuItem.notFound");
         }
         log.info("From DB received {} menu items", menuItems.size());

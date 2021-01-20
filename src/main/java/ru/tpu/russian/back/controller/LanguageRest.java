@@ -20,6 +20,9 @@ public class LanguageRest {
         this.languageService = languageService;
     }
 
+    /**
+     * Получаем все текущие языки в системе
+     */
     @RequestMapping(method = GET)
     public List<LanguageResponse> getAllLanguage() {
         return languageService.getAllLanguage();

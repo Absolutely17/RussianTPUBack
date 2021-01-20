@@ -20,6 +20,9 @@ public class MailRest {
         this.mailService = mailService;
     }
 
+    /**
+     * Подтвердить учетную запись. Приходим при переходе из письма подтверждения.
+     */
     @RequestMapping(method = GET, path = "/confirmation")
     public void confirmEmail(
             @RequestParam("token") String token,
@@ -28,6 +31,9 @@ public class MailRest {
         mailService.confirmRegistration(token, response);
     }
 
+    /**
+     * Повторно отправить письмо с подтверждением
+     */
     @RequestMapping(method = POST, path = "/send")
     public void reSendEmail(
             @RequestParam("email") String email

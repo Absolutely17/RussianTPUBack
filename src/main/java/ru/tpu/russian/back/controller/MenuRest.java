@@ -23,6 +23,9 @@ public class MenuRest {
         this.menuService = menuService;
     }
 
+    /**
+     * Получить все пункты меню для мобильного приложения
+     */
     @RequestMapping(method = GET)
     public List<MenuResponseAndroid> getMenu(
             @RequestParam String language,

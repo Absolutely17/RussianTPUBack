@@ -19,6 +19,9 @@ public class MediaRest {
         this.mediaService = mediaService;
     }
 
+    /**
+     * Получаем изображение по его ID. Здесь же мы обновляем дату последнего обращения к изображению.
+     */
     @RequestMapping(method = GET, path = "/img/{id}")
     public byte[] getImage(
             @PathVariable String id

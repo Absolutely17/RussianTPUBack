@@ -20,7 +20,7 @@ public class OAuthServiceUserInfoFactory {
             case "vk":
                 return VKUserInfo.create(token, userId, email);
             default:
-                log.error("This provider is not supported.");
+                log.error("This provider {} is not supported.", provider);
                 throw new BusinessException("Exception.login.service.notSupported");
         }
     }

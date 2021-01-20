@@ -24,6 +24,9 @@ public class TokenRest {
         this.tokenService = tokenService;
     }
 
+    /**
+     * Обновляем токены. Приходим если пользователь имеет refreshToken
+     */
     @RequestMapping(method = PUT)
     public AuthResponse refreshToken(
             HttpServletRequest servletRequest
@@ -31,6 +34,9 @@ public class TokenRest {
         return tokenService.refreshToken(servletRequest);
     }
 
+    /**
+     * Получить текущий статус аутентификации пользователя.
+     */
     @RequestMapping(method = GET, path = "/status")
     public ResponseEntity<?> getStatusAuthUser(
             @RequestParam("token") String token,

@@ -23,6 +23,9 @@ public class AuthRest {
         this.userService = userService;
     }
 
+    /**
+     * Локальная регистрация, путем ввода email и пароля
+     */
     @RequestMapping(method = POST, path = "/local/registration")
     public void register(
             @Valid @RequestBody BaseUserRequest registrationRequestDto
@@ -30,15 +33,19 @@ public class AuthRest {
         userService.register(registrationRequestDto);
     }
 
+    /**
+     * Вход по email и паролю
+     */
     @RequestMapping(method = POST, path = "/local/login")
     public AuthResponse login(
             @Valid @RequestBody AuthRequest authRequest
     ) throws BusinessException {
-
         return userService.login(authRequest);
     }
 
-
+    /**
+     * Вход с использование сервисов
+     */
     @RequestMapping(method = POST, path = "/provider/login")
     public ResponseEntity<?> loginWithService(
             @RequestBody AuthWithServiceRequest authServiceRequest
@@ -46,14 +53,20 @@ public class AuthRest {
         return userService.loginWithService(authServiceRequest);
     }
 
-
+    /**
+     * Дорегистрация с использованием сервисов. Используется для дозаполнения недостающих полей.
+     * Сюда приходим после предыдущего РЕСТа
+     */
     @RequestMapping(method = POST, path = "/provider/registration")
-    public void registerNewUserWithService(
+    public void registerWithService(
             @Valid @RequestBody BaseUserRequest registrationRequest
     ) throws BusinessException {
         userService.registerWithService(registrationRequest);
     }
 
+    /**
+     * Посылает запрос на восстановление пароля
+     */
     @RequestMapping(method = POST, path = "/password/reset/request")
     public void resetPasswordRequest(
             @RequestParam("email") String email
@@ -61,6 +74,9 @@ public class AuthRest {
         userService.resetPasswordRequest(email);
     }
 
+    /**
+     * Восстанавливаем пароль (приходим из админки, там есть страница, куда приходит пользователь по ссылке из письма)
+     */
     @RequestMapping(method = POST, path = "/password/reset")
     public void resetPassword(
             @Valid @RequestBody ResetPasswordRequest resetDto
@@ -68,6 +84,9 @@ public class AuthRest {
         userService.resetPassword(resetDto);
     }
 
+    /**
+     * Сохраняем FCM токен пользователя. Нужен для персональной отправки уведомления.
+     */
     @RequestMapping(method = POST, path = "/fcmToken/save")
     public void saveFcmUserToken(
             @RequestBody NotificationTokenRequest requestDto
@@ -75,6 +94,10 @@ public class AuthRest {
         userService.saveFcmUserToken(requestDto);
     }
 
+    /**
+     * Отключаем активность FCM токена. Дергаем РЕСТ при выходе пользователя в мобильном приложении.
+     * Неактивному FCM токену уведомления не отправятся.
+     */
     @RequestMapping(method = POST, path = "/fcmToken/disable")
     public void disableFcmUserToken(
             @RequestParam("email") String email

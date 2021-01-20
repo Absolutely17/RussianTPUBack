@@ -21,21 +21,34 @@ public class StudyGroupRest {
         this.studyGroupService = studyGroupService;
     }
 
+    /**
+     * Получение всех учебных групп в системе
+     */
     @RequestMapping(method = GET)
     public List<StudyGroup> getAllGroups() {
         return studyGroupService.getAllStudyGroups();
     }
 
+    /**
+     * Получение определенной учебной группы по её ID
+     */
     @RequestMapping(method = GET, path = "/{id}")
     public StudyGroup getById(@PathVariable String id) {
         return studyGroupService.getById(id);
     }
 
+    /**
+     * Изменение параметров группы
+     */
     @RequestMapping(method = PUT, path = "/{id}")
-    public void editGroup(@PathVariable String id, @RequestBody StudyGroupCreateRequest editDto) throws BusinessException {
+    public void editGroup(@PathVariable String id, @RequestBody StudyGroupCreateRequest editDto)
+            throws BusinessException {
         studyGroupService.editById(id, editDto);
     }
 
+    /**
+     * Создание новой группы
+     */
     @RequestMapping(method = POST, path = "/admin/create")
     public void createGroup(@RequestBody StudyGroupCreateRequest createDto) {
         studyGroupService.create(createDto);

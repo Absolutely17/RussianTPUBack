@@ -51,7 +51,7 @@ public class TokenService {
     }
 
     public boolean checkAuth(String token, String email) {
-        log.info("Checking user on authenticated.");
+        log.debug("Checking user on authenticated.");
         if (token != null && jwtProvider.validateToken(token)) {
             log.debug("Compare email in request with email in token.");
             String emailInToken = jwtProvider.getEmailFromToken(token);

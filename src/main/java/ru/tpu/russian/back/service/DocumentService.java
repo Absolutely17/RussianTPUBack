@@ -42,7 +42,7 @@ public class DocumentService {
 
     public List<DocumentResponse> getDocumentWithoutContent(String email, HttpServletRequest request)
             throws BusinessException {
-        log.info("Getting document by user {}", email);
+        log.debug("Getting document by user {}", email);
         String token = jwtProvider.getTokenFromRequest(request);
         if (token != null && jwtProvider.validateToken(token)) {
             String emailInToken = jwtProvider.getEmailFromToken(token);

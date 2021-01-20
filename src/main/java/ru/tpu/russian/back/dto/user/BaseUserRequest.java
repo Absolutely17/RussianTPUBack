@@ -49,7 +49,6 @@ public class BaseUserRequest {
     @Pattern(regexp = "^[+]\\d+$")
     private String phoneNumber;
 
-    @Nullable
     private ProviderType provider = ProviderType.valueOf("local");
 
     @Nullable

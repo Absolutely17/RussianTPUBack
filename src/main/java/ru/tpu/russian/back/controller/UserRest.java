@@ -3,18 +3,14 @@ package ru.tpu.russian.back.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.SimpleNameObj;
-import ru.tpu.russian.back.dto.user.BaseUserRequest;
-import ru.tpu.russian.back.dto.user.UserProfileResponse;
-import ru.tpu.russian.back.dto.user.UserTableRow;
-import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventCreateRequest;
-import ru.tpu.russian.back.dto.user.calendarEvent.CalendarEventResponse;
+import ru.tpu.russian.back.dto.user.*;
+import ru.tpu.russian.back.dto.user.calendarEvent.*;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.UserService;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -29,6 +25,9 @@ public class UserRest {
         this.userService = userService;
     }
 
+    /**
+     * Изменение настроек пользователя
+     */
     @RequestMapping(method = PUT, path = "/edit")
     public void editUserInfo(
             @Valid @RequestBody BaseUserRequest requestDto
@@ -36,6 +35,9 @@ public class UserRest {
         userService.editUser(requestDto);
     }
 
+    /**
+     * Получить текущий профиль пользователя
+     */
     @RequestMapping(method = GET, path = "/profile")
     public UserProfileResponse getUserProfile(
             @PathParam(value = "email") String email
@@ -43,6 +45,9 @@ public class UserRest {
         return userService.getUserProfile(email);
     }
 
+    /**
+     * Получить события в календаре для пользователя
+     */
     @RequestMapping(method = GET, path = "/calendarEvents")
     public List<CalendarEventResponse> getCalendarEventsForUser(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token
@@ -63,6 +68,9 @@ public class UserRest {
         return userService.getDictsTable();
     }
 
+    /**
+     * Создаем событие в календаре пользователя
+     */
     @RequestMapping(method = POST, path = "/admin/calendarEvent")
     public void createCalendarEvent(
             @RequestBody CalendarEventCreateRequest request,

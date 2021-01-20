@@ -102,6 +102,9 @@ public class ArticleService {
         return articleRepository.findById(id).map(articleMapper::convertToFullArticle).orElse(null);
     }
 
+    /**
+     * Получить дополнительные материалы для таблицы статей
+     */
     public Map<String, List<SimpleNameObj>> getDictsForTable() {
         Map<String, List<SimpleNameObj>> dicts = new HashMap<>();
         List<SimpleNameObj> languages = languageRepository.findAll()
@@ -112,10 +115,18 @@ public class ArticleService {
         return dicts;
     }
 
+    /**
+     * Создание новой статьи
+     *
+     * @return ID новой статьи
+     */
     public String create(ArticleCreateRequest createDto) {
         return articleRepository.create(createDto);
     }
 
+    /**
+     * Обновляем имеющуюся статью
+     */
     public void update(ArticleCreateRequest updateDto, String id) {
         articleRepository.update(updateDto, id);
     }

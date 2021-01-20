@@ -73,6 +73,6 @@ public class CustomExceptionHandler {
                     new Locale("en")
             );
         }
-        return new ResponseEntity<>(new ExceptionMessage(errorMessage), INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ExceptionMessage(errorMessage, ex.getMessage()), INTERNAL_SERVER_ERROR);
     }
 }

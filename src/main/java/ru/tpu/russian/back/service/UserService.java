@@ -110,7 +110,7 @@ public class UserService {
         log.debug("Check email address for availability in the database.");
         Optional<User> userOptional = userRepository.getUserByEmail(email);
         if (userOptional.isPresent()) {
-            log.warn("This email address already taken.");
+            log.error("This email address {} already taken.", email);
             throw new BusinessException("Exception.registration.email.exist", email);
         }
     }
@@ -120,7 +120,7 @@ public class UserService {
         User user = findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
         String token = jwtProvider.generateAccessToken(user.getEmail());
         if (authRequest.isRememberMe()) {
-            log.debug("Option rememberMe selected.");
+            log.debug("Option rememberMe selected. Generating refresh token.");
             String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
             return new AuthResponse(token, refreshToken, userMapper.convertToResponse(user));
         }
@@ -133,10 +133,10 @@ public class UserService {
         if (user != null) {
             log.debug("User founded. Compare password.");
             if (passwordEncoder.matches(password, user.getPassword())) {
-                log.info("The passwords matched. Email {}", email);
+                log.debug("The passwords matched. Email {}", email);
                 return user;
             } else {
-                log.warn("Password mismatch");
+                log.error("Password mismatch");
                 throw new BusinessException("Exception.login.password.mismatch");
             }
         } else {
@@ -170,8 +170,10 @@ public class UserService {
                 if (ProviderType.local.equals(user.getProvider())) {
                     throw new BusinessException("Exception.login.conflict.providerAndLocal", authRequest.getProvider());
                 } else {
-                    throw new BusinessException("Exception.login.service.wrongService",
-                            authRequest.getProvider(), user.getProvider());
+                    throw new BusinessException(
+                            "Exception.login.service.wrongService",
+                            authRequest.getProvider(), user.getProvider()
+                    );
                 }
             }
             String token = jwtProvider.generateAccessToken(user.getEmail());
@@ -181,7 +183,12 @@ public class UserService {
                     response, HttpStatus.OK
             );
         } else {
-            log.info("This user does not exist in the database. Need register.");
+            log.info("This user does not exist in the database. Registering.");
+
+            /**
+             * Отправляем обратно мобильному приложению данные пользователя (здесь уже есть те, что мы смогли вытащить из API соц.сети)
+             * Пользователю необходимо дозаполнить
+             */
             return ResponseEntity.status(HTTP_STATUS_REG_NEED_FILL)
                     .headers(new HttpHeaders())
                     .contentType(MediaType.APPLICATION_JSON)
@@ -190,8 +197,7 @@ public class UserService {
     }
 
     public void registerWithService(BaseUserRequest registrationRequest) throws BusinessException {
-        log.info("Register new user through service. User {}", registrationRequest.toString());
-        log.debug("Convert to entity User.");
+        log.info("Register new user through service. {}", registrationRequest.toString());
         checkEmailOnExist(registrationRequest.getEmail());
         User user = userMapper.convertToUserFromRegistrationRequest(registrationRequest);
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
@@ -202,7 +208,6 @@ public class UserService {
 
     public void editUser(BaseUserRequest requestDto) throws BusinessException {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
-        User userToEdit = findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
         if (requestDto.getNewPassword() != null) {
             requestDto.setNewPassword(passwordEncoder.encode(requestDto.getNewPassword()));
         }
@@ -268,7 +273,11 @@ public class UserService {
         log.debug("Disabling user FCM token availability, email {}", email);
         String userId = userRepository.getUserIdByEmail(email);
         MailingToken token = entityManager.find(MailingToken.class, userId);
-        token.setActive(false);
+        if (token != null) {
+            token.setActive(false);
+        } else {
+            log.warn("Trying to deactivate token which doesn't exist, email {}", email);
+        }
     }
 
     public List<UserTableRow> getUsersTable() {
@@ -288,7 +297,7 @@ public class UserService {
     }
 
     public AuthResponse webLogin(AuthRequest authRequest) throws BusinessException {
-        log.info("Login in web-admin with email {}", authRequest.getEmail());
+        log.debug("Login in web-admin with email {}", authRequest.getEmail());
         User user = findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
         if (!ROLE_ADMIN.equals(user.getRole())) {
             throw new BusinessException("Недостаточно прав. Обратитесь к администратору.");
@@ -341,11 +350,12 @@ public class UserService {
         NotificationBaseRequest requestNotification;
         switch (target) {
             case ALL:
-                requestNotification = new NotificationRequestGroup(groupAllUsers);
+                requestNotification = new NotificationRequestGroup();
+                ((NotificationRequestGroup)requestNotification).setTargetGroupName(groupAllUsers);
                 break;
             case STUDY_GROUP:
                 requestNotification = new NotificationRequestUsers();
-                ((NotificationRequestUsers) requestNotification).setUsers(request.getGroups()
+                ((NotificationRequestUsers)requestNotification).setUsers(request.getGroups()
                         .stream()
                         .map(userRepository::getUsersByGroupId)
                         .collect(Collectors.toList())
@@ -377,8 +387,7 @@ public class UserService {
                     .map(userMapper::convertCalendarEventToResponse)
                     .collect(Collectors.toList());
         } else {
-            // todo exception
+            throw new IllegalArgumentException("Email in token is empty.");
         }
-        return null;
     }
 }

@@ -2,11 +2,9 @@ package ru.tpu.russian.back.repository.notification;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.dto.notification.NotificationRequestGroup;
-import ru.tpu.russian.back.dto.notification.NotificationRequestUsers;
+import ru.tpu.russian.back.dto.notification.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 
 @Repository
 public class NotificationRepositoryImpl implements INotificationRepository {
@@ -27,7 +25,7 @@ public class NotificationRepositoryImpl implements INotificationRepository {
                 .setParameter("message", request.getMessage())
                 .setParameter("status", status)
                 .setParameter("adminEmail", request.getAdminEmail())
-                .setParameter("language", request.getTargetParameter())
+                .setParameter("language", request.getTargetGroupName())
                 .executeUpdate();
     }
 

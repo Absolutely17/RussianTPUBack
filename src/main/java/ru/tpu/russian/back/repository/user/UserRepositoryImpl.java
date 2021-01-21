@@ -43,7 +43,7 @@ public class UserRepositoryImpl implements IUserRepository {
                 .setParameter("lastName", user.getLastName())
                 .setParameter("role", user.getRole())
                 .setParameter("password", user.getPassword())
-                .setParameter("sex", user.getGender())
+                .setParameter("sex", user.getGender() == null ? null : user.getGender().toString())
                 .setParameter("languageId", user.getLanguage())
                 .setParameter("provider", user.getProvider().toString())
                 .setParameter("confirmed", user.isConfirm())

@@ -20,12 +20,13 @@ public class NotificationRepositoryImpl implements INotificationRepository {
     @Transactional
     public void createGroupNotification(NotificationRequestGroup request, String status) {
         em.createNativeQuery("exec " + CREATE_GROUP_NOTIFICATION +
-                " :title, :message, :status, :adminEmail, :language")
+                " :title, :message, :status, :adminEmail, :language, :targetGroup")
                 .setParameter("title", request.getTitle())
                 .setParameter("message", request.getMessage())
                 .setParameter("status", status)
                 .setParameter("adminEmail", request.getAdminEmail())
                 .setParameter("language", request.getTargetGroupName())
+                .setParameter("targetGroup", request.getTargetGroupName())
                 .executeUpdate();
     }
 

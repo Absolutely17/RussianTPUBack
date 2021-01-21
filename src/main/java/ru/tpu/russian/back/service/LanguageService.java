@@ -14,6 +14,8 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class LanguageService {
 
+    private static final String RU_SHORT_NAME = "ru";
+
     private final LanguageRepository languageRepository;
 
     private final UserRepository userRepository;
@@ -33,6 +35,10 @@ public class LanguageService {
     public List<LanguageResponse> getAllLanguage() {
         return languageRepository.findAll()
                 .stream()
+                .sorted((s1, s2) -> RU_SHORT_NAME.equals(s1.getShortName())
+                        ? -1
+                        : RU_SHORT_NAME.equals(s2.getShortName()) ? 1 : 0
+                )
                 .map(languageMapper::convertToResponseForAndroid)
                 .collect(toList());
     }

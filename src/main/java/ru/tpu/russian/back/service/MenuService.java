@@ -111,18 +111,29 @@ public class MenuService {
         if (userGroupId.isPresent()) {
             Calendar cal = getInstance();
             Date studyStartDate = utilsRepository.getStudyStartDate();
-            if (studyStartDate != null) {
-                cal.setTime(studyStartDate);
-            } else {
+            if (studyStartDate == null) {
                 return SCHEDULE_URL_TPU;
             }
-            int weekStartStudy = cal.get(WEEK_OF_YEAR);
-            cal.setTime(new Date());
-            int weekCurrent = cal.get(WEEK_OF_YEAR);
+            int currentWeek = calculateWeekBetweenDates(studyStartDate, cal) + 1;
             return SCHEDULE_URL_TPU + "/gruppa_" + userGroupId.get() + "/" + cal.get(YEAR) + "/"
-                    + (weekCurrent - weekStartStudy + 1) + "/view.html";
+                    + currentWeek + "/view.html";
         } else {
             return SCHEDULE_URL_TPU;
+        }
+    }
+
+    private int calculateWeekBetweenDates(Date studyStartDate, Calendar calendar) {
+        calendar.setTime(studyStartDate);
+        int startWeek = calendar.get(WEEK_OF_YEAR);
+        int startYear = calendar.get(YEAR);
+        calendar.setTime(new Date());
+        int currentWeek = calendar.get(WEEK_OF_YEAR);
+        int currentYear = calendar.get(YEAR);
+        if (currentYear == startYear) {
+            return currentWeek - startWeek;
+        } else {
+            calendar.set(startYear, DECEMBER, 31);
+            return calendar.get(WEEK_OF_YEAR) - startWeek + currentWeek;
         }
     }
 

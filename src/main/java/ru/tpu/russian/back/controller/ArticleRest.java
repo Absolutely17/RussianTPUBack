@@ -60,4 +60,11 @@ public class ArticleRest {
     public void update(@RequestBody ArticleCreateRequest updateDto, @PathVariable String id) {
         articleService.update(updateDto, id);
     }
+
+    @RequestMapping(method = DELETE, path = "/admin/{id}")
+    public void delete(
+            @PathVariable String id
+    ) {
+        articleService.delete(id);
+    }
 }

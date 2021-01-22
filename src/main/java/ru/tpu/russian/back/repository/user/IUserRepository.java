@@ -54,4 +54,9 @@ public interface IUserRepository {
      * Получить события, отображаемые в календаре для пользователя
      */
     List<CalendarEvent> getCalendarEventsByEmail(String email);
+
+    /**
+     * Удалить пользователя из системы.
+     */
+    void deleteUserById(String id);
 }

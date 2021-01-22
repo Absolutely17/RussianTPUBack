@@ -30,6 +30,8 @@ public class UserRepositoryImpl implements IUserRepository {
 
     private static final String GET_CALENDAR_EVENTS_BY_EMAIL = "GetCalendarEventsByEmail";
 
+    private static final String DELETE_USER_BY_ID = "DeleteUser";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -129,5 +131,13 @@ public class UserRepositoryImpl implements IUserRepository {
         return em.createNativeQuery("exec " + GET_CALENDAR_EVENTS_BY_EMAIL + " :email", CalendarEvent.class)
                 .setParameter("email", email)
                 .getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteUserById(String id) {
+        em.createNativeQuery("exec " + DELETE_USER_BY_ID + " :id")
+                .setParameter("id", id)
+                .executeUpdate();
     }
 }

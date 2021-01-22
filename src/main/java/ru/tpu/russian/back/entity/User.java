@@ -1,12 +1,11 @@
 package ru.tpu.russian.back.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.lang.Nullable;
-import ru.tpu.russian.back.enums.ProviderType;
-import ru.tpu.russian.back.enums.UserGender;
+import ru.tpu.russian.back.enums.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 import static java.util.Objects.requireNonNull;
 
@@ -66,6 +65,9 @@ public class User {
     @Nullable
     @Column(name = "GROUP_NAME")
     private String groupName;
+
+    @Column(name = "LOAD_DATE")
+    private Date loadDate;
 
     public User(
             String firstName, @Nullable String lastName,

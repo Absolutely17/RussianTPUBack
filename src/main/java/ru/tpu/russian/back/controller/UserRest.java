@@ -78,4 +78,14 @@ public class UserRest {
     ) {
         userService.createCalendarEvent(request, token);
     }
+
+    /**
+     * Удаляем пользователя
+     */
+    @RequestMapping(method = DELETE, path = "/admin/{id}")
+    public void deleteUser(
+            @PathVariable String id
+    ) {
+        userService.deleteUser(id);
+    }
 }

@@ -130,4 +130,11 @@ public class ArticleService {
     public void update(ArticleCreateRequest updateDto, String id) {
         articleRepository.update(updateDto, id);
     }
+
+    /**
+     * Удаление статьи
+     */
+    public void delete(String id) {
+        articleRepository.deleteById(id);
+    }
 }

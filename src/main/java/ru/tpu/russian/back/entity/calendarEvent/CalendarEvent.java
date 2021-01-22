@@ -36,16 +36,23 @@ public class CalendarEvent {
     @Column(name = "SEND_NOTIFICATION")
     private boolean sendNotification;
 
+    @Column(name = "LOAD_DATE")
+    private Date loadDate;
+
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CalendarEventTargets> targets = new HashSet<>();
 
-    public CalendarEvent(String id, String title, String description, String timestamp, CalendarEventGroupTarget targetEnum, boolean sendNotification) {
+    public CalendarEvent(
+            String id, String title, String description, String timestamp, CalendarEventGroupTarget targetEnum,
+            boolean sendNotification
+    ) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.timestamp = timestamp;
         this.targetEnum = targetEnum;
         this.sendNotification = sendNotification;
+        loadDate = new Date();
     }
 
     public void addNewTargets(Set<CalendarEventTargets> newTargets) {

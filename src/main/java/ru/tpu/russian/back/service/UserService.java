@@ -390,4 +390,8 @@ public class UserService {
             throw new IllegalArgumentException("Email in token is empty.");
         }
     }
+
+    public void deleteUser(String id) {
+        userRepository.deleteUserById(id);
+    }
 }

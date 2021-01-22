@@ -392,6 +392,7 @@ public class UserService {
     }
 
     public void deleteUser(String id) {
+        log.info("Delete user with ID = {}", id);
         userRepository.deleteUserById(id);
     }
 }

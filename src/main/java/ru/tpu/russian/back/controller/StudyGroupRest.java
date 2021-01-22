@@ -53,4 +53,12 @@ public class StudyGroupRest {
     public void createGroup(@RequestBody StudyGroupCreateRequest createDto) {
         studyGroupService.create(createDto);
     }
+
+    /**
+     * Удаление учебной группы
+     */
+    @RequestMapping(method = DELETE, path = "/admin/{id}")
+    public void deleteGroup(@PathVariable String id) {
+        studyGroupService.delete(id);
+    }
 }

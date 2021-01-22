@@ -34,7 +34,7 @@ public class NotificationRepositoryImpl implements INotificationRepository {
     @Transactional
     public void createUsersNotification(NotificationRequestUsers request, String status) {
         em.createNativeQuery("exec " + CREATE_USER_NOTIFICATION +
-                " :title, :message, :status, :adminEmail, :users")
+                " :users, :title, :message, :adminEmail, :status")
                 .setParameter("title", request.getTitle())
                 .setParameter("message", request.getMessage())
                 .setParameter("status", status)

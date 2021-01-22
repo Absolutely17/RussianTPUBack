@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.studyGroup.StudyGroupCreateRequest;
 import ru.tpu.russian.back.entity.dict.StudyGroup;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class StudyGroupService {
 
     private final StudyGroupRepository studyGroupRepository;
@@ -41,5 +43,10 @@ public class StudyGroupService {
         group.setName(editDto.getName());
         group.setInternalID(editDto.getInternalID());
         studyGroupRepository.save(group);
+    }
+
+    public void delete(String id) {
+        log.info("Delete StudyGroup with ID = {}", id);
+        studyGroupRepository.deleteById(id);
     }
 }

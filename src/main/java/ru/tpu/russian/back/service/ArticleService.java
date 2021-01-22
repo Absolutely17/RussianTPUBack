@@ -135,6 +135,7 @@ public class ArticleService {
      * Удаление статьи
      */
     public void delete(String id) {
+        log.info("Delete article with ID = {}", id);
         articleRepository.deleteById(id);
     }
 }

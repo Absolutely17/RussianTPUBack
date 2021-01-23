@@ -15,7 +15,6 @@ import java.time.*;
 import java.util.Date;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS512;
-import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
@@ -51,7 +50,6 @@ public class JwtProvider {
                 .setExpiration(date.toDate())
                 .signWith(HS512, jwtSecret)
                 .compact();
-        userRepository.addResetToken(email, sha1Hex(token));
         return token;
     }
 

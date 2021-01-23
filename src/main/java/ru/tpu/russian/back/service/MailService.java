@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 
+import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
 import static ru.tpu.russian.back.service.MailService.TypeMessages.CONFIRMATION_MESSAGE;
 import static ru.tpu.russian.back.service.MailService.TypeMessages.RESET_PASSWORD_MESSAGE;
 
@@ -119,6 +120,7 @@ public class MailService {
     private MimeMessage createResetPasswordMessage(Locale currentLocale, String email) {
         Map<String, Object> model = new LinkedHashMap<>();
         String token = jwtProvider.generateResetPasswordToken(email);
+        userRepository.addResetToken(email, sha1Hex(token));
         model.put("token", token);
         MimeMessage message = sender.createMimeMessage();
         try {

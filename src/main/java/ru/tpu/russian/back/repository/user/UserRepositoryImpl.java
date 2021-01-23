@@ -121,7 +121,7 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     @Transactional
     public void addResetToken(String email, String token) {
-        em.createNativeQuery("exec " + ADD_RESET_PASSWORD_TOKEN + ":email, :token")
+        em.createNativeQuery("exec " + ADD_RESET_PASSWORD_TOKEN + " :email, :token")
                 .setParameter("email", email)
                 .setParameter("token", token)
                 .executeUpdate();

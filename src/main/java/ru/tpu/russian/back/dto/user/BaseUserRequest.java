@@ -35,7 +35,6 @@ public class BaseUserRequest {
     private String languageId;
 
     @Nullable
-    @Size(min = 5, max = 20)
     @Pattern(regexp = "^[+]\\d+$")
     private String phoneNumber;
 

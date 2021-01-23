@@ -75,6 +75,9 @@ public class ArticleService {
     @Transactional
     public ArticleResponse getArticle(String id) throws BusinessException {
         log.info("Get article. ID article = {}", id);
+        if (id == null) {
+            throw new BusinessException("Exception.article.notFound");
+        }
         Optional<Article> article = articleRepository.getById(id);
         if (article.isPresent()) {
             Integer countViews = article.get().getCountView();

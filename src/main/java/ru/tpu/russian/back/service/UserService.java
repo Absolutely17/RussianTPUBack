@@ -428,7 +428,14 @@ public class UserService {
      */
     public void editUserFromAdminPanel(String id, UserProfileEditRequest request) {
         log.info("Edit user ID {} from admin-panel. {}", id, request.toString());
-        checkEmailExistForAdminPanel(request.getEmail());
-        userRepository.editUserByAdmin(id, request);
+        User targetUser = userRepository.findById(id).orElse(null);
+        if (targetUser != null) {
+            if (!targetUser.getEmail().equals(request.getEmail())) {
+                checkEmailExistForAdminPanel(request.getEmail());
+            }
+            userRepository.editUserByAdmin(id, request);
+        } else {
+            throw new BusinessException("Редактируемый пользователь не найден");
+        }
     }
 }

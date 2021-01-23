@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.repository.user;
 
-import ru.tpu.russian.back.dto.user.BaseUserRequest;
+import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 
@@ -11,7 +11,7 @@ public interface IUserRepository {
     /**
      * Добавляем нового пользователя
      */
-    void saveUser(User user);
+    void saveUser(UserRegisterRequest user);
 
     /**
      * Редактируем секрет для рефреш токена у пользователя
@@ -25,15 +25,13 @@ public interface IUserRepository {
 
     /**
      * Меняем статус подтверждения аккаунта
-     *
-     * @return
      */
     int editRegisteredStatus(String email, boolean status);
 
     /**
      * Изменяем данные пользователя
      */
-    void editUser(BaseUserRequest requestDto);
+    void editUser(UserProfileEditRequest requestDto);
 
     /**
      * Сбрасываем и устанавливаем новый пароль
@@ -59,4 +57,9 @@ public interface IUserRepository {
      * Удалить пользователя из системы.
      */
     void deleteUserById(String id);
+
+    /**
+     * Редактирование пользователя из админки
+     */
+    void editUserByAdmin(String id, UserProfileEditRequest request);
 }

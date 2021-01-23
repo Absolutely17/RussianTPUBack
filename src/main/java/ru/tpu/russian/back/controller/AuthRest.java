@@ -28,7 +28,7 @@ public class AuthRest {
      */
     @RequestMapping(method = POST, path = "/local/registration")
     public void register(
-            @Valid @RequestBody BaseUserRequest registrationRequestDto
+            @Valid @RequestBody UserRegisterRequest registrationRequestDto
     ) throws BusinessException {
         userService.register(registrationRequestDto);
     }
@@ -59,7 +59,7 @@ public class AuthRest {
      */
     @RequestMapping(method = POST, path = "/provider/registration")
     public void registerWithService(
-            @Valid @RequestBody BaseUserRequest registrationRequest
+            @Valid @RequestBody UserRegisterRequest registrationRequest
     ) throws BusinessException {
         userService.registerWithService(registrationRequest);
     }

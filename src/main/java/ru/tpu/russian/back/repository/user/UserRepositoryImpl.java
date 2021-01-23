@@ -2,7 +2,7 @@ package ru.tpu.russian.back.repository.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tpu.russian.back.dto.user.BaseUserRequest;
+import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 
@@ -32,25 +32,27 @@ public class UserRepositoryImpl implements IUserRepository {
 
     private static final String DELETE_USER_BY_ID = "DeleteUser";
 
+    private static final String EDIT_USER_BY_ADMIN = "EditUserByAdmin";
+
     @PersistenceContext
     private EntityManager em;
 
     @Override
     @Transactional
-    public void saveUser(User user) {
+    public void saveUser(UserRegisterRequest user) {
         em.createNativeQuery("exec " + ADD_USER + " :firstName, :middleName, :lastName" +
-                ", :role, :password, :sex, :languageId, :provider, :confirmed, :groupName, :email, :phoneNumber")
+                ", :role, :password, :sex, :languageId, :provider, :groupName, :email, :confirmed, :phoneNumber")
                 .setParameter("firstName", user.getFirstName())
                 .setParameter("middleName", user.getMiddleName())
                 .setParameter("lastName", user.getLastName())
-                .setParameter("role", user.getRole())
+                .setParameter("role", "ROLE_USER")
                 .setParameter("password", user.getPassword())
-                .setParameter("sex", user.getGender() == null ? null : user.getGender().toString())
-                .setParameter("languageId", user.getLanguage())
+                .setParameter("sex", user.getGender())
+                .setParameter("languageId", user.getLanguageId())
                 .setParameter("provider", user.getProvider().toString())
-                .setParameter("confirmed", user.isConfirm())
                 .setParameter("groupName", user.getGroupName())
                 .setParameter("email", user.getEmail())
+                .setParameter("confirmed", false)
                 .setParameter("phoneNumber", user.getPhoneNumber())
                 .executeUpdate();
     }
@@ -83,7 +85,7 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     @Transactional
-    public void editUser(BaseUserRequest requestDto) {
+    public void editUser(UserProfileEditRequest requestDto) {
         em.createNativeQuery("exec " + EDIT_USER + " :firstName, :middleName, :lastName" +
                 ", :password, :sex, :languageId, :groupName, :email, :phoneNumber")
                 .setParameter("firstName", requestDto.getFirstName())
@@ -134,10 +136,28 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteUserById(String id) {
         em.createNativeQuery("exec " + DELETE_USER_BY_ID + " :id")
                 .setParameter("id", id)
+                .executeUpdate();
+    }
+
+    @Transactional
+    @Override
+    public void editUserByAdmin(String id, UserProfileEditRequest request) {
+        em.createNativeQuery("exec " + EDIT_USER_BY_ADMIN + " :id, :firstName, :middleName, :lastName" +
+                ", :password, :sex, :languageId, :groupName, :email, :phoneNumber")
+                .setParameter("id", id)
+                .setParameter("firstName", request.getFirstName())
+                .setParameter("middleName", request.getMiddleName())
+                .setParameter("lastName", request.getLastName())
+                .setParameter("password", request.getNewPassword())
+                .setParameter("sex", request.getGender())
+                .setParameter("languageId", request.getLanguageId())
+                .setParameter("groupName", request.getGroupName())
+                .setParameter("email", request.getEmail())
+                .setParameter("phoneNumber", request.getPhoneNumber())
                 .executeUpdate();
     }
 }

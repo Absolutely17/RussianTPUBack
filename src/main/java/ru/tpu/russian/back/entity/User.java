@@ -7,8 +7,6 @@ import ru.tpu.russian.back.enums.*;
 import javax.persistence.*;
 import java.util.Date;
 
-import static java.util.Objects.requireNonNull;
-
 @Entity
 @Getter
 @NoArgsConstructor
@@ -69,29 +67,7 @@ public class User {
     @Column(name = "LOAD_DATE")
     private Date loadDate;
 
-    public User(
-            String firstName, @Nullable String lastName,
-            @Nullable String middleName, @Nullable UserGender gender,
-            String language, @Nullable String phoneNumber,
-            String email, ProviderType provider, @Nullable String groupName
-    ) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.middleName = middleName;
-        this.gender = gender;
-        this.language = language;
-        this.phoneNumber = phoneNumber;
-        this.email = requireNonNull(email, "Email must be filled");
-        this.provider = provider;
-        this.groupName = groupName;
-        role = "ROLE_USER";
-    }
-
     public void setPassword(String encodePassword) {
         password = encodePassword;
-    }
-
-    public void setConfirm(boolean isConfirm) {
-        this.isConfirm = isConfirm;
     }
 }

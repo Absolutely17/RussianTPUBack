@@ -17,7 +17,7 @@ import ru.tpu.russian.back.entity.dict.StudyGroup;
 import ru.tpu.russian.back.entity.notification.MailingToken;
 import ru.tpu.russian.back.entity.security.*;
 import ru.tpu.russian.back.enums.*;
-import ru.tpu.russian.back.exception.BusinessException;
+import ru.tpu.russian.back.exception.*;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.mapper.UserMapper;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
@@ -28,6 +28,7 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
 import static ru.tpu.russian.back.enums.ProviderType.valueOf;
 import static ru.tpu.russian.back.service.MailService.TypeMessages.CONFIRMATION_MESSAGE;
@@ -87,14 +88,13 @@ public class UserService {
         this.notificationService = notificationService;
     }
 
-    public void register(BaseUserRequest registrationRequestDto) throws BusinessException {
+    public void register(UserRegisterRequest registrationRequestDto) throws BusinessException {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.debug("Check registration parameters on valid.");
         checkEmailOnExist(registrationRequestDto.getEmail());
-        User user = userMapper.convertToUserFromRegistrationRequest(registrationRequestDto);
-        user.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
+        registrationRequestDto.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
         log.debug("Saving new user in DB.");
-        userRepository.saveUser(user);
+        userRepository.saveUser(registrationRequestDto);
         try {
             mailService.sendMessage(
                     CONFIRMATION_MESSAGE,
@@ -196,20 +196,23 @@ public class UserService {
         }
     }
 
-    public void registerWithService(BaseUserRequest registrationRequest) throws BusinessException {
+    public void registerWithService(UserRegisterRequest registrationRequest) throws BusinessException {
         log.info("Register new user through service. {}", registrationRequest.toString());
         checkEmailOnExist(registrationRequest.getEmail());
-        User user = userMapper.convertToUserFromRegistrationRequest(registrationRequest);
-        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        user.setConfirm(true);
+        registrationRequest.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         log.debug("Saving new user in DB.");
-        userRepository.saveUser(user);
+        userRepository.saveUser(registrationRequest);
     }
 
-    public void editUser(BaseUserRequest requestDto) throws BusinessException {
+    public void editUserProfile(UserProfileEditRequest requestDto) {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         if (requestDto.getNewPassword() != null) {
-            requestDto.setNewPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+            if (requestDto.getCurrentPassword() != null) {
+                findByEmailAndPassword(requestDto.getEmail(), requestDto.getCurrentPassword());
+                requestDto.setNewPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+            } else {
+                throw new BusinessException("Exception.user.currentPassword.notFound");
+            }
         }
         userRepository.editUser(requestDto);
     }
@@ -391,8 +394,38 @@ public class UserService {
         }
     }
 
+    /**
+     * Удалить пользователя
+     */
     public void deleteUser(String id) {
         log.info("Delete user with ID = {}", id);
         userRepository.deleteUserById(id);
+    }
+
+    /**
+     * Создать пользователя
+     */
+    public void createUser(UserRegisterRequest request) throws AttrValidationErrorException {
+        log.info("Create new user from admin-panel. {}", request.toString());
+        checkEmailExistForAdminPanel(request.getEmail());
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.saveUser(request);
+    }
+
+    private void checkEmailExistForAdminPanel(String email) {
+        Optional<User> user = userRepository.getUserByEmail(email);
+        if (user.isPresent()) {
+            throw new AttrValidationErrorException(
+                    singletonList(new AttrValidationError("email", "Данный адрес занят")));
+        }
+    }
+
+    /**
+     * Меняем профиль пользователя из админ-панели
+     */
+    public void editUserFromAdminPanel(String id, UserProfileEditRequest request) {
+        log.info("Edit user ID {} from admin-panel. {}", id, request.toString());
+        checkEmailExistForAdminPanel(request.getEmail());
+        userRepository.editUserByAdmin(id, request);
     }
 }

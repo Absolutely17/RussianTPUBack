@@ -12,16 +12,6 @@ import javax.validation.constraints.*;
 public class BaseUserRequest {
 
     @NotNull
-    @Setter
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!&^%$#@_|\\/\\\\]{8,}$")
-    private String password;
-
-    @Nullable
-    @Setter
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!&^%$#@_|\\/\\\\]{8,}$")
-    private String newPassword;
-
-    @NotNull
     @Email
     private String email;
 

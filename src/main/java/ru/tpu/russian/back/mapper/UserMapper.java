@@ -5,7 +5,6 @@ import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.dto.user.calendarEvent.*;
 import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
-import ru.tpu.russian.back.enums.UserGender;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 
@@ -54,20 +53,6 @@ public class UserMapper {
                 user.getLanguage(),
                 languageName,
                 activeFcmToken != null && activeFcmToken
-        );
-    }
-
-    public User convertToUserFromRegistrationRequest(BaseUserRequest request) {
-        return new User(
-                request.getFirstName(),
-                request.getLastName(),
-                request.getMiddleName(),
-                request.getGender() != null ? UserGender.valueOf(request.getGender()) : null,
-                request.getLanguageId(),
-                request.getPhoneNumber(),
-                request.getEmail(),
-                request.getProvider(),
-                request.getGroupName()
         );
     }
 

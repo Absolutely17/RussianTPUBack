@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.dto.user.calendarEvent.*;
-import ru.tpu.russian.back.exception.BusinessException;
+import ru.tpu.russian.back.exception.*;
 import ru.tpu.russian.back.service.UserService;
 
 import javax.validation.Valid;
@@ -30,9 +30,9 @@ public class UserRest {
      */
     @RequestMapping(method = PUT, path = "/edit")
     public void editUserInfo(
-            @Valid @RequestBody BaseUserRequest requestDto
+            @Valid @RequestBody UserProfileEditRequest requestDto
     ) throws BusinessException {
-        userService.editUser(requestDto);
+        userService.editUserProfile(requestDto);
     }
 
     /**
@@ -56,7 +56,7 @@ public class UserRest {
     }
 
     /**
-     * РЕСТы для админки по отображению пользователей
+     * РЕСТы для админки
      */
     @RequestMapping(method = GET, path = "/admin/table")
     public List<UserTableRow> getUsersTable() {
@@ -77,6 +77,21 @@ public class UserRest {
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token
     ) {
         userService.createCalendarEvent(request, token);
+    }
+
+    @RequestMapping(method = POST, path = "/admin")
+    public void createUser(
+            @RequestBody UserRegisterRequest request
+    ) throws AttrValidationErrorException {
+        userService.createUser(request);
+    }
+
+    @RequestMapping(method = PUT, path = "/admin/{id}")
+    public void editUser(
+            @PathVariable String id,
+            @RequestBody UserProfileEditRequest request
+    ) {
+        userService.editUserFromAdminPanel(id, request);
     }
 
     /**

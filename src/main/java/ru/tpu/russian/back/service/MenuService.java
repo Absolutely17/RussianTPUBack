@@ -123,16 +123,21 @@ public class MenuService {
     }
 
     private int calculateWeekBetweenDates(Date studyStartDate, Calendar calendar) {
+        log.info("Calendar time {}", calendar.getTime());
         calendar.setTime(studyStartDate);
+        log.info("Calendar time {}", calendar.getTime());
         int startWeek = calendar.get(WEEK_OF_YEAR);
         int startYear = calendar.get(YEAR);
         calendar.setTime(new Date());
+        log.info("Calendar time {}", calendar.getTime());
         int currentWeek = calendar.get(WEEK_OF_YEAR);
         int currentYear = calendar.get(YEAR);
         if (currentYear == startYear) {
             return currentWeek - startWeek;
         } else {
             calendar.set(startYear, DECEMBER, 31);
+            log.info("Start week {}", startWeek);
+            log.info("Current week {}", currentWeek);
             return calendar.get(WEEK_OF_YEAR) - startWeek + currentWeek;
         }
     }

@@ -210,8 +210,8 @@ public class UserService {
     public void editUserProfile(UserProfileEditRequest requestDto) {
         log.info("Edit user {}, new data {}.", requestDto.getEmail(), requestDto.toString());
         if (requestDto.getNewPassword() != null) {
-            if (requestDto.getCurrentPassword() != null) {
-                findByEmailAndPassword(requestDto.getEmail(), requestDto.getCurrentPassword());
+            if (requestDto.getPassword() != null) {
+                findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword());
                 requestDto.setNewPassword(passwordEncoder.encode(requestDto.getNewPassword()));
             } else {
                 throw new BusinessException("Exception.user.currentPassword.notFound");

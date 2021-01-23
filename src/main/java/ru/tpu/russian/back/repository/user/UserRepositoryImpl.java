@@ -111,7 +111,7 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     @Transactional
     public int editPassword(String email, String newPassword, String token) {
-        return em.createNativeQuery("exec " + RESET_AND_EDIT_PASS + ":email, :newPassword, :token")
+        return em.createNativeQuery("exec " + RESET_AND_EDIT_PASS + " :email, :newPassword, :token")
                 .setParameter("email", email)
                 .setParameter("newPassword", newPassword)
                 .setParameter("token", token)

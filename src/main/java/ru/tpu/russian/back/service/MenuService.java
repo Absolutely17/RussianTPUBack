@@ -135,9 +135,10 @@ public class MenuService {
         if (currentYear == startYear) {
             return currentWeek - startWeek;
         } else {
-            calendar.set(startYear, DECEMBER, 31);
+            calendar.set(startYear, DECEMBER, 31, 0, 0);
             log.info("Start week {}", startWeek);
             log.info("Current week {}", currentWeek);
+            log.info("Total count weeks in last year {}", calendar.get(WEEK_OF_YEAR));
             return calendar.get(WEEK_OF_YEAR) - startWeek + currentWeek;
         }
     }

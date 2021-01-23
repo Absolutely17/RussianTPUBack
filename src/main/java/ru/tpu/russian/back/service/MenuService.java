@@ -17,6 +17,8 @@ import ru.tpu.russian.back.repository.systemConfig.ISystemConfigRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,7 +116,7 @@ public class MenuService {
             if (studyStartDate == null) {
                 return SCHEDULE_URL_TPU;
             }
-            int currentWeek = calculateWeekBetweenDates(studyStartDate, cal) + 1;
+            long currentWeek = calculateWeekBetweenDates(studyStartDate, cal) + 1;
             return SCHEDULE_URL_TPU + "/gruppa_" + userGroupId.get() + "/" + cal.get(YEAR) + "/"
                     + currentWeek + "/view.html";
         } else {
@@ -122,24 +124,19 @@ public class MenuService {
         }
     }
 
-    private int calculateWeekBetweenDates(Date studyStartDate, Calendar calendar) {
-        log.info("Calendar time {}", calendar.getTime());
+    private long calculateWeekBetweenDates(Date studyStartDate, Calendar calendar) {
         calendar.setTime(studyStartDate);
-        log.info("Calendar time {}", calendar.getTime());
         int startWeek = calendar.get(WEEK_OF_YEAR);
         int startYear = calendar.get(YEAR);
         calendar.setTime(new Date());
-        log.info("Calendar time {}", calendar.getTime());
         int currentWeek = calendar.get(WEEK_OF_YEAR);
         int currentYear = calendar.get(YEAR);
         if (currentYear == startYear) {
             return currentWeek - startWeek;
         } else {
-            calendar.set(startYear, DECEMBER, 31, 0, 0);
-            log.info("Start week {}", startWeek);
-            log.info("Current week {}", currentWeek);
-            log.info("Total count weeks in last year {}", calendar.get(WEEK_OF_YEAR));
-            return calendar.get(WEEK_OF_YEAR) - startWeek + currentWeek;
+            LocalDate date = LocalDate.of(startYear, 6, 1);
+            long weeksInYear = IsoFields.WEEK_OF_WEEK_BASED_YEAR.rangeRefinedBy(date).getMaximum();
+            return weeksInYear - startWeek + currentWeek;
         }
     }
 

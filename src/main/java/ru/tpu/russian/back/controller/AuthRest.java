@@ -58,10 +58,10 @@ public class AuthRest {
      * Сюда приходим после предыдущего РЕСТа
      */
     @RequestMapping(method = POST, path = "/provider/registration")
-    public void registerWithService(
+    public AuthResponse registerWithService(
             @Valid @RequestBody UserRegisterRequest registrationRequest
     ) throws BusinessException {
-        userService.registerWithService(registrationRequest);
+        return userService.registerWithService(registrationRequest);
     }
 
     /**

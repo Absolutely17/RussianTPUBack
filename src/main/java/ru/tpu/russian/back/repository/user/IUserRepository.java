@@ -11,7 +11,7 @@ public interface IUserRepository {
     /**
      * Добавляем нового пользователя
      */
-    void saveUser(UserRegisterRequest user);
+    User saveUser(UserRegisterRequest user);
 
     /**
      * Редактируем секрет для рефреш токена у пользователя

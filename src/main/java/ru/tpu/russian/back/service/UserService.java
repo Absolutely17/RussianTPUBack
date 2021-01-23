@@ -88,7 +88,7 @@ public class UserService {
         this.notificationService = notificationService;
     }
 
-    public void register(UserRegisterRequest registrationRequestDto) throws BusinessException {
+    public void register(UserRegisterRequest registrationRequestDto) {
         log.info("Register new user. {}", registrationRequestDto.toString());
         log.debug("Check registration parameters on valid.");
         checkEmailOnExist(registrationRequestDto.getEmail());
@@ -196,12 +196,15 @@ public class UserService {
         }
     }
 
-    public void registerWithService(UserRegisterRequest registrationRequest) throws BusinessException {
+    public AuthResponse registerWithService(UserRegisterRequest registrationRequest) throws BusinessException {
         log.info("Register new user through service. {}", registrationRequest.toString());
         checkEmailOnExist(registrationRequest.getEmail());
         registrationRequest.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         log.debug("Saving new user in DB.");
-        userRepository.saveUser(registrationRequest);
+        User user = userRepository.saveUser(registrationRequest);
+        String token = jwtProvider.generateAccessToken(user.getEmail());
+        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+        return new AuthResponse(token, refreshToken, userMapper.convertToResponse(user));
     }
 
     public void editUserProfile(UserProfileEditRequest requestDto) {
@@ -339,9 +342,9 @@ public class UserService {
                 token
         );
         if (requestNotification instanceof NotificationRequestUsers) {
-            notificationService.sendOnUser((NotificationRequestUsers) requestNotification);
+            notificationService.sendOnUser((NotificationRequestUsers)requestNotification);
         } else {
-            notificationService.sendOnGroup((NotificationRequestGroup) requestNotification);
+            notificationService.sendOnGroup((NotificationRequestGroup)requestNotification);
         }
     }
 
@@ -368,7 +371,7 @@ public class UserService {
                 break;
             case SELECTED_USERS:
                 requestNotification = new NotificationRequestUsers();
-                ((NotificationRequestUsers) requestNotification).setUsers(request.getSelectedUsers());
+                ((NotificationRequestUsers)requestNotification).setUsers(request.getSelectedUsers());
                 break;
             default:
                 throw new IllegalArgumentException("Wrong target calendar event value " + target.toString());

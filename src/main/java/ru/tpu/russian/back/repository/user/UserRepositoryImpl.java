@@ -39,9 +39,12 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     @Transactional
-    public void saveUser(UserRegisterRequest user) {
-        em.createNativeQuery("exec " + ADD_USER + " :firstName, :middleName, :lastName" +
-                ", :role, :password, :sex, :languageId, :provider, :groupName, :email, :confirmed, :phoneNumber")
+    public User saveUser(UserRegisterRequest user) {
+        Optional<User> userRegistered = em.createNativeQuery(
+                "exec " + ADD_USER + " :firstName, :middleName, :lastName" +
+                        ", :role, :password, :sex, :languageId, :provider, :groupName, :email, :confirmed, :phoneNumber",
+                User.class
+        )
                 .setParameter("firstName", user.getFirstName())
                 .setParameter("middleName", user.getMiddleName())
                 .setParameter("lastName", user.getLastName())
@@ -54,7 +57,12 @@ public class UserRepositoryImpl implements IUserRepository {
                 .setParameter("email", user.getEmail())
                 .setParameter("confirmed", false)
                 .setParameter("phoneNumber", user.getPhoneNumber())
-                .executeUpdate();
+                .getResultStream().findFirst();
+        if (userRegistered.isPresent()) {
+            return userRegistered.get();
+        } else {
+            throw new IllegalStateException("Не удалось создать пользователя в БД");
+        }
     }
 
     @Override

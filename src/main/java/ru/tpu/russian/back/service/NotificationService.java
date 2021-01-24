@@ -11,7 +11,7 @@ import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.*;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.stream.Collectors.toList;
@@ -124,6 +124,8 @@ public class NotificationService {
         try {
             List<String> userFcmTokens = requestDto.getUsers().stream()
                     .map(it -> mailingTokenRepository.getByUserIdAndActive(it, true))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
                     .map(MailingToken::getFcmToken)
                     .collect(toList());
             String response;

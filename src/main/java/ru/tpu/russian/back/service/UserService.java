@@ -279,9 +279,10 @@ public class UserService {
     public void disableFcmUserToken(String email) {
         log.debug("Disabling user FCM token availability, email {}", email);
         String userId = userRepository.getUserIdByEmail(email);
-        MailingToken token = mailingTokenRepository.getByUserIdAndActive(userId, true);
-        if (token != null) {
-            token.setActive(false);
+        Optional<MailingToken> token = mailingTokenRepository.getByUserIdAndActive(userId, true);
+        if (token.isPresent()) {
+            token.get().setActive(false);
+            mailingTokenRepository.save(token.get());
         } else {
             log.warn("Trying to deactivate token which doesn't exist, email {}", email);
         }

@@ -123,8 +123,7 @@ public class NotificationService {
         log.info("Send notification on app. {}", requestDto.toString());
         try {
             List<String> userFcmTokens = requestDto.getUsers().stream()
-                    .map(mailingTokenRepository::getByUserId)
-                    .filter(MailingToken::isActive)
+                    .map(it -> mailingTokenRepository.getByUserIdAndActive(it, true))
                     .map(MailingToken::getFcmToken)
                     .collect(toList());
             String response;

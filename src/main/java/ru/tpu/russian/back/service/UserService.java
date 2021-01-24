@@ -279,7 +279,7 @@ public class UserService {
     public void disableFcmUserToken(String email) {
         log.debug("Disabling user FCM token availability, email {}", email);
         String userId = userRepository.getUserIdByEmail(email);
-        MailingToken token = entityManager.find(MailingToken.class, userId);
+        MailingToken token = mailingTokenRepository.getByUserIdAndActive(userId, true);
         if (token != null) {
             token.setActive(false);
         } else {

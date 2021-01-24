@@ -143,7 +143,7 @@ public class NotificationService {
                 response = "Успешно";
             } else {
                 return new ResponseEntity<>(
-                        new ExceptionMessage("Empty recipient list"),
+                        new ExceptionMessage("Пустой список получателей (возможно, нету активного токена)"),
                         INTERNAL_SERVER_ERROR
                 );
             }

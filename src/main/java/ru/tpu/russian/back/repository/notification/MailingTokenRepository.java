@@ -10,6 +10,4 @@ import java.util.Optional;
 public interface MailingTokenRepository extends JpaRepository<MailingToken, String> {
 
     Optional<MailingToken> getByUserIdAndActive(String id, boolean active);
-
-    int countByIdAndActive(String userid, boolean active);
 }

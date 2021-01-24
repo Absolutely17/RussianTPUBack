@@ -52,7 +52,7 @@ public class NotificationService {
         if (request.getTargetGroupName() != null) {
             request.setTopic(TOPIC_NAME + "_" + request.getTargetGroupName());
         } else if (request.getLanguageId() != null) {
-            String shortNameLang = languageRepository.getById(request.getTargetGroupName()).getShortName();
+            String shortNameLang = languageRepository.getById(request.getLanguageId()).getShortName();
             request.setTopic(TOPIC_NAME + "_" + shortNameLang);
         } else {
             log.error("Request target param is null {}", request.toString());

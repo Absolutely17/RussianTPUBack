@@ -1,6 +1,7 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -333,6 +334,12 @@ public class UserService {
             sendNotificationAboutCreatedEvent(request, token);
         }
         entityManager.persist(event);
+        if (Strings.isNotEmpty(request.getDetailedMessage())) {
+            CalendarEventDetailedMessage detailedMessage =
+                    new CalendarEventDetailedMessage(request.getDetailedMessage());
+            detailedMessage.setCalendarEvent(event);
+            entityManager.persist(detailedMessage);
+        }
     }
 
     private void sendNotificationAboutCreatedEvent(CalendarEventCreateRequest request, String token) {
@@ -436,6 +443,20 @@ public class UserService {
             userRepository.editUserByAdmin(id, request);
         } else {
             throw new BusinessException("Редактируемый пользователь не найден");
+        }
+    }
+
+    /**
+     * Получить событие по ID
+     */
+    public CalendarEventDetailedResponse getDetailedCalendarEvent(String id) {
+        log.info("Get detailed calendar event {}", id);
+        Optional<CalendarEvent> event = userRepository.getCalendarEventById(id);
+        if (event.isPresent()) {
+            return userMapper.convertToDetailedResponseCalendarEvent(event.get());
+        } else {
+            log.error("Calendar event with id {} doesnt exist", id);
+            throw new BusinessException("Exception.user.calendarEvent.notFound");
         }
     }
 }

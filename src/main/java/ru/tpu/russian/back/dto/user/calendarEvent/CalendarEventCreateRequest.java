@@ -1,8 +1,6 @@
 package ru.tpu.russian.back.dto.user.calendarEvent;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.tpu.russian.back.enums.CalendarEventGroupTarget;
 
 import java.util.List;
@@ -25,4 +23,8 @@ public class CalendarEventCreateRequest {
     private List<String> groups;
 
     private boolean sendNotification;
+
+    private String detailedMessage;
+
+    private String onlineMeetingLink;
 }

@@ -8,7 +8,6 @@ import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 
-import java.util.UUID;
 
 @Component
 public class UserMapper {
@@ -74,12 +73,12 @@ public class UserMapper {
 
     public CalendarEvent convertToCalendarEventFromRequest(CalendarEventCreateRequest request) {
         return new CalendarEvent(
-                UUID.randomUUID().toString(),
                 request.getTitle(),
                 request.getDescription(),
                 request.getDate(),
                 request.getGroupTarget(),
-                request.isSendNotification()
+                request.isSendNotification(),
+                request.getOnlineMeetingLink()
         );
     }
 
@@ -90,6 +89,18 @@ public class UserMapper {
                 event.getDescription(),
                 event.getTimestamp(),
                 event.getTargetEnum()
+        );
+    }
+
+    public CalendarEventDetailedResponse convertToDetailedResponseCalendarEvent(CalendarEvent event) {
+        return new CalendarEventDetailedResponse(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getTimestamp(),
+                event.getTargetEnum(),
+                event.getOnlineLink(),
+                event.getDetailedMessage() == null ? null : event.getDetailedMessage().getMessage()
         );
     }
 }

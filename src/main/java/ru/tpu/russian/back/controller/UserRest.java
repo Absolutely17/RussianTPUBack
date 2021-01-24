@@ -56,6 +56,16 @@ public class UserRest {
     }
 
     /**
+     * Получить событие по его ID
+     */
+    @RequestMapping(method = GET, path = "/calendarEvent/{id}/detailed")
+    public CalendarEventDetailedResponse getDetailedCalendarEvent(
+            @PathVariable String id
+    ) {
+        return userService.getDetailedCalendarEvent(id);
+    }
+
+    /**
      * РЕСТы для админки
      */
     @RequestMapping(method = GET, path = "/admin/table")

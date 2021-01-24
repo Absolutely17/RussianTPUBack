@@ -22,8 +22,7 @@ public class CalendarEvent {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "DETAILED_MESSAGE_ID")
+    @OneToOne(mappedBy = "calendarEvent")
     private CalendarEventDetailedMessage detailedMessage;
 
     @Column(name = "TIMESTAMP")
@@ -36,6 +35,9 @@ public class CalendarEvent {
     @Column(name = "SEND_NOTIFICATION")
     private boolean sendNotification;
 
+    @Column(name = "ONLINE_MEETING_LINK")
+    private String onlineLink;
+
     @Column(name = "LOAD_DATE")
     private Date loadDate;
 
@@ -43,15 +45,16 @@ public class CalendarEvent {
     private Set<CalendarEventTargets> targets = new HashSet<>();
 
     public CalendarEvent(
-            String id, String title, String description, String timestamp, CalendarEventGroupTarget targetEnum,
-            boolean sendNotification
+            String title, String description, String timestamp, CalendarEventGroupTarget targetEnum,
+            boolean sendNotification, String onlineLink
     ) {
-        this.id = id;
+        id = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;
         this.timestamp = timestamp;
         this.targetEnum = targetEnum;
         this.sendNotification = sendNotification;
+        this.onlineLink = onlineLink;
         loadDate = new Date();
     }
 

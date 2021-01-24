@@ -30,6 +30,8 @@ public class UserRepositoryImpl implements IUserRepository {
 
     private static final String GET_CALENDAR_EVENTS_BY_EMAIL = "GetCalendarEventsByEmail";
 
+    private static final String GET_CALENDAR_EVENT_BY_ID = "GetCalendarEventById";
+
     private static final String DELETE_USER_BY_ID = "DeleteUser";
 
     private static final String EDIT_USER_BY_ADMIN = "EditUserByAdmin";
@@ -141,6 +143,14 @@ public class UserRepositoryImpl implements IUserRepository {
         return em.createNativeQuery("exec " + GET_CALENDAR_EVENTS_BY_EMAIL + " :email", CalendarEvent.class)
                 .setParameter("email", email)
                 .getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<CalendarEvent> getCalendarEventById(String id) {
+        return em.createNativeQuery("exec " + GET_CALENDAR_EVENT_BY_ID + " :id", CalendarEvent.class)
+                .setParameter("id", id)
+                .getResultStream().findFirst();
     }
 
     @Override

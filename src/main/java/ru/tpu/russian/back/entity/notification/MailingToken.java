@@ -23,16 +23,16 @@ public class MailingToken {
     private String fcmToken;
 
     @Column(name = "ACTIVE")
-    private boolean isActive;
+    private boolean active;
 
-    public MailingToken(String userId, String fcmToken, boolean isActive) {
+    public MailingToken(String userId, String fcmToken, boolean active) {
         id = UUID.randomUUID().toString();
         this.userId = userId;
         this.fcmToken = fcmToken;
-        this.isActive = isActive;
+        this.active = active;
     }
 
     public void setActive(boolean isActive) {
-        this.isActive = isActive;
+        this.active = isActive;
     }
 }

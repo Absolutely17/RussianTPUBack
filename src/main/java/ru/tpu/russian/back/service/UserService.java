@@ -271,8 +271,14 @@ public class UserService {
     public void saveFcmUserToken(NotificationTokenRequest requestDto) {
         log.debug("Saving user FCM token, email {}", requestDto.getEmail());
         String userId = userRepository.getUserIdByEmail(requestDto.getEmail());
-        MailingToken token = new MailingToken(userId, requestDto.getToken(), true);
-        mailingTokenRepository.save(token);
+        Optional<MailingToken> currentToken = mailingTokenRepository.getByUserIdAndActive(userId, true);
+        if (currentToken.isPresent()) {
+            currentToken.get().setFcmToken(requestDto.getToken());
+            mailingTokenRepository.save(currentToken.get());
+        } else {
+            MailingToken token = new MailingToken(userId, requestDto.getToken(), true);
+            mailingTokenRepository.save(token);
+        }
     }
 
     @Transactional

@@ -1,12 +1,15 @@
 package ru.tpu.russian.back.entity;
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "SYSTEM_CONFIG")
+@NoArgsConstructor
 public class SystemParameter {
 
     @Id
@@ -24,4 +27,12 @@ public class SystemParameter {
 
     @Column(name = "DESCRIPTION")
     private String description;
+
+    public SystemParameter(String name, String key, String value, String description) {
+        id = UUID.randomUUID().toString();
+        this.name = name;
+        this.key = key;
+        this.value = value;
+        this.description = description;
+    }
 }

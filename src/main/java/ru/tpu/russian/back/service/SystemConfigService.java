@@ -2,8 +2,9 @@ package ru.tpu.russian.back.service;
 
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.systemConfig.SystemParameterResponse;
+import ru.tpu.russian.back.entity.SystemParameter;
 import ru.tpu.russian.back.mapper.SystemConfigMapper;
-import ru.tpu.russian.back.repository.systemConfig.ISystemConfigRepository;
+import ru.tpu.russian.back.repository.systemConfig.SystemConfigRepository;
 
 import java.util.List;
 
@@ -12,12 +13,14 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class SystemConfigService {
 
-    private final ISystemConfigRepository systemConfigRepository;
+    private final SystemConfigRepository systemConfigRepository;
 
     private final SystemConfigMapper mapper;
 
-    public SystemConfigService(ISystemConfigRepository systemConfigRepository,
-                               SystemConfigMapper mapper) {
+    public SystemConfigService(
+            SystemConfigRepository systemConfigRepository,
+            SystemConfigMapper mapper
+    ) {
         this.systemConfigRepository = systemConfigRepository;
         this.mapper = mapper;
     }
@@ -30,6 +33,15 @@ public class SystemConfigService {
     }
 
     public void update(List<SystemParameterResponse> params) {
-        systemConfigRepository.updateParameters(params);
+        systemConfigRepository.deleteAll();
+        params.forEach(it -> {
+            SystemParameter param = new SystemParameter(
+                    it.getName(),
+                    it.getKey(),
+                    it.getValue(),
+                    it.getDescription()
+            );
+            systemConfigRepository.save(param);
+        });
     }
 }

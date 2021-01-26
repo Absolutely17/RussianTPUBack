@@ -9,6 +9,7 @@ public class DocumentMapper {
 
     public DocumentResponse convertToResponseWithoutContent(DocumentWithoutContent document) {
         return new DocumentResponse(
+                document.getId(),
                 document.getName(),
                 document.getLoadDate(),
                 document.getUrl(),

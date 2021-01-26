@@ -9,6 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 public class DocumentResponse {
 
+    private String id;
+
     private String name;
 
     private String loadDate;

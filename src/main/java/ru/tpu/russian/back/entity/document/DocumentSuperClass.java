@@ -2,6 +2,7 @@ package ru.tpu.russian.back.entity.document;
 
 import lombok.*;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +28,10 @@ public class DocumentSuperClass {
     @Column(name = "FILE_NAME")
     private String fileName;
 
+    @Nullable
+    @Column(name = "LAST_DOWNLOAD_DATE")
+    private Date lastUseDate;
+
     @Column(name = "LOAD_DATE")
     private Date loadDate;
 
@@ -36,5 +41,9 @@ public class DocumentSuperClass {
 
     public String getLoadDate() {
         return formatter.format(loadDate);
+    }
+
+    public String getLastUseDate() {
+        return lastUseDate == null ? null : formatter.format(lastUseDate);
     }
 }

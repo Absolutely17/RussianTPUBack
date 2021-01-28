@@ -8,7 +8,7 @@ import ru.tpu.russian.back.entity.document.DocumentWithContent;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.mapper.DocumentMapper;
-import ru.tpu.russian.back.repository.document.DocumentRepository;
+import ru.tpu.russian.back.repository.document.IDocumentRepository;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.*;
@@ -24,14 +24,14 @@ public class DocumentService {
 
     public static final String DOCUMENT_API_URL = "https://internationals.tpu.ru:8080/api/document/download?id=";
 
-    private final DocumentRepository documentRepository;
+    private final IDocumentRepository documentRepository;
 
     private final JwtProvider jwtProvider;
 
     private final DocumentMapper documentMapper;
 
     public DocumentService(
-            DocumentRepository documentRepository,
+            IDocumentRepository documentRepository,
             JwtProvider jwtProvider,
             DocumentMapper documentMapper
     ) {

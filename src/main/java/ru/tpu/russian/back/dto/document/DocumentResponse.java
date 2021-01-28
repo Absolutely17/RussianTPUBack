@@ -13,9 +13,11 @@ public class DocumentResponse {
 
     private String name;
 
-    private String loadDate;
+    private String fileName;
 
     private String url;
 
-    private String fileName;
+    private String lastUseDate;
+
+    private String loadDate;
 }

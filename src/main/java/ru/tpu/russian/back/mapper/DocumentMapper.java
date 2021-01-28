@@ -11,9 +11,10 @@ public class DocumentMapper {
         return new DocumentResponse(
                 document.getId(),
                 document.getName(),
-                document.getLoadDate(),
+                document.getFileName(),
                 document.getUrl(),
-                document.getFileName()
+                document.getLastUseDate(),
+                document.getLoadDate()
         );
     }
 }

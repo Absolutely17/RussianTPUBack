@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.jwt;
+package ru.tpu.russian.back.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;

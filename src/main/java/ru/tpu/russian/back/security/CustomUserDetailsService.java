@@ -1,11 +1,11 @@
-package ru.tpu.russian.back.service.security;
+package ru.tpu.russian.back.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.entity.security.CustomUserDetails;
 import ru.tpu.russian.back.repository.user.UserRepository;
+import ru.tpu.russian.back.security.model.CustomUserDetails;
 
 import java.util.Optional;
 

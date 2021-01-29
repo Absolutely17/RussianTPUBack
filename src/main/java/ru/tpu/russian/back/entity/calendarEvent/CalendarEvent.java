@@ -3,6 +3,7 @@ package ru.tpu.russian.back.entity.calendarEvent;
 import lombok.*;
 import ru.tpu.russian.back.enums.CalendarEventGroupTarget;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.*;
 
@@ -19,10 +20,12 @@ public class CalendarEvent {
     @Column(name = "TITLE")
     private String title;
 
+    @Nullable
     @Column(name = "DESCRIPTION")
     private String description;
 
     @OneToOne(mappedBy = "calendarEvent")
+    @Nullable
     private CalendarEventDetailedMessage detailedMessage;
 
     @Column(name = "TIMESTAMP")
@@ -35,6 +38,7 @@ public class CalendarEvent {
     @Column(name = "SEND_NOTIFICATION")
     private boolean sendNotification;
 
+    @Nullable
     @Column(name = "ONLINE_MEETING_LINK")
     private String onlineLink;
 
@@ -45,8 +49,8 @@ public class CalendarEvent {
     private Set<CalendarEventTargets> targets = new HashSet<>();
 
     public CalendarEvent(
-            String title, String description, String timestamp, CalendarEventGroupTarget targetEnum,
-            boolean sendNotification, String onlineLink
+            String title, @Nullable String description, String timestamp, CalendarEventGroupTarget targetEnum,
+            boolean sendNotification, @Nullable String onlineLink
     ) {
         id = UUID.randomUUID().toString();
         this.title = title;

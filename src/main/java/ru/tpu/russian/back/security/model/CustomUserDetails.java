@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.entity.security;
+package ru.tpu.russian.back.security.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

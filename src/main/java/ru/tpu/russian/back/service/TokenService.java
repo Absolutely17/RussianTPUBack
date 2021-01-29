@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.auth.AuthResponse;
 import ru.tpu.russian.back.exception.BusinessException;
-import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.user.UserRepository;
+import ru.tpu.russian.back.security.jwt.JwtProvider;
 
 import javax.servlet.http.HttpServletRequest;
 

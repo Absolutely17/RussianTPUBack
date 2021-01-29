@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.entity.security;
+package ru.tpu.russian.back.security.model;
 
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;

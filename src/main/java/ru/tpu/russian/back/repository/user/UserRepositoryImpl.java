@@ -3,8 +3,8 @@ package ru.tpu.russian.back.repository.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
+import ru.tpu.russian.back.entity.user.User;
 
 import javax.persistence.*;
 import java.util.*;

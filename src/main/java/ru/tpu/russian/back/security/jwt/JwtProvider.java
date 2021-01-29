@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.jwt;
+package ru.tpu.russian.back.security.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;

@@ -2,7 +2,7 @@ package ru.tpu.russian.back.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.studyGroup.StudyGroupCreateRequest;
-import ru.tpu.russian.back.entity.dict.StudyGroup;
+import ru.tpu.russian.back.entity.user.StudyGroup;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.service.StudyGroupService;
 

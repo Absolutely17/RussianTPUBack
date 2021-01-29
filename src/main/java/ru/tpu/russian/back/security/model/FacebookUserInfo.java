@@ -1,11 +1,11 @@
-package ru.tpu.russian.back.entity.security;
+package ru.tpu.russian.back.security.model;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.social.facebook.api.*;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import ru.tpu.russian.back.exception.BusinessException;
 
-import static ru.tpu.russian.back.entity.security.FacebookUtils.*;
+import static ru.tpu.russian.back.security.model.FacebookUtils.*;
 
 @Slf4j
 public class FacebookUserInfo implements OAuthUserInfo {

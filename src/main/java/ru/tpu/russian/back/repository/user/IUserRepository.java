@@ -1,8 +1,8 @@
 package ru.tpu.russian.back.repository.user;
 
 import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
+import ru.tpu.russian.back.entity.user.User;
 
 import java.util.*;
 

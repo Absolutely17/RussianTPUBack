@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.entity.security;
+package ru.tpu.russian.back.security.model;
 
 public interface OAuthUserInfo {
 

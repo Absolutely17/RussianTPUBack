@@ -1,11 +1,11 @@
-package ru.tpu.russian.back.jwt;
+package ru.tpu.russian.back.security.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.tpu.russian.back.entity.security.CustomUserDetails;
-import ru.tpu.russian.back.service.security.CustomUserDetailsService;
+import ru.tpu.russian.back.security.CustomUserDetailsService;
+import ru.tpu.russian.back.security.model.CustomUserDetails;
 
 import javax.servlet.*;
 import javax.servlet.http.*;

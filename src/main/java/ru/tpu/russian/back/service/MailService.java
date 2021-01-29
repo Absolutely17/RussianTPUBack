@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.*;
 import org.springframework.stereotype.Service;
-import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.language.Language;
+import ru.tpu.russian.back.entity.user.User;
 import ru.tpu.russian.back.exception.BusinessException;
-import ru.tpu.russian.back.jwt.JwtProvider;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.user.UserRepository;
+import ru.tpu.russian.back.security.jwt.JwtProvider;
 
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;

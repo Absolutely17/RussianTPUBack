@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.entity;
+package ru.tpu.russian.back.entity.user;
 
 import lombok.*;
 import org.springframework.lang.Nullable;

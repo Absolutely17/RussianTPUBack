@@ -3,8 +3,8 @@ package ru.tpu.russian.back.mapper;
 import org.springframework.stereotype.Component;
 import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.dto.user.calendarEvent.*;
-import ru.tpu.russian.back.entity.User;
 import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
+import ru.tpu.russian.back.entity.user.User;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 

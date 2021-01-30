@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import ru.tpu.russian.back.dto.notification.*;
 import ru.tpu.russian.back.entity.notification.MailingToken;
 import ru.tpu.russian.back.exception.ExceptionMessage;
+import ru.tpu.russian.back.mapper.NotificationMapper;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.*;
+import ru.tpu.russian.back.security.jwt.JwtProvider;
 
 import java.time.Duration;
 import java.util.*;
@@ -21,24 +23,32 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 public class NotificationService {
 
-    private static final int MAX_USERS_ON_NOTIFICATION = 100;
+    private static final int MAX_USERS_ON_NOTIFICATION = 10000;
 
     private static final String TOPIC_NAME = "news";
 
-    private final INotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
     private final MailingTokenRepository mailingTokenRepository;
 
     private final LanguageRepository languageRepository;
 
+    private final NotificationMapper notificationMapper;
+
+    private final JwtProvider jwtProvider;
+
     public NotificationService(
-            INotificationRepository notificationRepository,
+            NotificationRepository notificationRepository,
             MailingTokenRepository mailingTokenRepository,
-            LanguageRepository languageRepository
+            LanguageRepository languageRepository,
+            NotificationMapper notificationMapper,
+            JwtProvider jwtProvider
     ) {
         this.notificationRepository = notificationRepository;
         this.mailingTokenRepository = mailingTokenRepository;
         this.languageRepository = languageRepository;
+        this.notificationMapper = notificationMapper;
+        this.jwtProvider = jwtProvider;
     }
 
     /**
@@ -49,8 +59,8 @@ public class NotificationService {
      */
     public ResponseEntity<?> sendOnGroup(NotificationRequestGroup request) {
         log.info("Send notification on app. {}", request.toString());
-        if (request.getTargetGroupName() != null) {
-            request.setTopic(TOPIC_NAME + "_" + request.getTargetGroupName());
+        if (request.getTargetGroup() != null) {
+            request.setTopic(TOPIC_NAME + "_" + request.getTargetGroup().getValue());
         } else if (request.getLanguageId() != null) {
             String shortNameLang = languageRepository.getById(request.getLanguageId()).getShortName();
             request.setTopic(TOPIC_NAME + "_" + shortNameLang);
@@ -61,9 +71,9 @@ public class NotificationService {
             Message message = getSingleMessageBuilder(request)
                     .setTopic(request.getTopic())
                     .build();
-            String response = sendSingleMessage(message);
-            log.info("Notification send. Response {}", response);
-            notificationRepository.createGroupNotification(request, response);
+            sendSingleMessage(message);
+            log.info("Notification send. Response success");
+            notificationRepository.save(notificationMapper.convertToGroupNotification(request, "Успешно"));
             return new ResponseEntity<>(
                     OK
             );
@@ -133,8 +143,7 @@ public class NotificationService {
                 MulticastMessage message = getMulticastMessageBuilder(requestDto)
                         .addAllTokens(userFcmTokens)
                         .build();
-                int countFailure = sendOnUsersAndGetFailureCount(message);
-                response = countFailure == 0 ? "Успешно" : "Ошибка";
+                response = sendOnUsersAndGetFailureCount(message) == 0 ? "Успешно" : "Ошибка";
             } else if (userFcmTokens.size() == 1) {
                 Message message = getSingleMessageBuilder(requestDto)
                         .setToken(userFcmTokens.get(0))
@@ -143,12 +152,13 @@ public class NotificationService {
                 response = "Успешно";
             } else {
                 return new ResponseEntity<>(
-                        new ExceptionMessage("Пустой список получателей (возможно, нету активного токена)"),
+                        new ExceptionMessage(
+                                "Пустой список получателей (возможно, у пользователей нету активного токена)"),
                         INTERNAL_SERVER_ERROR
                 );
             }
             log.info("Notification send. Response {}", response);
-            notificationRepository.createUsersNotification(requestDto, response);
+            notificationRepository.save(notificationMapper.convertToUserNotification(requestDto, response));
             return new ResponseEntity<>(
                     OK
             );
@@ -176,5 +186,14 @@ public class NotificationService {
 
     private int sendOnUsersAndGetFailureCount(MulticastMessage message) throws FirebaseMessagingException {
         return FirebaseMessaging.getInstance().sendMulticast(message).getFailureCount();
+    }
+
+    public List<NotificationResponse> getAllByUser(String authorizeStr) {
+        log.info("Getting all notification by user.");
+        String email = jwtProvider.getEmailFromToken(jwtProvider.unwrapTokenFromHeaderStr(authorizeStr));
+        return notificationRepository.getAllByUser(email)
+                .stream()
+                .map(notificationMapper::convertToResponse)
+                .collect(toList());
     }
 }

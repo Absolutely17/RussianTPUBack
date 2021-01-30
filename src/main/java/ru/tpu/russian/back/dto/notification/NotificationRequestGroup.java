@@ -2,6 +2,7 @@ package ru.tpu.russian.back.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
+import ru.tpu.russian.back.enums.NotificationTargetGroup;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.*;
@@ -15,7 +16,7 @@ import javax.validation.constraints.*;
 public class NotificationRequestGroup extends NotificationBaseRequest {
 
     @Nullable
-    private String targetGroupName;
+    private NotificationTargetGroup targetGroup;
 
     @Nullable
     private String languageId;
@@ -24,17 +25,17 @@ public class NotificationRequestGroup extends NotificationBaseRequest {
     public NotificationRequestGroup(
             @NotNull String title, @NotNull String message,
             @NotNull @Email String adminEmail, String topic,
-            @Nullable String targetGroupName, @Nullable String languageId
+            @Nullable NotificationTargetGroup targetGroup, @Nullable String languageId
     ) {
         super(title, message, adminEmail, topic);
-        this.targetGroupName = targetGroupName;
+        this.targetGroup = targetGroup;
         this.languageId = languageId;
     }
 
     @Override
     public String toString() {
         return "NotificationRequestGroup{" +
-                "targetGroupName='" + targetGroupName + '\'' +
+                "targetGroup='" + targetGroup + '\'' +
                 ", languageId='" + languageId + '\'' +
                 ", title='" + getTitle() + '\'' +
                 ", message='" + getMessage() + '\'' +

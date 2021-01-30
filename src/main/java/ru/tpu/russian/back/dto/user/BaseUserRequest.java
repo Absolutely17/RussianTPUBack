@@ -15,16 +15,16 @@ public class BaseUserRequest {
     @Email
     private String email;
 
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     @NotNull
     private String firstName;
 
     @Nullable
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     private String lastName;
 
     @Nullable
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     private String middleName;
 
     @Nullable
@@ -41,7 +41,7 @@ public class BaseUserRequest {
     private ProviderType provider = ProviderType.valueOf("local");
 
     @Nullable
-    @Size(min = 1, max = 10)
+    @Size(max = 10)
     private String groupName;
 
     @Override

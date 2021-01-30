@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Article {
 
-    private static SimpleDateFormat formatter = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+    public static SimpleDateFormat formatter = new SimpleDateFormat("HH:mm dd.MM.yyyy");
 
     @Id
     @Column(name = "ID")

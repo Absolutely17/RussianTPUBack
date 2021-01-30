@@ -2,7 +2,6 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
+import static ru.tpu.russian.back.enums.NotificationTargetGroup.ALL;
 import static ru.tpu.russian.back.enums.ProviderType.valueOf;
 import static ru.tpu.russian.back.service.MailService.TypeMessages.CONFIRMATION_MESSAGE;
 import static ru.tpu.russian.back.service.MailService.TypeMessages.RESET_PASSWORD_MESSAGE;
@@ -61,9 +61,6 @@ public class UserService {
     private final LanguageRepository languageRepository;
 
     private final NotificationService notificationService;
-
-    @Value("${firebase.group-all-users}")
-    private String groupAllUsers;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -108,8 +105,8 @@ public class UserService {
 
     private void checkEmailOnExist(String email) throws BusinessException {
         log.debug("Check email address for availability in the database.");
-        Optional<User> userOptional = userRepository.getUserByEmail(email);
-        if (userOptional.isPresent()) {
+        User user = findByEmail(email);
+        if (user != null) {
             log.error("This email address {} already taken.", email);
             throw new BusinessException("Exception.registration.email.exist", email);
         }
@@ -269,27 +266,35 @@ public class UserService {
 
     public void saveFcmUserToken(NotificationTokenRequest requestDto) {
         log.debug("Saving user FCM token, email {}", requestDto.getEmail());
-        String userId = userRepository.getUserIdByEmail(requestDto.getEmail());
-        Optional<MailingToken> currentToken = mailingTokenRepository.getByUserIdAndActive(userId, true);
-        if (currentToken.isPresent()) {
-            currentToken.get().setFcmToken(requestDto.getToken());
-            mailingTokenRepository.save(currentToken.get());
+        User user = findByEmail(requestDto.getEmail());
+        if (user == null) {
+            log.warn("Could not find user with email {}. Token doesn't save.", requestDto.getEmail());
         } else {
-            MailingToken token = new MailingToken(userId, requestDto.getToken(), true);
-            mailingTokenRepository.save(token);
+            Optional<MailingToken> currentToken = mailingTokenRepository.getByUserIdAndActive(user.getId(), true);
+            if (currentToken.isPresent()) {
+                currentToken.get().setFcmToken(requestDto.getToken());
+                mailingTokenRepository.save(currentToken.get());
+            } else {
+                MailingToken token = new MailingToken(user.getId(), requestDto.getToken(), true);
+                mailingTokenRepository.save(token);
+            }
         }
     }
 
     @Transactional
     public void disableFcmUserToken(String email) {
         log.debug("Disabling user FCM token availability, email {}", email);
-        String userId = userRepository.getUserIdByEmail(email);
-        Optional<MailingToken> token = mailingTokenRepository.getByUserIdAndActive(userId, true);
-        if (token.isPresent()) {
-            token.get().setActive(false);
-            mailingTokenRepository.save(token.get());
+        User user = findByEmail(email);
+        if (user == null) {
+            log.warn("Could not find user with email {}. Token doesn't save.", email);
         } else {
-            log.warn("Trying to deactivate token which doesn't exist, email {}", email);
+            Optional<MailingToken> token = mailingTokenRepository.getByUserIdAndActive(user.getId(), true);
+            if (token.isPresent()) {
+                token.get().setActive(false);
+                mailingTokenRepository.save(token.get());
+            } else {
+                log.warn("Trying to deactivate token which doesn't exist, email {}", email);
+            }
         }
     }
 
@@ -370,7 +375,7 @@ public class UserService {
         switch (target) {
             case ALL:
                 requestNotification = new NotificationRequestGroup();
-                ((NotificationRequestGroup)requestNotification).setTargetGroupName(groupAllUsers);
+                ((NotificationRequestGroup)requestNotification).setTargetGroup(ALL);
                 break;
             case STUDY_GROUP:
                 requestNotification = new NotificationRequestUsers();
@@ -429,8 +434,8 @@ public class UserService {
     }
 
     private void checkEmailExistForAdminPanel(String email) {
-        Optional<User> user = userRepository.getUserByEmail(email);
-        if (user.isPresent()) {
+        User user = findByEmail(email);
+        if (user != null) {
             throw new AttrValidationErrorException(
                     singletonList(new AttrValidationError("email", "Данный адрес занят")));
         }

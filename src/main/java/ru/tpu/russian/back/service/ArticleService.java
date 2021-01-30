@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class ArticleService {
 
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
     private final MediaService mediaService;
 

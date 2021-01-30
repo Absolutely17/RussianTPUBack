@@ -7,6 +7,7 @@ import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 import ru.tpu.russian.back.entity.user.User;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.*;
 
 @Slf4j
@@ -177,5 +178,10 @@ public class UserRepositoryImpl implements IUserRepository {
                 .setParameter("email", request.getEmail())
                 .setParameter("phoneNumber", request.getPhoneNumber())
                 .executeUpdate();
+    }
+
+    @Override
+    public List<User> getUsersByQuery(CriteriaQuery query) {
+        return em.createQuery(query).getResultList();
     }
 }

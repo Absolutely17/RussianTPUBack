@@ -1,10 +1,13 @@
 package ru.tpu.russian.back.controller;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.notification.*;
 import ru.tpu.russian.back.service.NotificationService;
 
+import java.util.List;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -15,6 +18,13 @@ public class NotificationRest {
 
     public NotificationRest(NotificationService notificationService) {
         this.notificationService = notificationService;
+    }
+
+    @RequestMapping(method = GET)
+    public List<NotificationResponse> getAllNotificationByUser(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizeStr
+    ) {
+        return notificationService.getAllByUser(authorizeStr);
     }
 
     /**

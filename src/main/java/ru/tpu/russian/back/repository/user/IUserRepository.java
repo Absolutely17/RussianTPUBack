@@ -4,6 +4,7 @@ import ru.tpu.russian.back.dto.user.*;
 import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 import ru.tpu.russian.back.entity.user.User;
 
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.*;
 
 public interface IUserRepository {
@@ -67,4 +68,9 @@ public interface IUserRepository {
      * Редактирование пользователя из админки
      */
     void editUserByAdmin(String id, UserProfileEditRequest request);
+
+    /**
+     * Искать пользователей по кастомному запросу
+     */
+    List<User> getUsersByQuery(CriteriaQuery query);
 }

@@ -77,6 +77,11 @@ public class DocumentService {
     }
 
     public void uploadDocument(DocumentUploadRequest dto, MultipartFile doc) throws IOException {
-        documentRepository.uploadDocument(dto, doc.getBytes());
+        String documentId = documentRepository.uploadDocument(dto, doc.getBytes());
+        if (documentId == null) {
+            throw new BusinessException("Ошибка при загрузке документа");
+        } else {
+            dto.getUserIds().forEach(it -> documentRepository.attachDocumentToUser(documentId, it));
+        }
     }
 }

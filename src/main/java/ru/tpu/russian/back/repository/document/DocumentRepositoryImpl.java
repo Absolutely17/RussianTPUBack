@@ -15,6 +15,8 @@ public class DocumentRepositoryImpl implements IDocumentRepository {
 
     private static final String GET_DOCUMENT_WITH_CONTENT = "GetDocumentsWithContent";
 
+    private static final String ATTACH_DOCUMENT_TO_USER = "AttachDocumentToUser";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -37,14 +39,22 @@ public class DocumentRepositoryImpl implements IDocumentRepository {
 
     @Override
     @Transactional
-    public void uploadDocument(DocumentUploadRequest dto, byte[] document) {
-        em.createNativeQuery("exec AddDocument :fileName, :documentName," +
-                ":content, :userEmail, :adminEmail")
+    public String uploadDocument(DocumentUploadRequest dto, byte[] document) {
+        return (String)em.createNativeQuery("exec AddDocument :fileName, :documentName," +
+                ":content, :adminEmail")
                 .setParameter("fileName", dto.getFileName())
                 .setParameter("documentName", dto.getDocumentName())
                 .setParameter("content", document)
-                .setParameter("userEmail", dto.getUserEmail())
                 .setParameter("adminEmail", dto.getAdminEmail())
+                .getResultList().stream().findFirst().orElse(null);
+    }
+
+    @Transactional
+    @Override
+    public void attachDocumentToUser(String documentId, String userId) {
+        em.createNativeQuery("exec " + ATTACH_DOCUMENT_TO_USER + " :documentId, :userId")
+                .setParameter("documentId", documentId)
+                .setParameter("userId", userId)
                 .executeUpdate();
     }
 }

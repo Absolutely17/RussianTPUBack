@@ -18,7 +18,12 @@ public interface IDocumentRepository {
     DocumentWithContent getDocumentWithContent(String id);
 
     /**
-     * Загрузить документ пользователю
+     * Загрузить документ
      */
-    void uploadDocument(DocumentUploadRequest dto, byte[] document);
+    String uploadDocument(DocumentUploadRequest dto, byte[] document);
+
+    /**
+     * Прикрепить документ к пользователю
+     */
+    void attachDocumentToUser(String documentId, String userId);
 }

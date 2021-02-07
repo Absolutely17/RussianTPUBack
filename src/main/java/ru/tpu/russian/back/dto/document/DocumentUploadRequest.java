@@ -2,6 +2,8 @@ package ru.tpu.russian.back.dto.document;
 
 import lombok.*;
 
+import java.util.List;
+
 /**
  * Загрузка документа пользователю
  */
@@ -12,7 +14,7 @@ public class DocumentUploadRequest {
 
     private String adminEmail;
 
-    private String userEmail;
+    private List<String> userIds;
 
     /**
      * Название файла. Не изменяетя.

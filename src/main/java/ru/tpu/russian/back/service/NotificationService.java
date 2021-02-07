@@ -17,13 +17,12 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @Slf4j
 public class NotificationService {
-
-    private static final int MAX_USERS_ON_NOTIFICATION = 10000;
 
     private static final String TOPIC_NAME = "news";
 
@@ -124,12 +123,6 @@ public class NotificationService {
      * @return ответ, успешно или ошибки
      */
     public ResponseEntity<?> sendOnUser(NotificationRequestUsers requestDto) {
-        if (requestDto.getUsers().size() > MAX_USERS_ON_NOTIFICATION) {
-            return new ResponseEntity<>(
-                    new ExceptionMessage("Too many users have been selected for mailing."),
-                    BAD_REQUEST
-            );
-        }
         log.info("Send notification on app. {}", requestDto.toString());
         try {
             List<String> userFcmTokens = requestDto.getUsers().stream()
@@ -151,11 +144,7 @@ public class NotificationService {
                 sendSingleMessage(message);
                 response = "Успешно";
             } else {
-                return new ResponseEntity<>(
-                        new ExceptionMessage(
-                                "Пустой список получателей (возможно, у пользователей нету активного токена)"),
-                        INTERNAL_SERVER_ERROR
-                );
+                response = "Успешно, но отсутствовали активные FCM токены";
             }
             log.info("Notification send. Response {}", response);
             notificationRepository.save(notificationMapper.convertToUserNotification(requestDto, response));

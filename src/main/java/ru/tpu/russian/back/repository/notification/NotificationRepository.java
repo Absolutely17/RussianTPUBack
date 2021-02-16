@@ -15,6 +15,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Stri
      */
     @Query(value = "select * from NOTIFICATION main" +
             " JOIN NOTIFICATION_USER_LINK link ON link.NOTIFICATION_ID = main.ID" +
-            " JOIN USER_EMAIL email ON email.USER_ID = link.USER_ID WHERE email.EMAIL = :email", nativeQuery = true)
+            " JOIN USER_EMAIL email ON email.USER_ID = link.USER_ID WHERE email.EMAIL = :email" +
+            " ORDER BY main.LOAD_DATE DESC", nativeQuery = true)
     List<Notification> getAllByUser(@Param(value = "email") String email);
 }

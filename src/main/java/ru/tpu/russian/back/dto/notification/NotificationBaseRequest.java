@@ -2,6 +2,7 @@ package ru.tpu.russian.back.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import ru.tpu.russian.back.enums.NotificationAppLink;
 
 import javax.validation.constraints.*;
 
@@ -24,6 +25,8 @@ public class NotificationBaseRequest {
     @Email
     private String adminEmail;
 
+    private NotificationAppLink notificationAppLink = NotificationAppLink.NOTIFICATION;
+
     @JsonIgnore
     private String topic = "news";
 
@@ -33,6 +36,7 @@ public class NotificationBaseRequest {
                 "title='" + title + '\'' +
                 ", message='" + message + '\'' +
                 ", email='" + adminEmail + '\'' +
+                ", notificationAppLink='" + notificationAppLink + '\'' +
                 '}';
     }
 }

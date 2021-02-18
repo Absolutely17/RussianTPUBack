@@ -53,8 +53,9 @@ public class DocumentRest {
     @RequestMapping(method = POST, path = "/admin/upload", consumes = {"multipart/form-data"})
     public void uploadDocument(
             @RequestPart("documentInfo") DocumentUploadRequest dto,
-            @RequestPart("document") MultipartFile doc
+            @RequestPart("document") MultipartFile document,
+            HttpServletRequest request
     ) throws IOException {
-        documentService.uploadDocument(dto, doc);
+        documentService.uploadDocument(dto, document, request);
     }
 }

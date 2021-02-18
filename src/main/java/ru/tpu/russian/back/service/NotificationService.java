@@ -26,6 +26,8 @@ public class NotificationService {
 
     private static final String TOPIC_NAME = "news";
 
+    private static final String APP_LINK = "APP_LINK";
+
     private final NotificationRepository notificationRepository;
 
     private final MailingTokenRepository mailingTokenRepository;
@@ -98,7 +100,9 @@ public class NotificationService {
                         Notification.builder()
                                 .setTitle(request.getTitle())
                                 .setBody(request.getMessage())
-                                .build());
+                                .build()
+                )
+                .putData(APP_LINK, request.getNotificationAppLink().toString());
     }
 
     private AndroidConfig getAndroidConfig(String topic) {
@@ -170,7 +174,8 @@ public class NotificationService {
                                 .setTitle(request.getTitle())
                                 .setBody(request.getMessage())
                                 .build()
-                );
+                )
+                .putData(APP_LINK, request.getNotificationAppLink().toString());
     }
 
     private int sendOnUsersAndGetFailureCount(MulticastMessage message) throws FirebaseMessagingException {

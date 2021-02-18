@@ -400,6 +400,7 @@ public class UserService {
                 request.getTitle(), request.getDescription()
         ));
         requestNotification.setAdminEmail(jwtProvider.getEmailFromToken(jwtProvider.unwrapTokenFromHeaderStr(token)));
+        requestNotification.setNotificationAppLink(NotificationAppLink.CALENDAR_EVENT);
         return requestNotification;
     }
 

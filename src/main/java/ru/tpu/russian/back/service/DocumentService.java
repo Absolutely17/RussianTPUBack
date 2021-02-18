@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.tpu.russian.back.dto.document.*;
+import ru.tpu.russian.back.dto.notification.NotificationRequestUsers;
 import ru.tpu.russian.back.entity.document.DocumentWithContent;
+import ru.tpu.russian.back.enums.NotificationAppLink;
 import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.mapper.DocumentMapper;
 import ru.tpu.russian.back.repository.document.IDocumentRepository;
@@ -30,14 +32,18 @@ public class DocumentService {
 
     private final DocumentMapper documentMapper;
 
+    private final NotificationService notificationService;
+
     public DocumentService(
             IDocumentRepository documentRepository,
             JwtProvider jwtProvider,
-            DocumentMapper documentMapper
+            DocumentMapper documentMapper,
+            NotificationService notificationService
     ) {
         this.documentRepository = documentRepository;
         this.jwtProvider = jwtProvider;
         this.documentMapper = documentMapper;
+        this.notificationService = notificationService;
     }
 
     public List<DocumentResponse> getDocumentWithoutContent(String email, HttpServletRequest request)
@@ -76,12 +82,27 @@ public class DocumentService {
         }
     }
 
-    public void uploadDocument(DocumentUploadRequest dto, MultipartFile doc) throws IOException {
+    public void uploadDocument(
+            DocumentUploadRequest dto,
+            MultipartFile doc,
+            HttpServletRequest request
+    ) throws IOException {
         String documentId = documentRepository.uploadDocument(dto, doc.getBytes());
         if (documentId == null) {
             throw new BusinessException("Ошибка при загрузке документа");
         } else {
             dto.getUserIds().forEach(it -> documentRepository.attachDocumentToUser(documentId, it));
+            String token = jwtProvider.getTokenFromRequest(request);
+            if (token != null && jwtProvider.validateToken(token)) {
+                String emailInToken = jwtProvider.getEmailFromToken(token);
+                NotificationRequestUsers notification = new NotificationRequestUsers();
+                notification.setUsers(dto.getUserIds());
+                notification.setTitle("Новый прикрепленный файл");
+                notification.setMessage("Вам был прикреплен новый файл.");
+                notification.setNotificationAppLink(NotificationAppLink.DOCUMENT);
+                notification.setAdminEmail(emailInToken);
+                notificationService.sendOnUser(notification);
+            }
         }
     }
 }

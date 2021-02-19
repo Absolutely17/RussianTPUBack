@@ -1,5 +1,6 @@
 package ru.tpu.russian.back.repository.user;
 
+import com.google.api.client.util.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.user.*;
@@ -176,7 +177,10 @@ public class UserRepositoryImpl implements IUserRepository {
                 .setParameter("languageId", request.getLanguageId())
                 .setParameter("groupName", request.getGroupName())
                 .setParameter("email", request.getEmail())
-                .setParameter("phoneNumber", request.getPhoneNumber())
+                .setParameter("phoneNumber", Strings.isNullOrEmpty(request.getPhoneNumber())
+                        ? null
+                        : request.getPhoneNumber()
+                )
                 .executeUpdate();
     }
 

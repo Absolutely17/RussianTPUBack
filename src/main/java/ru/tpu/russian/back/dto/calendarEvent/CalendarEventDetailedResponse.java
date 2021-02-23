@@ -1,4 +1,4 @@
-package ru.tpu.russian.back.dto.user.calendarEvent;
+package ru.tpu.russian.back.dto.calendarEvent;
 
 import lombok.Getter;
 import ru.tpu.russian.back.enums.CalendarEventGroupTarget;

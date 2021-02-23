@@ -4,7 +4,6 @@ import com.google.api.client.util.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 import ru.tpu.russian.back.entity.user.User;
 
 import javax.persistence.*;
@@ -29,10 +28,6 @@ public class UserRepositoryImpl implements IUserRepository {
     private static final String ADD_RESET_PASSWORD_TOKEN = "AddResetPasswordRequest";
 
     private static final String GET_GROUP_ID = "GetUserGroupID";
-
-    private static final String GET_CALENDAR_EVENTS_BY_EMAIL = "GetCalendarEventsByEmail";
-
-    private static final String GET_CALENDAR_EVENT_BY_ID = "GetCalendarEventById";
 
     private static final String DELETE_USER_BY_ID = "DeleteUser";
 
@@ -137,22 +132,6 @@ public class UserRepositoryImpl implements IUserRepository {
         return Optional.ofNullable((String) em.createNativeQuery("exec " + GET_GROUP_ID + " :email")
                 .setParameter("email", email)
                 .getSingleResult());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CalendarEvent> getCalendarEventsByEmail(String email) {
-        return em.createNativeQuery("exec " + GET_CALENDAR_EVENTS_BY_EMAIL + " :email", CalendarEvent.class)
-                .setParameter("email", email)
-                .getResultList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<CalendarEvent> getCalendarEventById(String id) {
-        return em.createNativeQuery("exec " + GET_CALENDAR_EVENT_BY_ID + " :id", CalendarEvent.class)
-                .setParameter("id", id)
-                .getResultStream().findFirst();
     }
 
     @Override

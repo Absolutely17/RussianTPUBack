@@ -1,8 +1,6 @@
-package ru.tpu.russian.back.dto.user.calendarEvent;
+package ru.tpu.russian.back.dto.calendarEvent;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.tpu.russian.back.enums.CalendarEventGroupTarget;
 
 /**
@@ -21,6 +19,6 @@ public class CalendarEventResponse {
 
     private String timestamp;
 
-    private CalendarEventGroupTarget eventTarget;
+    private CalendarEventGroupTarget groupTarget;
 
 }

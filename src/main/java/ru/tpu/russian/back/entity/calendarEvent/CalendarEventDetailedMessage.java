@@ -16,6 +16,7 @@ public class CalendarEventDetailedMessage {
     @Column(name = "ID")
     private String id;
 
+    @Setter
     @Column(name = "MESSAGE")
     private String message;
 

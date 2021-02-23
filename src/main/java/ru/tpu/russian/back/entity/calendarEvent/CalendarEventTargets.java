@@ -1,6 +1,6 @@
 package ru.tpu.russian.back.entity.calendarEvent;
 
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.tpu.russian.back.entity.user.*;
 
 import javax.annotation.Nullable;
@@ -10,6 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "CALENDAR_EVENT_TARGETS")
 @NoArgsConstructor
+@Getter
 public class CalendarEventTargets {
 
     @Id

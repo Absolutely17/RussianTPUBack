@@ -1,20 +1,17 @@
 package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.auth.*;
-import ru.tpu.russian.back.dto.notification.*;
+import ru.tpu.russian.back.dto.notification.NotificationTokenRequest;
 import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.dto.user.calendarEvent.*;
-import ru.tpu.russian.back.entity.calendarEvent.*;
 import ru.tpu.russian.back.entity.notification.MailingToken;
-import ru.tpu.russian.back.entity.user.*;
-import ru.tpu.russian.back.enums.*;
+import ru.tpu.russian.back.entity.user.User;
+import ru.tpu.russian.back.enums.ProviderType;
 import ru.tpu.russian.back.exception.*;
 import ru.tpu.russian.back.mapper.UserMapper;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
@@ -23,13 +20,11 @@ import ru.tpu.russian.back.repository.user.UserRepository;
 import ru.tpu.russian.back.security.jwt.JwtProvider;
 import ru.tpu.russian.back.security.model.*;
 
-import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static org.apache.commons.codec.digest.DigestUtils.sha1Hex;
-import static ru.tpu.russian.back.enums.NotificationTargetGroup.ALL;
 import static ru.tpu.russian.back.enums.ProviderType.valueOf;
 import static ru.tpu.russian.back.service.MailService.TypeMessages.CONFIRMATION_MESSAGE;
 import static ru.tpu.russian.back.service.MailService.TypeMessages.RESET_PASSWORD_MESSAGE;
@@ -41,10 +36,6 @@ public class UserService {
     private static final int HTTP_STATUS_REG_NEED_FILL = 210;
 
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
-
-    private static final String TITLE_NOTIFICATION_CALENDAR_EVENT = "Вам назначено новое событие!";
-
-    private static final String MESSAGE_NOTIFICATION_CALENDAR_EVENT = "%s\r\n%s\r\nЗагляните в календарь...";
 
     private final UserRepository userRepository;
 
@@ -60,11 +51,6 @@ public class UserService {
 
     private final LanguageRepository languageRepository;
 
-    private final NotificationService notificationService;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
@@ -72,8 +58,7 @@ public class UserService {
             MailService mailService,
             MailingTokenRepository mailingTokenRepository,
             LanguageRepository languageRepository,
-            UserMapper userMapper,
-            NotificationService notificationService
+            UserMapper userMapper
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -82,7 +67,6 @@ public class UserService {
         this.mailingTokenRepository = mailingTokenRepository;
         this.userMapper = userMapper;
         this.languageRepository = languageRepository;
-        this.notificationService = notificationService;
     }
 
     public void register(UserRegisterRequest registrationRequestDto) {
@@ -324,98 +308,6 @@ public class UserService {
         return new AuthResponse(token, userMapper.convertToResponse(user));
     }
 
-    @Transactional
-    public void createCalendarEvent(CalendarEventCreateRequest request, String token) {
-        CalendarEvent event = userMapper.convertToCalendarEventFromRequest(request);
-        switch (event.getTargetEnum()) {
-            case STUDY_GROUP:
-                event.addNewTargets(request.getGroups()
-                        .stream()
-                        .map(it -> new CalendarEventTargets(event, entityManager.getReference(StudyGroup.class, it)))
-                        .collect(Collectors.toSet()));
-                break;
-            case SELECTED_USERS:
-                event.addNewTargets(request.getSelectedUsers()
-                        .stream()
-                        .map(it -> new CalendarEventTargets(event, entityManager.getReference(User.class, it)))
-                        .collect(Collectors.toSet()));
-                break;
-        }
-        if (request.isSendNotification()) {
-            sendNotificationAboutCreatedEvent(request, token);
-        }
-        entityManager.persist(event);
-        if (Strings.isNotEmpty(request.getDetailedMessage())) {
-            CalendarEventDetailedMessage detailedMessage =
-                    new CalendarEventDetailedMessage(request.getDetailedMessage());
-            detailedMessage.setCalendarEvent(event);
-            entityManager.persist(detailedMessage);
-        }
-    }
-
-    private void sendNotificationAboutCreatedEvent(CalendarEventCreateRequest request, String token) {
-        NotificationBaseRequest requestNotification = createNotificationRequestFromTarget(
-                request.getGroupTarget(),
-                request,
-                token
-        );
-        if (requestNotification instanceof NotificationRequestUsers) {
-            notificationService.sendOnUser((NotificationRequestUsers)requestNotification);
-        } else {
-            notificationService.sendOnGroup((NotificationRequestGroup)requestNotification);
-        }
-    }
-
-    private NotificationBaseRequest createNotificationRequestFromTarget(
-            CalendarEventGroupTarget target,
-            CalendarEventCreateRequest request,
-            String token
-    ) {
-        NotificationBaseRequest requestNotification;
-        switch (target) {
-            case ALL:
-                requestNotification = new NotificationRequestGroup();
-                ((NotificationRequestGroup)requestNotification).setTargetGroup(ALL);
-                break;
-            case STUDY_GROUP:
-                requestNotification = new NotificationRequestUsers();
-                ((NotificationRequestUsers)requestNotification).setUsers(request.getGroups()
-                        .stream()
-                        .map(userRepository::getUsersByGroupId)
-                        .collect(Collectors.toList())
-                        .stream()
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList()));
-                break;
-            case SELECTED_USERS:
-                requestNotification = new NotificationRequestUsers();
-                ((NotificationRequestUsers)requestNotification).setUsers(request.getSelectedUsers());
-                break;
-            default:
-                throw new IllegalArgumentException("Wrong target calendar event value " + target.toString());
-        }
-        requestNotification.setTitle(TITLE_NOTIFICATION_CALENDAR_EVENT);
-        requestNotification.setMessage(String.format(
-                MESSAGE_NOTIFICATION_CALENDAR_EVENT,
-                request.getTitle(), request.getDescription()
-        ));
-        requestNotification.setAdminEmail(jwtProvider.getEmailFromToken(jwtProvider.unwrapTokenFromHeaderStr(token)));
-        requestNotification.setNotificationAppLink(NotificationAppLink.CALENDAR_EVENT);
-        return requestNotification;
-    }
-
-    public List<CalendarEventResponse> getCalendarEvents(String token) {
-        String email = jwtProvider.getEmailFromToken(jwtProvider.unwrapTokenFromHeaderStr(token));
-        if (email != null) {
-            return userRepository.getCalendarEventsByEmail(email)
-                    .stream()
-                    .map(userMapper::convertCalendarEventToResponse)
-                    .collect(Collectors.toList());
-        } else {
-            throw new IllegalArgumentException("Email in token is empty.");
-        }
-    }
-
     /**
      * Удалить пользователя
      */
@@ -455,20 +347,6 @@ public class UserService {
             userRepository.editUserByAdmin(id, request);
         } else {
             throw new BusinessException("Редактируемый пользователь не найден");
-        }
-    }
-
-    /**
-     * Получить событие по ID
-     */
-    public CalendarEventDetailedResponse getDetailedCalendarEvent(String id) {
-        log.info("Get detailed calendar event {}", id);
-        Optional<CalendarEvent> event = userRepository.getCalendarEventById(id);
-        if (event.isPresent()) {
-            return userMapper.convertToDetailedResponseCalendarEvent(event.get());
-        } else {
-            log.error("Calendar event with id {} doesnt exist", id);
-            throw new BusinessException("Exception.user.calendarEvent.notFound");
         }
     }
 }

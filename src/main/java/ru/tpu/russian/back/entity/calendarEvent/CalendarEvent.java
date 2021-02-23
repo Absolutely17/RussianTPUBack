@@ -11,6 +11,11 @@ import java.util.*;
 @Table(name = "CALENDAR_EVENT")
 @NoArgsConstructor
 @Getter
+@Setter
+@NamedEntityGraph(
+        name = "CalendarEventAndTargets",
+        attributeNodes = @NamedAttributeNode("targets")
+)
 public class CalendarEvent {
 
     @Id
@@ -40,7 +45,7 @@ public class CalendarEvent {
 
     @Nullable
     @Column(name = "ONLINE_MEETING_LINK")
-    private String onlineLink;
+    private String onlineMeetingLink;
 
     @Column(name = "LOAD_DATE")
     private Date loadDate;
@@ -50,7 +55,7 @@ public class CalendarEvent {
 
     public CalendarEvent(
             String title, @Nullable String description, String timestamp, CalendarEventGroupTarget targetEnum,
-            boolean sendNotification, @Nullable String onlineLink
+            boolean sendNotification, @Nullable String onlineMeetingLink
     ) {
         id = UUID.randomUUID().toString();
         this.title = title;
@@ -58,7 +63,7 @@ public class CalendarEvent {
         this.timestamp = timestamp;
         this.targetEnum = targetEnum;
         this.sendNotification = sendNotification;
-        this.onlineLink = onlineLink;
+        this.onlineMeetingLink = onlineMeetingLink;
         loadDate = new Date();
     }
 

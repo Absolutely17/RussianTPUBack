@@ -2,8 +2,6 @@ package ru.tpu.russian.back.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.dto.user.calendarEvent.*;
-import ru.tpu.russian.back.entity.calendarEvent.CalendarEvent;
 import ru.tpu.russian.back.entity.user.User;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
 import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
@@ -67,39 +65,6 @@ public class UserMapper {
                 user.getLanguage(),
                 languageName,
                 user.isConfirm()
-        );
-    }
-
-    public CalendarEvent convertToCalendarEventFromRequest(CalendarEventCreateRequest request) {
-        return new CalendarEvent(
-                request.getTitle(),
-                request.getDescription(),
-                request.getDate(),
-                request.getGroupTarget(),
-                request.isSendNotification(),
-                request.getOnlineMeetingLink()
-        );
-    }
-
-    public CalendarEventResponse convertCalendarEventToResponse(CalendarEvent event) {
-        return new CalendarEventResponse(
-                event.getId(),
-                event.getTitle(),
-                event.getDescription(),
-                event.getTimestamp(),
-                event.getTargetEnum()
-        );
-    }
-
-    public CalendarEventDetailedResponse convertToDetailedResponseCalendarEvent(CalendarEvent event) {
-        return new CalendarEventDetailedResponse(
-                event.getId(),
-                event.getTitle(),
-                event.getDescription(),
-                event.getTimestamp(),
-                event.getTargetEnum(),
-                event.getOnlineLink(),
-                event.getDetailedMessage() == null ? null : event.getDetailedMessage().getMessage()
         );
     }
 }

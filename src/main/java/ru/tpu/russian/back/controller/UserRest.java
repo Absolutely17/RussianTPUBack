@@ -1,10 +1,8 @@
 package ru.tpu.russian.back.controller;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import ru.tpu.russian.back.dto.SimpleNameObj;
 import ru.tpu.russian.back.dto.user.*;
-import ru.tpu.russian.back.dto.user.calendarEvent.*;
 import ru.tpu.russian.back.exception.*;
 import ru.tpu.russian.back.service.UserService;
 
@@ -46,26 +44,6 @@ public class UserRest {
     }
 
     /**
-     * Получить события в календаре для пользователя
-     */
-    @RequestMapping(method = GET, path = "/calendarEvents")
-    public List<CalendarEventResponse> getCalendarEventsForUser(
-            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token
-    ) {
-        return userService.getCalendarEvents(token);
-    }
-
-    /**
-     * Получить событие по его ID
-     */
-    @RequestMapping(method = GET, path = "/calendarEvent/{id}/detailed")
-    public CalendarEventDetailedResponse getDetailedCalendarEvent(
-            @PathVariable String id
-    ) {
-        return userService.getDetailedCalendarEvent(id);
-    }
-
-    /**
      * РЕСТы для админки
      */
     @RequestMapping(method = GET, path = "/admin/table")
@@ -76,17 +54,6 @@ public class UserRest {
     @RequestMapping(method = GET, path = "/admin/dicts")
     public Map<String, List<SimpleNameObj>> getDicts() {
         return userService.getDictsTable();
-    }
-
-    /**
-     * Создаем событие в календаре пользователя
-     */
-    @RequestMapping(method = POST, path = "/admin/calendarEvent")
-    public void createCalendarEvent(
-            @RequestBody CalendarEventCreateRequest request,
-            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token
-    ) {
-        userService.createCalendarEvent(request, token);
     }
 
     @RequestMapping(method = POST, path = "/admin")

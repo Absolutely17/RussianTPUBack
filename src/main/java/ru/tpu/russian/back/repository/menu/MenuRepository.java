@@ -17,4 +17,7 @@ public interface MenuRepository extends JpaRepository<Menu, String> {
 
     @Query("from MenuType")
     List<MenuType> getAllMenuType();
+
+    @Query("select menu.name from Menu menu where menu.id = :id")
+    String getMenuNameById(@Param("id") String id);
 }

@@ -22,7 +22,7 @@ public class ArticleRest {
     }
 
     @RequestMapping(method = GET, path = "/list/{id}")
-    public List<ArticleBriefResponse> getArticlesBrief(@PathVariable String id) throws BusinessException {
+    public ArticleListResponse getArticlesBrief(@PathVariable String id) throws BusinessException {
         return articleService.getArticlesBrief(id);
     }
 

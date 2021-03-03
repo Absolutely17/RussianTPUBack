@@ -37,7 +37,7 @@ public class MediaRest {
             consumes = {"multipart/form-data"},
             produces = "text/plain"
     )
-    public String uploadImage(@RequestParam("file") MultipartFile file) throws BusinessException {
+    public String uploadImage(@RequestParam("image") MultipartFile file) throws BusinessException {
         return mediaService.uploadImage(file);
     }
 }

@@ -10,6 +10,7 @@ import ru.tpu.russian.back.exception.BusinessException;
 import ru.tpu.russian.back.mapper.ArticleMapper;
 import ru.tpu.russian.back.repository.article.ArticleRepository;
 import ru.tpu.russian.back.repository.language.LanguageRepository;
+import ru.tpu.russian.back.repository.menu.MenuRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,16 +29,20 @@ public class ArticleService {
 
     private final LanguageRepository languageRepository;
 
+    private final MenuRepository menuRepository;
+
     public ArticleService(
             ArticleRepository articleRepository,
             MediaService mediaService,
             ArticleMapper articleMapper,
-            LanguageRepository languageRepository
+            LanguageRepository languageRepository,
+            MenuRepository menuRepository
     ) {
         this.articleRepository = articleRepository;
         this.mediaService = mediaService;
         this.articleMapper = articleMapper;
         this.languageRepository = languageRepository;
+        this.menuRepository = menuRepository;
     }
 
     /**
@@ -45,18 +50,20 @@ public class ArticleService {
      *
      * @param id ID пункта меню
      */
-    public List<ArticleBriefResponse> getArticlesBrief(String id) throws BusinessException {
+    public ArticleListResponse getArticlesBrief(String id) throws BusinessException {
         log.info("Get brief articles from menu. ID menu item = {}", id);
         List<Article> articles = articleRepository.getBriefArticlesFromMenu(id);
+        String menuItemName = menuRepository.getMenuNameById(id);
         if (articles == null || articles.isEmpty()) {
             log.error("Could not find articles. Menu item ID {}", id);
             throw new BusinessException("Exception.briefArticle.notFound");
         }
         log.info("Count brief articles {}", articles.size());
-        return articles
+        List<ArticleBriefResponse> briefArticles = articles
                 .stream()
                 .map(this::convertToBriefResponse)
                 .collect(toList());
+        return new ArticleListResponse(briefArticles, menuItemName);
     }
 
     private ArticleBriefResponse convertToBriefResponse(Article article) {

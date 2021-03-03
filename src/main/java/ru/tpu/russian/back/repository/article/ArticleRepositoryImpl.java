@@ -9,8 +9,6 @@ import java.util.List;
 
 public class ArticleRepositoryImpl implements IArticleRepository {
 
-    private static final String GET_BRIEF_ARTICLES = "GetArticlesBrief";
-
     private static final String GET_BRIEF_ARTICLES_FROM_MENU = "GetArticlesBriefFromMenu";
 
     private static final String CREATE_ARTICLE = "AddArticle";

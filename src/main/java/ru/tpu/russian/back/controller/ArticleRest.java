@@ -26,9 +26,9 @@ public class ArticleRest {
         return articleService.getArticlesBrief(id);
     }
 
-    @RequestMapping(method = GET, path = "/{id}")
+    @RequestMapping(method = GET)
     public ArticleResponse getArticle(
-            @PathVariable String id
+            @RequestParam(value = "id", required = false) String id
     ) throws BusinessException {
         return articleService.getArticle(id);
     }

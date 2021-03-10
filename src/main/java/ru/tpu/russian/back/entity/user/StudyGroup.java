@@ -19,8 +19,11 @@ public class StudyGroup implements Comparable<StudyGroup> {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "GROUP_INTERNAL_ID")
-    private String internalID;
+    @Column(name = "SCHEDULE_URL")
+    private String scheduleUrl;
+
+    @Column(name = "ACADEMIC_PLAN_URL")
+    private String academicPlanUrl;
 
     public StudyGroup() {
         id = UUID.randomUUID().toString();

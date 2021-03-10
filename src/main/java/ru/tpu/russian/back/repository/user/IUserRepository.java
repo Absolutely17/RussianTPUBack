@@ -44,9 +44,9 @@ public interface IUserRepository {
     void addResetToken(String email, String token);
 
     /**
-     * Получаем ID группы (не общеизвестный, к примеру, 8В7Б, а 35089(обозначение внутри системы ТПУ)
+     * Получаем ссылку на расписание для группы
      */
-    Optional<String> getGroupId(String email);
+    Optional<String> getGroupScheduleUrl(String email);
 
     /**
      * Удалить пользователя из системы.

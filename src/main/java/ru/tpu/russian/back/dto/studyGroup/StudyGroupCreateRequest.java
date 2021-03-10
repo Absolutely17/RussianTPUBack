@@ -1,9 +1,6 @@
 package ru.tpu.russian.back.dto.studyGroup;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,5 +9,7 @@ public class StudyGroupCreateRequest {
 
     private String name;
 
-    private String internalID;
+    private String scheduleUrl;
+
+    private String academicPlanUrl;
 }

@@ -64,6 +64,10 @@ public class User {
     @Column(name = "GROUP_NAME")
     private String groupName;
 
+    @Nullable
+    @Column(name = "ACADEMIC_PLAN_URL")
+    private String academicPlanUrl;
+
     @Column(name = "LOAD_DATE")
     private Date loadDate;
 

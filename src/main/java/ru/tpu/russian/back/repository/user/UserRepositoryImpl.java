@@ -27,7 +27,7 @@ public class UserRepositoryImpl implements IUserRepository {
 
     private static final String ADD_RESET_PASSWORD_TOKEN = "AddResetPasswordRequest";
 
-    private static final String GET_GROUP_ID = "GetUserGroupID";
+    private static final String GET_GROUP_SCHEDULE_URL = "GetGroupScheduleUrl";
 
     private static final String DELETE_USER_BY_ID = "DeleteUser";
 
@@ -128,8 +128,8 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<String> getGroupId(String email) {
-        return Optional.ofNullable((String) em.createNativeQuery("exec " + GET_GROUP_ID + " :email")
+    public Optional<String> getGroupScheduleUrl(String email) {
+        return Optional.ofNullable((String)em.createNativeQuery("exec " + GET_GROUP_SCHEDULE_URL + " :email")
                 .setParameter("email", email)
                 .getSingleResult());
     }

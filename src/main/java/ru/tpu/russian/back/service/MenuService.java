@@ -109,15 +109,16 @@ public class MenuService {
     }
 
     private String generateScheduleURL(String email) {
-        Optional<String> userGroupId = userRepository.getGroupId(email);
-        if (userGroupId.isPresent()) {
+        Optional<String> groupScheduleUrl = userRepository.getGroupScheduleUrl(email);
+        if (groupScheduleUrl.isPresent()) {
             Calendar cal = getInstance();
             Date studyStartDate = utilsRepository.getStudyStartDate();
             if (studyStartDate == null) {
                 return SCHEDULE_URL_TPU;
             }
             long currentWeek = calculateWeekBetweenDates(studyStartDate, cal) + 1;
-            return SCHEDULE_URL_TPU + "/gruppa_" + userGroupId.get() + "/" + cal.get(YEAR) + "/"
+            cal.setTime(studyStartDate);
+            return groupScheduleUrl.get() + "/" + cal.get(YEAR) + "/"
                     + currentWeek + "/view.html";
         } else {
             return SCHEDULE_URL_TPU;

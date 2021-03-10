@@ -64,7 +64,8 @@ public class UserMapper {
                 user.getGroupName(),
                 user.getLanguage(),
                 languageName,
-                user.isConfirm()
+                user.isConfirm(),
+                user.getAcademicPlanUrl()
         );
     }
 }

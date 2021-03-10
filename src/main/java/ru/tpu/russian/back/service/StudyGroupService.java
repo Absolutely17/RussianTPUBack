@@ -29,7 +29,8 @@ public class StudyGroupService {
     public void create(StudyGroupCreateRequest createDto) {
         StudyGroup group = new StudyGroup();
         group.setName(createDto.getName());
-        group.setInternalID(createDto.getInternalID());
+        group.setScheduleUrl(createDto.getScheduleUrl());
+        group.setAcademicPlanUrl(createDto.getAcademicPlanUrl());
         studyGroupRepository.save(group);
     }
 
@@ -41,7 +42,8 @@ public class StudyGroupService {
         StudyGroup group = studyGroupRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Данная группа отсутствует"));
         group.setName(editDto.getName());
-        group.setInternalID(editDto.getInternalID());
+        group.setScheduleUrl(editDto.getScheduleUrl());
+        group.setAcademicPlanUrl(editDto.getAcademicPlanUrl());
         studyGroupRepository.save(group);
     }
 

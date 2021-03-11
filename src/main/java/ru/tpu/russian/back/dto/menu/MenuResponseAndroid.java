@@ -36,6 +36,7 @@ public class MenuResponseAndroid {
     private String image;
 
     @Nullable
+    @Setter
     private String imageId;
 
     @Setter

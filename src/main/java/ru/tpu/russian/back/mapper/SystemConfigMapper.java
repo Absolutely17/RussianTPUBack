@@ -16,7 +16,9 @@ public class SystemConfigMapper {
                 parameter.getKey(),
                 parameter.getValue(),
                 parameter.getName(),
-                parameter.getDescription()
+                parameter.getDescription(),
+                parameter.isDisabled(),
+                parameter.getType()
         );
     }
 }

@@ -23,15 +23,27 @@ public class SystemConfigRepositoryImpl implements ISystemConfigRepository {
     @Nullable
     @Transactional(readOnly = true)
     public Date getStudyStartDate() {
-        String startDate = (String) em.createNativeQuery("exec " + GET_SYSTEM_PARAMETER + " :key")
+        String startDate = (String)em.createNativeQuery("exec " + GET_SYSTEM_PARAMETER + " :key")
                 .setParameter("key", "studyStartDate")
-                .getSingleResult();
+                .getResultList().stream().findFirst().orElse(null);
+        if (startDate == null) {
+            return null;
+        }
         try {
             return new SimpleDateFormat("dd.MM.yyyy").parse(startDate);
         } catch (ParseException ex) {
             log.error("Problem with value util parameter studyStartDate", ex);
             return null;
         }
+    }
+
+    @org.springframework.lang.Nullable
+    @Override
+    @Transactional(readOnly = true)
+    public String getDefaultMenuImage() {
+        return (String)em.createNativeQuery("exec " + GET_SYSTEM_PARAMETER + " :key")
+                .setParameter("key", "defaultMenuItemImage")
+                .getResultList().stream().findFirst().orElse(null);
     }
 
     @Override

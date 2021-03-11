@@ -39,7 +39,9 @@ public class SystemConfigService {
                     it.getName(),
                     it.getKey(),
                     it.getValue(),
-                    it.getDescription()
+                    it.getDescription(),
+                    it.isDisabled(),
+                    it.getType()
             );
             systemConfigRepository.save(param);
         });

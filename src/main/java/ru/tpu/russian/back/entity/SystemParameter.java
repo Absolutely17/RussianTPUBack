@@ -28,11 +28,19 @@ public class SystemParameter {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    public SystemParameter(String name, String key, String value, String description) {
+    @Column(name = "DISABLED")
+    private boolean disabled;
+
+    @Column(name = "TYPE")
+    private String type;
+
+    public SystemParameter(String name, String key, String value, String description, boolean disabled, String type) {
         id = UUID.randomUUID().toString();
         this.name = name;
         this.key = key;
         this.value = value;
         this.description = description;
+        this.disabled = disabled;
+        this.type = type;
     }
 }

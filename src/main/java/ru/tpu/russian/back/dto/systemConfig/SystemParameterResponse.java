@@ -19,4 +19,8 @@ public class SystemParameterResponse {
     private String name;
 
     private String description;
+
+    private boolean disabled;
+
+    private String type;
 }

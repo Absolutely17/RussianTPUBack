@@ -14,6 +14,12 @@ public interface ISystemConfigRepository {
     Date getStudyStartDate();
 
     /**
+     * Вытащить стандартную картинку пунктов меню
+     */
+    @Nullable
+    String getDefaultMenuImage();
+
+    /**
      * Вытащить все системные параметры
      */
     List<SystemParameter> getAllSystemParameter();

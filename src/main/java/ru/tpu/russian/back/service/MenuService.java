@@ -46,7 +46,7 @@ public class MenuService {
 
     private final UserRepository userRepository;
 
-    private final SystemConfigRepository utilsRepository;
+    private final SystemConfigRepository systemConfigRepository;
 
     private final MenuMapper menuMapper;
 
@@ -61,14 +61,14 @@ public class MenuService {
     public MenuService(
             MenuRepository menuRepository,
             UserRepository userRepository,
-            SystemConfigRepository utilsRepository,
+            SystemConfigRepository systemConfigRepository,
             MenuMapper menuMapper,
             LanguageRepository languageRepository,
             ArticleRepository articleRepository
     ) {
         this.menuRepository = menuRepository;
         this.userRepository = userRepository;
-        this.utilsRepository = utilsRepository;
+        this.systemConfigRepository = systemConfigRepository;
         this.menuMapper = menuMapper;
         this.languageRepository = languageRepository;
         this.articleRepository = articleRepository;
@@ -85,23 +85,27 @@ public class MenuService {
             log.error("Could not find menu items.");
             throw new BusinessException("Exception.menuItem.notFound");
         }
+        String defaultMenuImage = systemConfigRepository.getDefaultMenuImage();
         log.info("From DB received {} menu items", menuItems.size());
         return menuItems.stream()
-                .map(it -> convertToMenuResponse(it, email))
+                .map(it -> convertToMenuResponse(it, email, defaultMenuImage))
                 .collect(toList());
     }
 
-    private MenuResponseAndroid convertToMenuResponse(Menu menuItem, String email) {
+    private MenuResponseAndroid convertToMenuResponse(Menu menuItem, String email, String defaultMenuImageId) {
         MenuResponseAndroid menuResponseAndroid = menuMapper.convertToResponseForAndroid(menuItem);
         List<Menu> children = menuItem.getChildren();
         if (!children.isEmpty()) {
             menuResponseAndroid.setChildren(children
                     .stream()
-                    .map(it -> convertToMenuResponse(it, email))
+                    .map(it -> convertToMenuResponse(it, email, defaultMenuImageId))
                     .collect(toList()));
         }
         if (menuItem.getImageId() != null) {
             menuResponseAndroid.setImage(serviceUrl + "media/img/" + menuItem.getImageId());
+        } else if (defaultMenuImageId != null) {
+            menuResponseAndroid.setImageId(defaultMenuImageId);
+            menuResponseAndroid.setImage(serviceUrl + "media/img/" + defaultMenuImageId);
         }
         if (SCHEDULE_TYPE.equals(menuItem.getType().getType()) && email != null) {
             String groupScheduleUrl = userRepository.getGroupScheduleUrl(email).orElse(null);
@@ -113,7 +117,7 @@ public class MenuService {
     public String generateScheduleURL(@Nullable String groupScheduleUrl) {
         if (groupScheduleUrl != null) {
             Calendar cal = getInstance();
-            Date studyStartDate = utilsRepository.getStudyStartDate();
+            Date studyStartDate = systemConfigRepository.getStudyStartDate();
             if (studyStartDate == null) {
                 return SCHEDULE_URL_TPU;
             }

@@ -68,6 +68,10 @@ public class User {
     @Column(name = "ACADEMIC_PLAN_URL")
     private String academicPlanUrl;
 
+    @Nullable
+    @Column(name = "SCHEDULE_URL")
+    private String scheduleUrl;
+
     @Column(name = "LOAD_DATE")
     private Date loadDate;
 

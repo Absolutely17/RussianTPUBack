@@ -11,16 +11,20 @@ public class UserProfileResponse extends UserResponse {
 
     private String academicPlanUrl;
 
+    private String scheduleUrl;
+
     public UserProfileResponse(
             String email,
             String firstName, String lastName,
             String middleName, UserGender gender,
             String phoneNumber, String groupName,
             String languageId, String languageName,
-            boolean isConfirmed, String academicPlanUrl
+            boolean isConfirmed, String academicPlanUrl,
+            String scheduleUrl
     ) {
         super(email, firstName, lastName, middleName, gender, phoneNumber, groupName, languageId, languageName);
         this.isConfirmed = isConfirmed;
         this.academicPlanUrl = academicPlanUrl;
+        this.scheduleUrl = scheduleUrl;
     }
 }

@@ -2,6 +2,7 @@ package ru.tpu.russian.back.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tpu.russian.back.dto.SimpleNameObj;
@@ -103,14 +104,14 @@ public class MenuService {
             menuResponseAndroid.setImage(serviceUrl + "media/img/" + menuItem.getImageId());
         }
         if (SCHEDULE_TYPE.equals(menuItem.getType().getType()) && email != null) {
-            menuResponseAndroid.setUrl(generateScheduleURL(email));
+            String groupScheduleUrl = userRepository.getGroupScheduleUrl(email).orElse(null);
+            menuResponseAndroid.setUrl(generateScheduleURL(groupScheduleUrl));
         }
         return menuResponseAndroid;
     }
 
-    private String generateScheduleURL(String email) {
-        Optional<String> groupScheduleUrl = userRepository.getGroupScheduleUrl(email);
-        if (groupScheduleUrl.isPresent()) {
+    public String generateScheduleURL(@Nullable String groupScheduleUrl) {
+        if (groupScheduleUrl != null) {
             Calendar cal = getInstance();
             Date studyStartDate = utilsRepository.getStudyStartDate();
             if (studyStartDate == null) {
@@ -118,7 +119,7 @@ public class MenuService {
             }
             long currentWeek = calculateWeekBetweenDates(studyStartDate, cal) + 1;
             cal.setTime(studyStartDate);
-            return groupScheduleUrl.get() + "/" + cal.get(YEAR) + "/"
+            return groupScheduleUrl + "/" + cal.get(YEAR) + "/"
                     + currentWeek + "/view.html";
         } else {
             return SCHEDULE_URL_TPU;

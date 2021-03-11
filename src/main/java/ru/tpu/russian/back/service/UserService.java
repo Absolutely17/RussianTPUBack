@@ -51,6 +51,8 @@ public class UserService {
 
     private final LanguageRepository languageRepository;
 
+    private final MenuService menuService;
+
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
@@ -58,7 +60,8 @@ public class UserService {
             MailService mailService,
             MailingTokenRepository mailingTokenRepository,
             LanguageRepository languageRepository,
-            UserMapper userMapper
+            UserMapper userMapper,
+            MenuService menuService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -67,6 +70,7 @@ public class UserService {
         this.mailingTokenRepository = mailingTokenRepository;
         this.userMapper = userMapper;
         this.languageRepository = languageRepository;
+        this.menuService = menuService;
     }
 
     public void register(UserRegisterRequest registrationRequestDto) {
@@ -203,8 +207,10 @@ public class UserService {
 
     public UserProfileResponse getUserProfile(String email) throws BusinessException {
         log.info("Get user profile {}", email);
-        return userMapper.convertToProfile(userRepository.getUserByEmail(email).orElseThrow(
-                () -> new BusinessException("Exception.login.user.notFound", email)));
+        User user = userRepository.getUserByEmail(email)
+                .orElseThrow(() -> new BusinessException("Exception.login.user.notFound", email));
+        String scheduleUrl = menuService.generateScheduleURL(user.getScheduleUrl());
+        return userMapper.convertToProfile(user, scheduleUrl);
     }
 
     /**

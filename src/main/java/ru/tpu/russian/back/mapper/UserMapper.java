@@ -56,7 +56,7 @@ public class UserMapper {
         );
     }
 
-    public UserProfileResponse convertToProfile(User user) {
+    public UserProfileResponse convertToProfile(User user, String scheduleUrl) {
         String languageName = languageRepository.getById(user.getLanguage()).getShortName();
         return new UserProfileResponse(
                 user.getEmail(),
@@ -69,7 +69,8 @@ public class UserMapper {
                 user.getLanguage(),
                 languageName,
                 user.isConfirm(),
-                user.getAcademicPlanUrl() == null ? ACADEMIC_PLAN_URL_DEFAULT : user.getAcademicPlanUrl()
+                user.getAcademicPlanUrl() == null ? ACADEMIC_PLAN_URL_DEFAULT : user.getAcademicPlanUrl(),
+                scheduleUrl
         );
     }
 }

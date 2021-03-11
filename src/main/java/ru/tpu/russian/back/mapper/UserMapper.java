@@ -10,12 +10,16 @@ import ru.tpu.russian.back.repository.notification.MailingTokenRepository;
 @Component
 public class UserMapper {
 
+    private static final String ACADEMIC_PLAN_URL_DEFAULT = "https://up.tpu.ru/";
+
     private final LanguageRepository languageRepository;
 
     private final MailingTokenRepository mailingTokenRepository;
 
-    public UserMapper(LanguageRepository languageRepository,
-                      MailingTokenRepository mailingTokenRepository) {
+    public UserMapper(
+            LanguageRepository languageRepository,
+            MailingTokenRepository mailingTokenRepository
+    ) {
         this.languageRepository = languageRepository;
         this.mailingTokenRepository = mailingTokenRepository;
     }
@@ -65,7 +69,7 @@ public class UserMapper {
                 user.getLanguage(),
                 languageName,
                 user.isConfirm(),
-                user.getAcademicPlanUrl()
+                user.getAcademicPlanUrl() == null ? ACADEMIC_PLAN_URL_DEFAULT : user.getAcademicPlanUrl()
         );
     }
 }

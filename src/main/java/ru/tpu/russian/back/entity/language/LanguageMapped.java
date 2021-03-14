@@ -21,4 +21,6 @@ public class LanguageMapped {
     @Column(name = "SHORT_NAME")
     private String shortName;
 
+    @Column(name = "NAME_ON_LANGUAGE")
+    private String selfName;
 }

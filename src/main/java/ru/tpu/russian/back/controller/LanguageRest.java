@@ -6,8 +6,7 @@ import ru.tpu.russian.back.service.LanguageService;
 
 import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -44,5 +43,12 @@ public class LanguageRest {
     @RequestMapping(method = POST, path = "/admin/create")
     public void addNewLanguage(@RequestBody LanguageCreateRequest request) {
         languageService.create(request);
+    }
+
+    @RequestMapping(method = DELETE, path = "/admin/{id}")
+    public void deleteLanguage(
+            @PathVariable(value = "id") String id
+    ) {
+        languageService.deleteLanguage(id);
     }
 }

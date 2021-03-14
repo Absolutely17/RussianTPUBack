@@ -7,7 +7,6 @@ import ru.tpu.russian.back.exception.*;
 import ru.tpu.russian.back.service.UserService;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -38,7 +37,7 @@ public class UserRest {
      */
     @RequestMapping(method = GET, path = "/profile")
     public UserProfileResponse getUserProfile(
-            @PathParam(value = "email") String email
+            @RequestParam(value = "email") String email
     ) throws BusinessException {
         return userService.getUserProfile(email);
     }

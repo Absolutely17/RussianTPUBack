@@ -60,4 +60,8 @@ public class LanguageService {
                 .map(languageMapper::convertToAvailableResponse)
                 .collect(Collectors.toList());
     }
+
+    public void deleteLanguage(String langId) {
+        languageRepository.deleteLanguage(langId);
+    }
 }

@@ -10,4 +10,6 @@ public interface ILanguageRepository {
     List<LanguageAvailable> getAllAvailable();
 
     void addNewLanguage(LanguageCreateRequest request);
+
+    void deleteLanguage(String id);
 }

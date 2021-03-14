@@ -11,6 +11,8 @@ public class LanguageRepositoryImpl implements ILanguageRepository {
 
     private static final String CREATE_NEW_LANGUAGE = "AddLanguage";
 
+    private static final String DELETE_LANGUAGE = "DeleteLanguage";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -27,6 +29,14 @@ public class LanguageRepositoryImpl implements ILanguageRepository {
         entityManager.createNativeQuery("exec " + CREATE_NEW_LANGUAGE + " :id, :imageId")
                 .setParameter("id", request.getId())
                 .setParameter("imageId", request.getImageId())
+                .executeUpdate();
+    }
+
+    @Transactional
+    @Override
+    public void deleteLanguage(String id) {
+        entityManager.createNativeQuery("exec " + DELETE_LANGUAGE + " :id")
+                .setParameter("id", id)
                 .executeUpdate();
     }
 }

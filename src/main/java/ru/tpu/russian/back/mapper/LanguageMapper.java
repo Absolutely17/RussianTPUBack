@@ -18,7 +18,7 @@ public class LanguageMapper {
         return new LanguageResponse(
                 language.getId(),
                 language.getShortName(),
-                language.getName(),
+                language.getSelfName() != null ? language.getSelfName() : language.getName(),
                 mediaService.getImage(language.getImageId())
         );
     }

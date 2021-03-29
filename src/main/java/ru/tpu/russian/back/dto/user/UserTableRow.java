@@ -20,9 +20,6 @@ public class UserTableRow {
     private String lastName;
 
     @Nullable
-    private String middleName;
-
-    @Nullable
     private String gender;
 
     @Nullable

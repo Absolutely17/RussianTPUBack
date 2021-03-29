@@ -40,12 +40,11 @@ public class UserRepositoryImpl implements IUserRepository {
     @Transactional
     public User saveUser(UserRegisterRequest user) {
         Optional<User> userRegistered = em.createNativeQuery(
-                "exec " + ADD_USER + " :firstName, :middleName, :lastName" +
+                "exec " + ADD_USER + " :firstName, :lastName" +
                         ", :role, :password, :sex, :languageId, :provider, :groupName, :email, :confirmed, :phoneNumber",
                 User.class
         )
                 .setParameter("firstName", user.getFirstName())
-                .setParameter("middleName", user.getMiddleName())
                 .setParameter("lastName", user.getLastName())
                 .setParameter("role", "ROLE_USER")
                 .setParameter("password", user.getPassword())
@@ -93,10 +92,9 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     @Transactional
     public void editUser(UserProfileEditRequest requestDto) {
-        em.createNativeQuery("exec " + EDIT_USER + " :firstName, :middleName, :lastName" +
+        em.createNativeQuery("exec " + EDIT_USER + " :firstName, :lastName" +
                 ", :password, :sex, :languageId, :groupName, :email, :phoneNumber")
                 .setParameter("firstName", requestDto.getFirstName())
-                .setParameter("middleName", requestDto.getMiddleName())
                 .setParameter("lastName", requestDto.getLastName())
                 .setParameter("password", requestDto.getNewPassword())
                 .setParameter("sex", requestDto.getGender())
@@ -145,11 +143,10 @@ public class UserRepositoryImpl implements IUserRepository {
     @Transactional
     @Override
     public void editUserByAdmin(String id, UserProfileEditRequest request) {
-        em.createNativeQuery("exec " + EDIT_USER_BY_ADMIN + " :id, :firstName, :middleName, :lastName" +
+        em.createNativeQuery("exec " + EDIT_USER_BY_ADMIN + " :id, :firstName, :lastName" +
                 ", :password, :sex, :languageId, :groupName, :email, :phoneNumber")
                 .setParameter("id", id)
                 .setParameter("firstName", request.getFirstName())
-                .setParameter("middleName", request.getMiddleName())
                 .setParameter("lastName", request.getLastName())
                 .setParameter("password", request.getNewPassword())
                 .setParameter("sex", request.getGender())

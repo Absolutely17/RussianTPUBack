@@ -16,13 +16,12 @@ public class UserProfileResponse extends UserResponse {
     public UserProfileResponse(
             String email,
             String firstName, String lastName,
-            String middleName, UserGender gender,
-            String phoneNumber, String groupName,
-            String languageId, String languageName,
-            boolean isConfirmed, String academicPlanUrl,
-            String scheduleUrl
+            UserGender gender, String phoneNumber,
+            String groupName, String languageId,
+            String languageName, boolean isConfirmed,
+            String academicPlanUrl, String scheduleUrl
     ) {
-        super(email, firstName, lastName, middleName, gender, phoneNumber, groupName, languageId, languageName);
+        super(email, firstName, lastName, gender, phoneNumber, groupName, languageId, languageName);
         this.isConfirmed = isConfirmed;
         this.academicPlanUrl = academicPlanUrl;
         this.scheduleUrl = scheduleUrl;

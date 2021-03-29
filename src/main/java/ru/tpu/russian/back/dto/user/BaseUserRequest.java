@@ -24,10 +24,6 @@ public class BaseUserRequest {
     private String lastName;
 
     @Nullable
-    @Size(max = 50)
-    private String middleName;
-
-    @Nullable
     @Pattern(regexp = "Male|Female")
     private String gender;
 
@@ -50,7 +46,6 @@ public class BaseUserRequest {
                 "email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", middleName='" + middleName + '\'' +
                 ", gender='" + gender + '\'' +
                 ", language=" + languageId +
                 ", phoneNumber='" + phoneNumber + '\'' +

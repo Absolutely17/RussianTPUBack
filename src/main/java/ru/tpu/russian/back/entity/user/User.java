@@ -28,10 +28,6 @@ public class User {
     @Nullable
     private String lastName;
 
-    @Column(name = "MIDDLE_NAME", length = 50)
-    @Nullable
-    private String middleName;
-
     @Column(name = "ROLE")
     private String role;
 

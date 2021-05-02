@@ -17,6 +17,8 @@ public class DocumentRepositoryImpl implements IDocumentRepository {
 
     private static final String ATTACH_DOCUMENT_TO_USER = "AttachDocumentToUser";
 
+    private static final String ADD_DOCUMENT = "AddDocument";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -40,7 +42,7 @@ public class DocumentRepositoryImpl implements IDocumentRepository {
     @Override
     @Transactional
     public String uploadDocument(DocumentUploadRequest dto, byte[] document) {
-        return (String)em.createNativeQuery("exec AddDocument :fileName, :documentName," +
+        return (String)em.createNativeQuery("exec " + ADD_DOCUMENT + " :fileName, :documentName," +
                 ":content, :adminEmail")
                 .setParameter("fileName", dto.getFileName())
                 .setParameter("documentName", dto.getDocumentName())
